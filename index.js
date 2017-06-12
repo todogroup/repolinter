@@ -1,5 +1,6 @@
 const rulesToRun = [
-  require('./rules/file_existence').bind(null, {file: 'LICENSE'})
+  require('./rules/file_existence').bind(null, {file: 'LICENSE'}),
+  require('./rules/type_exclusion').bind(null, {type: '.dll'}),
 ]
 
 const targetDir = process.argv[2];

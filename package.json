@@ -9,6 +9,9 @@
   "keywords": [],
   "author": "The TODO Group",
   "license": "Apache-2.0",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
   }
 }
