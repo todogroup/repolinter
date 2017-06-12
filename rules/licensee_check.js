@@ -15,11 +15,11 @@ module.exports = function(options, targetDir) {
   }
   else if (licenseeOutput.toString().match(expected)) {
     return {
-      passes: [`Licensee identified the license for project in ${targetDir}`]
+      passes: ['Licensee identified the license for project']
     };
   } else {
     return {
-      failures: [`Licensee did not identify a license for project in ${targetDir}`]
+      failures: ['Licensee did not identify a license for project']
     };
   }
 
