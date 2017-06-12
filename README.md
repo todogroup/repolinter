@@ -26,6 +26,8 @@ Licensee will lead to a test being done to see if the project's licensee is iden
 
 Linguist allows per-language tests to be performed (TODO: Currently only the lib exists)
 
+Run `bundle install` to get Lincensee and Linguist support.
+
 ## License
 
 This project is licensed under the [Apache 2.0](LICENSE) license.
