@@ -10,10 +10,11 @@
   "author": "The TODO Group",
   "license": "Apache-2.0",
   "dependencies": {
-    "fs": "0.0.1-security",
-    "path": "^0.12.7",
     "chai": "^4.0.2",
-    "glob": "^7.1.2"
+    "fs": "0.0.1-security",
+    "glob": "^7.1.2",
+    "log-symbols": "^1.0.2",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "mocha": "^3.4.2"
