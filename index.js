@@ -7,12 +7,14 @@ const rulesToRun = [
   require('./rules/file_existence').bind(null, {name: 'Readme file', files: ['README*']}),
   require('./rules/file_existence').bind(null, {name: 'Contributing file', files: ['CONTRIBUT*']}),
   require('./rules/file_contents').bind(null, {file: 'README.md', content: 'License'}),
-  require('./rules/type_exclusion').bind(null, {type: '.dll'}),
+  require('./rules/file_type_exclusion').bind(null, {type: '.dll'}),
+  require('./rules/licensee_check').bind(null, {name: 'Licensee Check'}),
 ]
 
 const targetDir = process.argv[2];
 rulesToRun.forEach(rule => {
   const result = rule(targetDir);
+<<<<<<< HEAD
   renderResults(result.failures, false);
   renderResults(result.passes, true);
 });
@@ -26,3 +28,11 @@ function renderResults(results, success) {
 function renderResult(message, success) {
   console.log(success ? logSymbols.success : logSymbols.error, message);
 }
+=======
+  if (result.passes) {
+    console.log(result.passes);
+  } else if (result.failures) {
+    console.error(result.failures);
+  };
+});
+>>>>>>> d30af6185cef11bd74fc386385e7184db20ac669
