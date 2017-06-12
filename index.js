@@ -16,6 +16,9 @@ const languageSpecificRules = {
   'Java' : [
     require('./rules/file_existence').bind(null, {name: 'Build file', files: ['pom.xml', 'build.xml']}),
   ],
+  'Ruby' : [
+    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['Gemfile']}),
+  ],
   'JavaScript' : [
     require('./rules/file_existence').bind(null, {name: 'Build file', files: ['package.json']}),
   ]
@@ -32,7 +35,14 @@ try {
   languages=linguist.identifyLanguagesSync(targetDir)
 
   for (var language in languages) {
-    if(languageSpecificRules[language] != null) {
+
+    console.log(`Language Checks [${language}]:`);
+
+    if(languageSpecificRules[language] == null) {
+
+      console.log('  n/a');
+
+    } else {
 
       languageSpecificRules[language].forEach(rule => {
         const result = rule(targetDir);
