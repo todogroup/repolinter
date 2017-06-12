@@ -2,7 +2,8 @@ const rulesToRun = [
   require('./rules/file_existence').bind(null, {name: 'License file', files: ['LICENSE*', 'COPYING*']}),
   require('./rules/file_existence').bind(null, {name: 'Readme file', files: ['README*']}),
   require('./rules/file_existence').bind(null, {name: 'Contributing file', files: ['CONTRIBUT*']}),
-  require('./rules/file_contents').bind(null, {file: 'README.md', content: 'License'})
+  require('./rules/file_contents').bind(null, {file: 'README.md', content: 'License'}),
+  require('./rules/type_exclusion').bind(null, {type: '.dll'}),
 ]
 
 const targetDir = process.argv[2];
