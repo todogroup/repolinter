@@ -8,7 +8,7 @@ const rulesToRun = [
   require('./rules/file_contents').bind(null, {file: 'README.md', content: 'License'}),
   require('./rules/file_type_exclusion').bind(null, {type: ['*.dll', '*.exe']}),
   require('./rules/licensee_check').bind(null, {name: 'Licensee Check'}),
-  require('./rules/directory_existence').bind(null, {name: 'Test directory', directories: ['spec*', 'test*']}),
+  require('./rules/directory_existence').bind(null, {name: 'Test directory', directories: ['spec*', 'test*', 'src/test']}),
   require('./rules/file_starts_with').bind(null, {name: 'Source license headers', files: ['**/*.js'], ignore: 'node_modules/**', patterns: [/Copyright/i, /All rights reserved/i], line_count: 5})
 ]
 
