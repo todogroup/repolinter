@@ -4,6 +4,7 @@ const rulesToRun = [
   require('./rules/file_existence').bind(null, {name: 'Contributing file', files: ['CONTRIBUT*']}),
   require('./rules/file_contents').bind(null, {file: 'README.md', content: 'License'}),
   require('./rules/type_exclusion').bind(null, {type: '.dll'}),
+  require('./rules/licensee_check').bind(null, {name: 'Licensee Check'}),
 ]
 
 const targetDir = process.argv[2];
