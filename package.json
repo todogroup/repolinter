@@ -10,5 +10,6 @@
   "author": "The TODO Group",
   "license": "Apache-2.0",
   "dependencies": {
+    "glob": "^7.1.2"
   }
 }

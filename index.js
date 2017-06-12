@@ -1,5 +1,6 @@
 const rulesToRun = [
-  require('./rules/file_existence').bind(null, {file: 'LICENSE'})
+  require('./rules/file_existence').bind(null, {name: 'License file', files: ['LICENSE.md', 'LICENSE']}),
+  require('./rules/file_existence').bind(null, {name: 'Readme file', files: ['README.md']})
 ]
 
 const targetDir = process.argv[2];
