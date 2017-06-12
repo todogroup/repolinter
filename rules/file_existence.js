@@ -1,19 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+const fs = require('../lib/file_system');
 
 module.exports = function(options, targetDir) {
-  for (var i = 0; i < options.files.length; i++) {
-    var files = glob.sync(path.join(targetDir, options.files[i]), {nocase: true});
-    for (var j = 0; j < files.length; j++) {
-      var file = files[j];
-      if (fs.existsSync(file)) {
-        return {
-          passes: [`${options.name} exists (${file})`]
-        };
-      } 
-    }
-  }
+  const fs2 = options.fs || new fs.FileSystem();
+  const file = fs2.find_first(targetDir, options.files);
+  if (file) {
+    return {
+      passes: [`${options.name} exists (${file})`]
+    };
+  } 
 
   return {
     failures: [`${options.name} doesn't exist`]
