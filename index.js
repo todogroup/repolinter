@@ -1,4 +1,5 @@
 const logSymbols = require('log-symbols');
+const linguist = require('./lib/linguist');
 
 const rulesToRun = [
   require('./rules/file_existence').bind(null, {name: 'License file', files: ['LICENSE*', 'COPYING*']}),
@@ -10,12 +11,40 @@ const rulesToRun = [
   require('./rules/directory_existence').bind(null, {name: 'Test directory', directories: ['spec*', 'test*']})
 ]
 
+const languageSpecificRules = {
+  'Java' : [
+    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['pom.xml', 'build.xml']}),
+  ],
+  'JavaScript' : [
+    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['package.json']}),
+  ]
+}
+
 const targetDir = process.argv[2];
 rulesToRun.forEach(rule => {
   const result = rule(targetDir);
   renderResults(result.failures, false);
   renderResults(result.passes, true);
 });
+
+try {
+  languages=linguist.identifyLanguagesSync(targetDir)
+
+  for (var language in languages) {
+    if(languageSpecificRules[language] != null) {
+
+      languageSpecificRules[language].forEach(rule => {
+        const result = rule(targetDir);
+        renderResults(result.failures, false);
+        renderResults(result.passes, true);
+      });
+
+    }
+  }
+} catch(e) {
+  console.log("NOTE: Linguist not installed")
+  // Linguist wasn't installed (one presumes)
+}
 
 function renderResults(results, success) {
   if (results) {
