@@ -1,4 +1,4 @@
-# Repo Linter
+# Repo Linter [![Build Status](https://travis-ci.org/todogroup/repolinter.svg?branch=master)](https://travis-ci.org/todogroup/repolinter)
 
 Given a repository, lint it nodfor quality checks.
 
