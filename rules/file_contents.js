@@ -6,7 +6,7 @@ module.exports = function(options, targetDir) {
   if(fs.existsSync(file) && fs.statSync(file).isFile()) {
     const content = fs.readFileSync(file);
 
-    if (content.includes(options.content)) {
+    if (content.toString().match(options.content)) {
       return {
         passes: [`File ${options.file} contains ${options.content}`]
       };
