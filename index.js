@@ -7,6 +7,7 @@ const rulesToRun = [
   require('./rules/file_contents').bind(null, {file: 'README.md', content: 'License'}),
   require('./rules/file_type_exclusion').bind(null, {type: '.dll'}),
   require('./rules/licensee_check').bind(null, {name: 'Licensee Check'}),
+  require('./rules/directory_existence').bind(null, {name: 'Test directory', directories: ['spec*', 'test*']})
 ]
 
 const targetDir = process.argv[2];
