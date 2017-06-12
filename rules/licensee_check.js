@@ -1,3 +1,5 @@
+// Copyright 2017 TODO Group. All rights reserved. See LICENSE for details.
+
 const fs = require('fs');
 const path = require('path');
 const spawnSync = require('child_process').spawnSync;
