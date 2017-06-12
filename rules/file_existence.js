@@ -1,8 +1,6 @@
-const fs = require('../lib/file_system');
-
 module.exports = function(options, targetDir) {
-  const fs2 = options.fs || new fs.FileSystem();
-  const file = fs2.find_first(targetDir, options.files);
+  const fs = options.fs || require('../lib/file_system');
+  const file = fs.find_first(targetDir, options.files);
   if (file) {
     return {
       passes: [`${options.name} exists (${file})`]
