@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha tests/**/*.js",
     "coverage": "nyc npm test",
-    "lint": "standard"
+    "lint": "standard --env mocha"
   },
   "keywords": [],
   "author": "The TODO Group",
