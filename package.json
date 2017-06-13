@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "repolinter": "bin/repolinter.js"
+  },
   "scripts": {
     "test": "mocha tests/**/*.js",
-    "coverage": "nyc npm test"
+    "coverage": "nyc npm test",
+    "lint": "standard --env mocha"
   },
   "keywords": [],
   "author": "The TODO Group",
@@ -20,6 +24,7 @@
   },
   "devDependencies": {
     "mocha": "^3.4.2",
-    "nyc": "^11.0.2"
+    "nyc": "^11.0.2",
+    "standard": "^10.0.2"
   }
 }

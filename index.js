@@ -1,8 +1,8 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 
-const logSymbols = require('log-symbols');
-const linguist = require('./lib/linguist');
+const logSymbols = require('log-symbols')
+const linguist = require('./lib/linguist')
 
 const rulesToRun = [
   require('./rules/file_existence').bind(null, {name: 'License file', files: ['LICENSE*', 'COPYING*']}),
@@ -16,70 +16,66 @@ const rulesToRun = [
 ]
 
 const languageSpecificRules = {
-  'Java' : [
-    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['pom.xml', 'build.xml']}),
+  'Java': [
+    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['pom.xml', 'build.xml']})
   ],
-  'Ruby' : [
-    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['Gemfile']}),
+  'Ruby': [
+    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['Gemfile']})
   ],
-  'JavaScript' : [
-    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['package.json']}),
+  'JavaScript': [
+    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['package.json']})
   ]
 }
 
-const targetDir = process.argv[2] || '.';
-console.log(`Target directory: ${targetDir}`);
+module.exports = function (targetDir) {
+  console.log(`Target directory: ${targetDir}`)
 
-let anyFailures = false;
-rulesToRun.forEach(rule => {
-  const result = rule(targetDir);
-  if (result.failures && result.failures.length > 0) {
-    anyFailures = true;
+  let anyFailures = false
+  rulesToRun.forEach(rule => {
+    const result = rule(targetDir)
+    if (result.failures && result.failures.length > 0) {
+      anyFailures = true
+    }
+    renderResults(result.failures, false)
+    renderResults(result.passes, true)
+  })
+
+  try {
+    const languages = linguist.identifyLanguagesSync(targetDir)
+
+    for (var language in languages) {
+      console.log(`Language Checks [${language}]:`)
+
+      if (languageSpecificRules[language] == null) {
+        console.log('  n/a')
+      } else {
+        languageSpecificRules[language].forEach(rule => {
+          const result = rule(targetDir)
+          if (result.failures && result.failures.length > 0) {
+            anyFailures = true
+          }
+
+          renderResults(result.failures, false)
+          renderResults(result.passes, true)
+        })
+      }
+    }
+  } catch (e) {
+    console.log('NOTE: Linguist not installed')
+    // Linguist wasn't installed (one presumes)
   }
-  renderResults(result.failures, false);
-  renderResults(result.passes, true);
-});
 
-try {
-  languages=linguist.identifyLanguagesSync(targetDir)
+  if (anyFailures) {
+    process.exitCode = 1
+  }
 
-  for (var language in languages) {
-
-    console.log(`Language Checks [${language}]:`);
-
-    if(languageSpecificRules[language] == null) {
-
-      console.log('  n/a');
-
-    } else {
-
-      languageSpecificRules[language].forEach(rule => {
-        const result = rule(targetDir);
-        if (result.failures && result.failures.length > 0) {
-          anyFailures = true;
-        }
-
-        renderResults(result.failures, false);
-        renderResults(result.passes, true);
-      });
-
+  function renderResults (results, success) {
+    if (results) {
+      results.forEach(result => renderResult(result, success))
     }
   }
-} catch(e) {
-  console.log("NOTE: Linguist not installed")
-  // Linguist wasn't installed (one presumes)
-}
 
-if (anyFailures) {
-  process.exitCode = 1;
-}
-
-function renderResults(results, success) {
-  if (results) {
-    results.forEach(result => renderResult(result, success));
+  function renderResult (message, success) {
+    console.log(success ? logSymbols.success : logSymbols.error, message)
   }
-}
-
-function renderResult(message, success) {
-  console.log(success ? logSymbols.success : logSymbols.error, message);
 }
