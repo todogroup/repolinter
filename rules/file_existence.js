@@ -3,7 +3,7 @@
 
 module.exports = function(options, targetDir) {
   const fs = options.fs || require('../lib/file_system');
-  const file = fs.find_first(targetDir, options.files);
+  const file = fs.findFirst(targetDir, options.files);
   if (file) {
     return {
       passes: [`${options.name} exists (${file})`]
