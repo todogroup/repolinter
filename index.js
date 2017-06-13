@@ -29,8 +29,13 @@ const languageSpecificRules = {
 
 const targetDir = process.argv[2] || '.';
 console.log(`Target directory: ${targetDir}`);
+
+let anyFailures = false;
 rulesToRun.forEach(rule => {
   const result = rule(targetDir);
+  if (result.failures && result.failures.length > 0) {
+    anyFailures = true;
+  }
   renderResults(result.failures, false);
   renderResults(result.passes, true);
 });
@@ -50,6 +55,10 @@ try {
 
       languageSpecificRules[language].forEach(rule => {
         const result = rule(targetDir);
+        if (result.failures && result.failures.length > 0) {
+          anyFailures = true;
+        }
+
         renderResults(result.failures, false);
         renderResults(result.passes, true);
       });
@@ -59,6 +68,10 @@ try {
 } catch(e) {
   console.log("NOTE: Linguist not installed")
   // Linguist wasn't installed (one presumes)
+}
+
+if (anyFailures) {
+  process.exitCode = 1;
 }
 
 function renderResults(results, success) {
