@@ -6,7 +6,7 @@ module.exports = function(options, targetDir) {
   const files = fs.findAll(targetDir, options.files, options.ignore);
   const failures = [];
   files.forEach(file => {
-    const lines = readLines(file, options.lineCount);
+    const lines = fs.readLines(file, options.lineCount);
     const allMatch = options.patterns.every(pattern => {
       return lines.match(pattern);
     });
@@ -17,8 +17,4 @@ module.exports = function(options, targetDir) {
   return {
     failures: failures
   };
-}
-
-function readLines(file, lineCount) {
-  return require('fs').readFileSync(file).toString().split(/\r?\n/g).slice(0, lineCount).join('\n');
 }

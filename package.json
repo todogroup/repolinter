@@ -17,7 +17,6 @@
     "chai": "^4.0.2",
     "fs": "0.0.1-security",
     "glob": "^7.1.2",
-    "line-reader": "^0.4.0",
     "log-symbols": "^1.0.2",
     "path": "^0.12.7"
   },
