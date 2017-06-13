@@ -28,6 +28,7 @@ const languageSpecificRules = {
 }
 
 const targetDir = process.argv[2] || '.';
+console.log(`Target directory: ${targetDir}`);
 rulesToRun.forEach(rule => {
   const result = rule(targetDir);
   renderResults(result.failures, false);
