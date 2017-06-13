@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests/**/*.js"
+    "test": "mocha tests/**/*.js",
+    "coverage": "istanbul cover _mocha -- tests/**/*.js"
   },
   "keywords": [],
   "author": "The TODO Group",
@@ -18,6 +19,7 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
+    "istanbul": "^0.4.5",
     "mocha": "^3.4.2"
   }
 }
