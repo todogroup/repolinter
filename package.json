@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "repolinter": "bin/repolinter.js"
+  },
   "scripts": {
     "test": "mocha tests/**/*.js",
     "coverage": "nyc npm test"
