@@ -7,7 +7,7 @@ const spawnSync = require('child_process').spawnSync;
 
 module.exports = function(options, targetDir) {
 
-  expected='\nLicense: '
+  expected='\nLicense: ([^\n]*)'
 
   licenseeOutput = spawnSync('licensee', [targetDir]).stdout;
 
@@ -16,9 +16,14 @@ module.exports = function(options, targetDir) {
       failures: [`Licensee is not installed`]
     };
   }
-  else if (licenseeOutput.toString().match(expected)) {
+
+  const results = licenseeOutput.toString().match(expected);
+
+  if(results != null) {
+    // License: Apache License 2.0
+    const identified = results[1]
     return {
-      passes: ['Licensee identified the license for project']
+      passes: [`Licensee identified the license for project: ${identified}`]
     };
   } else {
     return {
