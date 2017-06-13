@@ -3,7 +3,7 @@
 
 module.exports = function(options, targetDir) {
   const fs = options.fs || require('../lib/file_system');
-  const files = fs.findAll(targetDir, options.files, options.ignore);
+  const files = fs.findAll(targetDir, options.files);
   const failures = [];
   files.forEach(file => {
     const lines = fs.readLines(file, options.lineCount);

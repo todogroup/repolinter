@@ -16,8 +16,8 @@
   "dependencies": {
     "chai": "^4.0.2",
     "fs": "0.0.1-security",
-    "glob": "^7.1.2",
     "log-symbols": "^1.0.2",
+    "matched": "^0.4.4",
     "path": "^0.12.7"
   },
   "devDependencies": {
