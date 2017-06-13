@@ -27,7 +27,7 @@ const languageSpecificRules = {
   ]
 }
 
-const targetDir = process.argv[2];
+const targetDir = process.argv[2] || '.';
 rulesToRun.forEach(rule => {
   const result = rule(targetDir);
   renderResults(result.failures, false);
