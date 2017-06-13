@@ -7,10 +7,10 @@ const expect = chai.expect;
 describe('rules', () => {
   describe('files_existence', () => {
     it('returns passes if requested file exists', () => {
-      const file_existence = require('../../rules/file_existence');
-      const result = file_existence({
+      const fileExistence = require('../../rules/file_existence');
+      const result = fileExistence({
         fs: {
-          find_first() {
+          findFirst() {
             return 'foo'
           }
         },
@@ -22,10 +22,10 @@ describe('rules', () => {
     });
 
     it('returns failures if requested file doesn\'t exist', () => {
-      const file_existence = require('../../rules/file_existence');
-      const result = file_existence({
+      const fileExistence = require('../../rules/file_existence');
+      const result = fileExistence({
         fs: {
-          find_first() {
+          findFirst() {
           }
         },
         files: ['LICENSE*'],

@@ -7,10 +7,10 @@ const expect = chai.expect;
 describe('rules', () => {
   describe('file_type_exclusion', () => {
     it('returns passes if requested file type doesn\'t exist', () => {
-      const file_type_exclusion = require('../../rules/file_type_exclusion');
-      const result = file_type_exclusion({
+      const fileTypeExclusion = require('../../rules/file_type_exclusion');
+      const result = fileTypeExclusion({
         fs: {
-          find_all() {
+          findAll() {
           }
         },
         type: ['*.dll']
@@ -20,10 +20,10 @@ describe('rules', () => {
     });
 
     it('returns failures if requested file type exists', () => {
-      const file_type_exclusion = require('../../rules/file_type_exclusion');
-      const result = file_type_exclusion({
+      const fileTypeExclusion = require('../../rules/file_type_exclusion');
+      const result = fileTypeExclusion({
         fs: {
-          find_all() {
+          findAll() {
             return 'foo.dll'
           }
         },
