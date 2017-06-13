@@ -24,7 +24,7 @@ Repo Linter will use https://github.com/benbalter/licensee and https://github.co
 
 Licensee will lead to a test being done to see if the project's licensee is identified by Licensee.
 
-Linguist allows per-language tests to be performed (TODO: Currently only the lib exists)
+Linguist allows per-language tests to be performed.
 
 Run `bundle install` to get Lincensee and Linguist support.
 
