@@ -7,7 +7,7 @@
     "repolinter": "bin/repolinter.js"
   },
   "scripts": {
-    "test": "mocha tests/**/*.js",
+    "test": "standard --env mocha && mocha tests/**/*.js",
     "coverage": "nyc npm test"
   },
   "keywords": [],
@@ -16,12 +16,14 @@
   "dependencies": {
     "chai": "^4.0.2",
     "fs": "0.0.1-security",
+    "jsonfile": "^3.0.0",
     "log-symbols": "^1.0.2",
     "matched": "^0.4.4",
     "path": "^0.12.7"
   },
   "devDependencies": {
     "mocha": "^3.4.2",
-    "nyc": "^11.0.2"
+    "nyc": "^11.0.2",
+    "standard": "^10.0.2"
   }
 }

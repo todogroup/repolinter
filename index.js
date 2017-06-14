@@ -1,86 +1,99 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 
-const logSymbols = require('log-symbols');
-const linguist = require('./lib/linguist');
+const logSymbols = require('log-symbols')
+const linguist = require('./lib/linguist')
+const jsonfile = require('jsonfile')
+const path = require('path')
 
-const rulesToRun = [
-  require('./rules/file_existence').bind(null, {name: 'License file', files: ['LICENSE*', 'COPYING*']}),
-  require('./rules/file_existence').bind(null, {name: 'Readme file', files: ['README*']}),
-  require('./rules/file_existence').bind(null, {name: 'Contributing file', files: ['CONTRIBUT*']}),
-  require('./rules/file_contents').bind(null, {file: 'README.md', content: 'License'}),
-  require('./rules/file_type_exclusion').bind(null, {type: ['*.dll', '*.exe']}),
-  require('./rules/licensee_check').bind(null, {name: 'Licensee Check'}),
-  require('./rules/directory_existence').bind(null, {name: 'Test directory', directories: ['spec*', 'test*', 'src/test']}),
-  require('./rules/file_starts_with').bind(null, {name: 'Source license headers', files: ['**/*.js', '!node_modules/**'], patterns: [/Copyright/i, /All rights reserved/i], lineCount: 5})
-]
+module.exports = function (targetDir) {
+  console.log(`Target directory: ${targetDir}`)
 
-const languageSpecificRules = {
-  'Java' : [
-    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['pom.xml', 'build.xml']}),
-  ],
-  'Ruby' : [
-    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['Gemfile']}),
-  ],
-  'JavaScript' : [
-    require('./rules/file_existence').bind(null, {name: 'Build file', files: ['package.json']}),
-  ]
-}
-
-module.exports = function(targetDir) {
-  console.log(`Target directory: ${targetDir}`);
-
-  let anyFailures = false;
-  rulesToRun.forEach(rule => {
-    const result = rule(targetDir);
-    if (result.failures && result.failures.length > 0) {
-      anyFailures = true;
-    }
-    renderResults(result.failures, false);
-    renderResults(result.passes, true);
-  });
-
+  let languages = ['all']
   try {
-    languages=linguist.identifyLanguagesSync(targetDir)
-
-    for (var language in languages) {
-
-      console.log(`Language Checks [${language}]:`);
-
-      if(languageSpecificRules[language] == null) {
-
-        console.log('  n/a');
-
-      } else {
-
-        languageSpecificRules[language].forEach(rule => {
-          const result = rule(targetDir);
-          if (result.failures && result.failures.length > 0) {
-            anyFailures = true;
-          }
-
-          renderResults(result.failures, false);
-          renderResults(result.passes, true);
-        });
-
-      }
-    }
-  } catch(e) {
-    console.log("NOTE: Linguist not installed")
-    // Linguist wasn't installed (one presumes)
+    const detectedLanguages = linguist.identifyLanguagesSync(targetDir).map(language => language.toLowerCase())
+    languages.push(detectedLanguages)
+    console.log(`Languages: ${detectedLanguages.join(', ')}`)
+  } catch (error) {
+    console.log(`Languages: Linguist not found in path, only running language-independent rules`)
   }
+  console.log('')
+
+  let anyFailures = false
+  const ruleset = jsonfile.readFileSync(path.join(__dirname, 'rulesets/default.json'))
+  languages.forEach(language => {
+    const languageRules = ruleset.rules[language]
+    if (languageRules) {
+      Object.getOwnPropertyNames(languageRules).forEach(ruleId => {
+        const rule = parseRule(languageRules[ruleId])
+        const ruleIdParts = ruleId.split(':')
+        rule.id = ruleIdParts[0]
+        rule.module = ruleIdParts.length === 2 ? ruleIdParts[1] : ruleIdParts[0]
+        if (rule.enabled) {
+          // TODO: Do something more secure
+          let result = {}
+          try {
+            const ruleFunction = require(path.join(__dirname, 'rules', rule.module))
+            result = ruleFunction(targetDir, rule.options)
+            // TODO: Track warnings and errors separately
+            if (result.failures && result.failures.length > 0) {
+              anyFailures = true
+            }
+          } catch (error) {
+            result.failures = [error.message]
+          }
+          renderResults(rule, result.failures, rule.level)
+          renderResults(rule, result.passes, 'success')
+        }
+      })
+    }
+  })
 
   if (anyFailures) {
-    process.exitCode = 1;
+    process.exitCode = 1
   }
 
-  function renderResults(results, success) {
+  function renderResults (rule, results, success) {
     if (results) {
-      results.forEach(result => renderResult(result, success));
+      results.forEach(result => renderResult(rule, result, success))
     }
   }
 
-  function renderResult(message, success) {
-    console.log(success ? logSymbols.success : logSymbols.error, message);
+  function renderResult (rule, message, level) {
+    console.log(`${logSymbols[level]} ${rule.id}: ${message}`)
+  }
+
+  function parseRule (rule) {
+    const result = {}
+
+    if (Array.isArray(rule) && rule.length > 0) {
+      result.enabled = parseEnabled(rule[0])
+      result.level = parseLevel(rule[0])
+      result.options = rule.length > 1 ? rule[1] : {}
+    } else if (typeof rule === 'boolean' || typeof rule === 'string') {
+      result.enabled = parseEnabled(rule)
+      result.level = parseLevel(rule)
+      result.options = {}
+    }
+
+    return result
+  }
+
+  function parseEnabled (value) {
+    if (typeof value === 'boolean') {
+      return value
+    } else if (typeof value === 'string') {
+      return value.toLowerCase() !== 'off'
+    } else if (typeof value === 'object') {
+      return value.enabled || true
+    }
+    return true
+  }
+
+  function parseLevel (value) {
+    if (typeof value === 'string') {
+      return value.trim().toLowerCase()
+    }
+    return 'error'
   }
 }
