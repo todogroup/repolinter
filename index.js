@@ -5,9 +5,15 @@ const logSymbols = require('log-symbols')
 const linguist = require('./lib/linguist')
 const jsonfile = require('jsonfile')
 const path = require('path')
+const findConfig = require('find-config')
 
 module.exports = function (targetDir) {
   console.log(`Target directory: ${targetDir}`)
+
+  let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
+  rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
+
+  console.log(`Ruleset: ${rulesetPath}`)
 
   let languages = ['all']
   try {
@@ -20,7 +26,7 @@ module.exports = function (targetDir) {
   console.log('')
 
   let anyFailures = false
-  const ruleset = jsonfile.readFileSync(path.join(__dirname, 'rulesets/default.json'))
+  const ruleset = jsonfile.readFileSync(rulesetPath)
   languages.forEach(language => {
     const languageRules = ruleset.rules[language]
     if (languageRules) {

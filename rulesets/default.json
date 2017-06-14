@@ -8,7 +8,7 @@
       "binaries-not-present:file-type-exclusion": ["error", {"type": ["**/*.exe", "**/*.dll"]}],
       "license-detectable-by-licensee": ["error"],
       "test-directory-exists:directory-existence": ["error", {"directories": ["test*", "specs"]}],
-      "source-license-headers-exist:file-starts-with": ["error", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "All rights reserved", "Licensed under"]}]
+      "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "All rights reserved", "Licensed under"]}]
     },
     "javascript": {
       "package-metadata-exists:file-existence": ["error", {"files": ["package.json"]}]

@@ -15,6 +15,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "chai": "^4.0.2",
+    "find-config": "^1.0.0",
     "fs": "0.0.1-security",
     "jsonfile": "^3.0.0",
     "log-symbols": "^1.0.2",
