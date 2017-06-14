@@ -32,14 +32,14 @@ Run `bundle install` to get Lincensee and Linguist support.
 The default ruleset (```rulesets/default.json```) enables the following rules:
 
 All languages:
-* (binaries-not-present)[#binaries-not-present]
-* (contributing-file-exists)[#contributing-file-exists]
-* (license-detectable-by-licensee)[#license-detectable-by-licensee]
-* (license-file-exists)[#license-file-exists]
-* (readme-file-exists)[#readme-file-exists]
-* (readme-references-license)[#readme-references-license]
-* (source-license-headers-exist)[#source-license-headers-exist]
-* (test-directory-exists)[#test-directory-exists]
+* [binaries-not-present](#binaries-not-present)
+* [contributing-file-exist](#contributing-file-exists)
+* [license-detectable-by-licensee](#license-detectable-by-licensee)
+* [license-file-exists](#license-file-exists)
+* [readme-file-exists](#readme-file-exists)
+* [readme-references-license](#readme-references-license)
+* [source-license-headers-exist]([#source-license-headers-exist)
+* [test-directory-exists](#test-directory-exists)
 
 ## Configuring rules
 
