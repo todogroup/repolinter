@@ -18,7 +18,7 @@ bin/repolinter.js
 ✔ Test directory exists (tests)
 ```
 
-## Command Line dependencies
+## Command line dependencies
 
 Repo Linter will use https://github.com/benbalter/licensee and https://github.com/github/linguist when installed.
 
@@ -28,20 +28,20 @@ Linguist allows per-language tests to be performed.
 
 Run `bundle install` to get Lincensee and Linguist support.
 
-## Default Ruleset
+## Default ruleset
 The default ruleset (```rulesets/default.json```) enables the following rules:
 
 All languages:
-* binaries-not-present
-* contributing-file-exists
-* license-detectable-by-licensee
-* license-file-exists
-* readme-file-exists
-* readme-references-license
-* source-license-headers-exist
-* test-directory-exists
+* (binaries-not-present)[#binaries-not-present]
+* (contributing-file-exists)[#contributing-file-exists]
+* (license-detectable-by-licensee)[#license-detectable-by-licensee]
+* (license-file-exists)[#license-file-exists]
+* (readme-file-exists)[#readme-file-exists]
+* (readme-references-license)[#readme-references-license]
+* (source-license-headers-exist)[#source-license-headers-exist]
+* (test-directory-exists)[#test-directory-exists]
 
-## Configuring Rules
+## Configuring rules
 
 ## Rules
 ### binaries-not-present
