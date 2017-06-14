@@ -42,6 +42,46 @@ All languages:
 * [test-directory-exists](#test-directory-exists)
 
 ## Configuring rules
+Currently you need to create a new ruleset to add, remove, or configure rules. We'll be adding the ability to inherit from an existing ruleset to simplify this in the future.
+
+### Overriding the ruleset globally or for a project
+To override the default ruleset copy ```rulesets/default.json``` to ```repolint.json``` in the target directory, any ancenstor directory of the target directory, or your user directory.
+
+### Disabling rules
+To disable a rule change it's value to ```false```, for example:
+```
+{
+  "rules": {
+    "all": {
+      "license-file-exists:file-existence": false
+    }
+  }
+}
+```
+
+### Changing a rule's level
+To change the level when a rule returns a failure change the first argument of the rule to ```error```, ```warning```, or ```info```, for example:
+```
+{
+  "rules": {
+    "all": {
+      "license-detectable-by-licensee": ["info"]
+    }
+  }
+}
+```
+
+### Configuring a rule's options
+To configure a rule's options change the second argument of the rule to an object specifying the rule's options, see [rules](#rules) for details about each rule's options. For example:
+```
+{
+  "rules": {
+    "all": {
+      "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.java"], "lineCount": 2, "patterns": ["Copyright", "All rights reserved", "Licensed under"]}]
+    }
+  }
+}
+```
 
 ## Rules
 ### binaries-not-present
