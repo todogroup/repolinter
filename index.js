@@ -17,7 +17,7 @@ module.exports = function (targetDir) {
 
   let languages = ['all']
   try {
-    const detectedLanguages = linguist.identifyLanguagesSync(targetDir).map(language => language.toLowerCase())
+    const detectedLanguages = Object.getOwnPropertyNames(linguist.identifyLanguagesSync(targetDir)).map(language => language.toLowerCase())
     languages.push(detectedLanguages)
     console.log(`Languages: ${detectedLanguages.join(', ')}`)
   } catch (error) {
