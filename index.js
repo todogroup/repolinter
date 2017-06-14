@@ -18,7 +18,7 @@ module.exports = function (targetDir) {
   let languages = ['all']
   try {
     const detectedLanguages = Object.getOwnPropertyNames(linguist.identifyLanguagesSync(targetDir)).map(language => language.toLowerCase())
-    languages.push(detectedLanguages)
+    languages = languages.concat(detectedLanguages)
     console.log(`Languages: ${detectedLanguages.join(', ')}`)
   } catch (error) {
     console.log(`Languages: Linguist not found in path, only running language-independent rules`)
