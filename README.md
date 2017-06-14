@@ -9,13 +9,14 @@ To quickly get started, checkout this repository and run repolinter against itse
 ```
 git clone https://github.com/todogroup/repolinter
 bin/repolinter.js
-✔ License file exists (LICENSE)
-✔ Readme file exists (README.md)
-✖ Contributing file doesn't exist
-✔ File README.md contains License
-✔ File of type .dll doesn't exist
-✖ Licensee is not installed
-✔ Test directory exists (tests)
+✔ license-file-exists: found (LICENSE)
+✔ readme-file-exists: found (README.md)
+✔ contributing-file-exists: found (CONTRIBUTING)
+✔ readme-references-license: File README.md contains license
+✔ binaries-not-present: Excluded file type doesn't exist (**/*.exe,**/*.dll)
+✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
+✔ test-directory-exists: found (tests)
+✔ source-license-headers-exist: exist
 ```
 
 ## Command line dependencies
@@ -82,6 +83,11 @@ To configure a rule's options change the second argument of the rule to an objec
   }
 }
 ```
+
+### Language-specific rules
+Rules can be configured to only run if the repository contains a specific language. Languages are detected using Linguist which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
+
+
 
 ## Rules
 ### binaries-not-present
