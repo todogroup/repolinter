@@ -1,6 +1,6 @@
 {
   "name": "repolinter",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Lint open source repositories",
   "main": "index.js",
   "bin": {
@@ -10,14 +10,22 @@
     "test": "standard --env mocha && mocha tests/**/*.js",
     "coverage": "nyc npm test"
   },
-  "keywords": ["lint", "linter", "repository", "github", "license", "readme", "open source"],
+  "keywords": [
+    "lint",
+    "linter",
+    "repository",
+    "github",
+    "license",
+    "readme",
+    "open source"
+  ],
   "author": "The TODO Group",
   "license": "Apache-2.0",
   "homepage": "https://github.com/todogroup/repolinter",
-  "bugs":{
+  "bugs": {
     "url": "https://github.com/todogroup/repolinter/issues"
   },
-  "repository":{
+  "repository": {
     "type": "git",
     "url": "https://github.com/todogroup/repolinter.git"
   },
