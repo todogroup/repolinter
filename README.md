@@ -4,11 +4,11 @@ Lint open source repositories for common issues.
 
 ## Examples
 
-To quickly get started, install repolinter and run it in the root of one of your repositories.
+To quickly get started, checkout this repository and run repolinter against itself.
 
 ```
-npm install -g repolinter
-repolinter
+git clone https://github.com/todogroup/repolinter
+bin/repolinter.js
 ✔ license-file-exists: found (LICENSE)
 ✔ readme-file-exists: found (README.md)
 ✔ contributing-file-exists: found (CONTRIBUTING)
