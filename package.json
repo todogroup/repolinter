@@ -36,7 +36,10 @@
     "jsonfile": "^3.0.0",
     "log-symbols": "^1.0.2",
     "matched": "^0.4.4",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "rimraf": "^2.6.1",
+    "simple-git": "^1.73.0",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "mocha": "^3.4.2",
