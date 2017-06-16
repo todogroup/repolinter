@@ -125,6 +125,9 @@ Fails if there isn't a file matching ```README*``` in the root of the target dir
 ### readme-references-license
 Fails if the files matching ```README*``` doesn't match the regular expression ```license```.
 
+### code-of-conduct-file-exists
+Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``` or ```CODE_OF_CONDUCT*``` in the root of the target directory.
+
 ### source-license-headers-exist
 Produces a failure for each file matching ```**/*.js,!node_modules/**``` option if the first 5 lines don't match all the patterns ```copyright```, ```all rights reserved```, and ```licensed under```.
 
