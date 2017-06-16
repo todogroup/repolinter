@@ -10,11 +10,14 @@ describe('rules', () => {
       const fileContents = require('../../rules/file-contents')
       const result = fileContents('.', {
         fs: {
+          findAll () {
+            return ['README.md']
+          },
           getFileContents () {
             return 'foo'
           }
         },
-        file: 'README.md',
+        files: ['README*'],
         content: 'foo'
       })
 
@@ -25,11 +28,14 @@ describe('rules', () => {
       const fileContents = require('../../rules/file-contents')
       const result = fileContents('.', {
         fs: {
+          findAll () {
+            return ['README.md']
+          },
           getFileContents () {
             return 'foo'
           }
         },
-        file: 'README.md',
+        files: ['README*'],
         content: 'bar'
       })
 
@@ -40,6 +46,9 @@ describe('rules', () => {
       const fileContents = require('../../rules/file-contents')
       const result = fileContents('.', {
         fs: {
+          findAll () {
+            return []
+          },
           getFileContents () {
 
           }
