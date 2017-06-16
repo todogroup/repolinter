@@ -1,14 +1,14 @@
 # Repo Linter [![Build Status](https://travis-ci.org/todogroup/repolinter.svg?branch=master)](https://travis-ci.org/todogroup/repolinter)
 
-Given a repository, lint it nodfor quality checks.
+Lint open source repositories for common issues.
 
 ## Examples
 
-To quickly get started, checkout this repository and run repolinter against itself.
+To quickly get started, install repolinter and run it in the root of one of your repositories.
 
 ```
-git clone https://github.com/todogroup/repolinter
-bin/repolinter.js
+npm install -g repolinter
+repolinter
 ✔ license-file-exists: found (LICENSE)
 ✔ readme-file-exists: found (README.md)
 ✔ contributing-file-exists: found (CONTRIBUTING)
