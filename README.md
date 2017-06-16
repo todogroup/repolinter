@@ -100,7 +100,7 @@ Fails if there isn't a file matching ```CONTRIB*``` in the root of the target di
 Fails if none of the directories specified in the ```directories``` option exist.
 
 ### file-contents
-Fails if the content of the file specified in the ```file``` option doesn't match the regular expression specified in the ```content``` option. 
+Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. 
 
 ### file-existence
 Fails if none of the files specified in the ```files``` option exist.
@@ -123,7 +123,7 @@ Fails if there isn't a file matching ```LICENSE*``` or ```COPYING*``` in the roo
 Fails if there isn't a file matching ```README*``` in the root of the target directory.
 
 ### readme-references-license
-Fails if the file ```README.md``` doesn't match the regular expression ```license```.
+Fails if the files matching ```README*``` doesn't match the regular expression ```license```.
 
 ### source-license-headers-exist
 Produces a failure for each file matching ```**/*.js,!node_modules/**``` option if the first 5 lines don't match all the patterns ```copyright```, ```all rights reserved```, and ```licensed under```.
