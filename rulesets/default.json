@@ -4,6 +4,7 @@
       "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"]}],
       "readme-file-exists:file-existence": ["error", {"files": ["README*"]}],
       "contributing-file-exists:file-existence": ["error", {"files": ["CONTRIB*"]}],
+      "code-of-conduct-file-exists:file-existence": ["error", {"files": ["CODEOFCONDUCT*", "CODE-OF-CONDUCT*", "CODE_OF_CONDUCT"]}],
       "readme-references-license:file-contents": ["error", {"file": "README.md", "content": "license"}],
       "binaries-not-present:file-type-exclusion": ["error", {"type": ["**/*.exe", "**/*.dll"]}],
       "license-detectable-by-licensee": ["error"],
