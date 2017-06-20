@@ -1,8 +1,8 @@
-# Repo Linter [![Build Status](https://travis-ci.org/todogroup/repolinter.svg?branch=master)](https://travis-ci.org/todogroup/repolinter)
+# ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) [![Build Status](https://travis-ci.org/todogroup/repolinter.svg?branch=master)](https://travis-ci.org/todogroup/repolinter)
 
 Lint open source repositories for common issues.
 
-## Useage
+## Usage
 
 To run against a directory, add it to the command line `bin/repolinter.js /my/code/dir`.
 
