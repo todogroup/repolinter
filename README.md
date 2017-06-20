@@ -2,6 +2,12 @@
 
 Lint open source repositories for common issues.
 
+## Useage
+
+To run against a directory, add it to the command line `bin/repolinter.js /my/code/dir`.
+
+To run against a git repository, use the `--git` option: `bin/repolinter.js --git https://my.git.code/awesome`.
+
 ## Examples
 
 To quickly get started, checkout this repository and run repolinter against itself.
