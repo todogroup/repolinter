@@ -1,3 +1,10 @@
 language: node_js
 node_js:
   - "node"
+  - "7"
+  - "6"
+before_script:
+  - bundle install
+script:
+  - npm test
+  - ./bin/repolinter.js
