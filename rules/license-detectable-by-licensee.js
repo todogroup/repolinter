@@ -7,7 +7,7 @@ const spawnSync = require('child_process').spawnSync
 module.exports = function (targetDir, options) {
   const expected = '\nLicense: ([^\n]*)'
 
-  const licenseeOutput = spawnSync(isWindows ? 'licensee.bat' : 'licensee', [targetDir]).stdout
+  const licenseeOutput = spawnSync(isWindows() ? 'licensee.bat' : 'licensee', [targetDir]).stdout
 
   if (licenseeOutput == null) {
     return {
