@@ -10,8 +10,9 @@ module.exports = function (targetDir, options) {
 
   files.forEach(file => {
     const content = fs.getFileContents(file)
+    const regexp = new RegExp(options.content, options.flags)
 
-    if (content && content.toString().match(options.content)) {
+    if (content && content.toString().search(regexp) !== -1) {
       passes.push(`File ${file} contains ${options.content}`)
     } else {
       failures.push(`File ${file} doesn't contain ${options.content}`)
