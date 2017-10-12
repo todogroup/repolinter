@@ -27,6 +27,11 @@ bin/repolinter.js
 
 ## Command line dependencies
 
+The npm log-symbols package must be installed to run repolinter.
+```
+npm install log-symbols
+```
+
 Repo Linter will use https://github.com/benbalter/licensee and https://github.com/github/linguist when installed.
 
 Licensee will lead to a test being done to see if the project's licensee is identified by Licensee.
