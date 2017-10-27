@@ -1,1 +1,1 @@
-@node %~dpn0.js
+@node %~dpn0.js %*

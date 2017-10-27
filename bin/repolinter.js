@@ -11,9 +11,12 @@ if (process.argv[2] === '--git') {
   const rimraf = require('rimraf')
   const tmpDir = path.resolve(process.cwd(), 'tmp', uuidv4())
 
-  git.clone(process.argv[3], tmpDir)
-  repolinter(tmpDir)
-  rimraf(tmpDir, function () {})
+  git.clone(process.argv[3], tmpDir, (error) => {
+    if (!error) {
+      repolinter(tmpDir)
+    }
+    rimraf(tmpDir, function () {})
+  })
 } else {
   repolinter(path.resolve(process.cwd(), process.argv[2] || '.'))
 }
