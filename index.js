@@ -11,6 +11,7 @@ module.exports = function (targetDir) {
   console.log(`Target directory: ${targetDir}`)
 
   let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
+  rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
   rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
 
   console.log(`Ruleset: ${rulesetPath}`)

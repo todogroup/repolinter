@@ -57,7 +57,7 @@ All languages:
 Currently you need to create a new ruleset to add, remove, or configure rules. We'll be adding the ability to inherit from an existing ruleset to simplify this in the future.
 
 ### Overriding the ruleset globally or for a project
-To override the default ruleset copy ```rulesets/default.json``` to ```repolint.json``` in the target directory, any ancenstor directory of the target directory, or your user directory.
+To override the default ruleset copy ```rulesets/default.json``` to ```repolint.json``` (or ```repolinter.json```) in the target directory, any ancenstor directory of the target directory, or your user directory.
 
 ### Disabling rules
 To disable a rule change it's value to ```false```, for example:
