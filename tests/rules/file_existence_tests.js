@@ -4,7 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 
-describe('rules', () => {
+describe('rule', () => {
   describe('files_existence', () => {
     it('returns passes if requested file exists', () => {
       const fileExistence = require('../../rules/file-existence')
