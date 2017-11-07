@@ -2,9 +2,18 @@
   "rules": {
     "all": {
       "dir-is-managed-with-git:git-working-tree": ["warning", {"allowSubDir": false}],
-      "git-log-contains-no-blacklisted-words:git-grep-log": ["error", {"blacklist": ["secret", "password"]}],
-      "git-commits-contain-no-blacklisted-words:git-grep-commits": ["error", {"blacklist": ["secret", "password"]}],
-      "git-tree-contains-no-blacklisted-files:git-list-tree": ["error", {"blacklist": ["secret", "password"]}]
+      "git-log-contains-no-blacklisted-words:git-grep-log": ["error", {
+        "blacklist": ["secret", "password"],
+        "ignoreCase": true
+      }],
+      "git-commits-contain-no-blacklisted-words:git-grep-commits": ["error", {
+        "blacklist": ["secret", "password"],
+        "ignoreCase": true
+      }],
+      "git-tree-contains-no-blacklisted-files:git-list-tree": ["error", {
+        "blacklist": ["secret", "password"],
+        "ignoreCase": true
+      }]
     }
   }
 }

@@ -3,14 +3,14 @@
 
 const spawnSync = require('child_process').spawnSync
 
-function grepCommits (targetDir, patterns) {
+function grepCommits (targetDir, patterns, ignoreCase) {
   let result = ''
 
   const pattern = '(' + patterns.join('|') + ')'
   const args = ['-C', targetDir, 'rev-list', '--all']
   const revisions = spawnSync('git', args).stdout.toString()
   revisions.split('\n').forEach((commit) => {
-    const args = ['-C', targetDir, 'grep', '-E', '-i', pattern, commit]
+    const args = ['-C', targetDir, 'grep', '-E', ignoreCase ? '-i' : '', pattern, commit]
     result += spawnSync('git', args).stdout.toString()
   })
 
@@ -18,7 +18,7 @@ function grepCommits (targetDir, patterns) {
 }
 
 module.exports = function (targetDir, options) {
-  const result = grepCommits(targetDir, options.blacklist)
+  const result = grepCommits(targetDir, options.blacklist, options.ignoreCase)
 
   if (result) {
     return {
