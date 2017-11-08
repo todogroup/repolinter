@@ -13,10 +13,10 @@ if (process.argv[2] === '--git') {
 
   git.clone(process.argv[3], tmpDir, (error) => {
     if (!error) {
-      repolinter(tmpDir)
+      repolinter.lint(tmpDir)
     }
     rimraf(tmpDir, function () {})
   })
 } else {
-  repolinter(path.resolve(process.cwd(), process.argv[2] || '.'))
+  repolinter.lint(path.resolve(process.cwd(), process.argv[2] || '.'))
 }

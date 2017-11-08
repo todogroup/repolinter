@@ -40,6 +40,11 @@ Linguist allows per-language tests to be performed.
 
 Run `bundle install` to get Lincensee and Linguist support.
 
+## Custom Result Formatter
+By default, results will be shown as in the example format above.
+
+When using `repolinter` in another project, you can set `resultFormatter` to a custom formatter. Any custom formatter needs to have a `format` function that takes three arguments `(rule, message, level)`, and returns a string.
+
 ## Default ruleset
 The default ruleset (```rulesets/default.json```) enables the following rules:
 
