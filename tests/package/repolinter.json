@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "all": {
+      "readme-file-exists:file-existence": ["error", {"files": ["README*"]}]
+    }
+  }
+}

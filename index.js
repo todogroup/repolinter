@@ -1,13 +1,16 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 
-const logSymbols = require('log-symbols')
 const linguist = require('./lib/linguist')
 const jsonfile = require('jsonfile')
 const path = require('path')
 const findConfig = require('find-config')
 
-module.exports = function (targetDir) {
+module.exports.defaultFormatter = require('./formatters/symbol_formatter')
+module.exports.jsonFormatter = require('./formatters/json_formatter')
+module.exports.resultFormatter = exports.defaultFormatter
+
+module.exports.lint = function (targetDir) {
   console.log(`Target directory: ${targetDir}`)
 
   let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
@@ -67,7 +70,11 @@ module.exports = function (targetDir) {
   }
 
   function renderResult (rule, message, level) {
-    console.log(`${logSymbols[level]} ${rule.id}: ${message}`)
+    console.log(formatResult(rule, message, level))
+  }
+
+  function formatResult (rule, message, level) {
+    return exports.resultFormatter.format(rule, message, level)
   }
 
   function parseRule (rule) {
