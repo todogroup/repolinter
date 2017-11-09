@@ -4,7 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 
-describe('rules', () => {
+describe('rule', () => {
   describe('files_contents', () => {
     it('returns passes if requested file contents exists', () => {
       const fileContents = require('../../rules/file-contents')

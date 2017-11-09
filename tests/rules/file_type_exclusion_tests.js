@@ -4,7 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 
-describe('rules', () => {
+describe('rule', () => {
   describe('file_type_exclusion', () => {
     it('returns passes if requested file type doesn\'t exist', () => {
       const fileTypeExclusion = require('../../rules/file-type-exclusion')

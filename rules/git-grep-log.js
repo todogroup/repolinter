@@ -3,15 +3,18 @@
 
 const spawnSync = require('child_process').spawnSync
 
-function grepLog (targetDir, patterns) {
-  const args = ['-C', targetDir, 'log', '--all', '--format=full', '-E', '-i']
+function grepLog (targetDir, patterns, ignoreCase) {
+  let args = ['-C', targetDir, 'log', '--all', '--format=full', '-E']
     .concat(patterns.map(pattern => `--grep=${pattern}`))
+  if (ignoreCase) {
+    args.push('-i')
+  }
   const log = spawnSync('git', args).stdout.toString()
   return log
 }
 
 module.exports = function (targetDir, options) {
-  const result = grepLog(targetDir, options.blacklist)
+  const result = grepLog(targetDir, options.blacklist, options.ignoreCase)
 
   if (result) {
     return {

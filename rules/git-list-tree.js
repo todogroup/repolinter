@@ -3,10 +3,10 @@
 
 const spawnSync = require('child_process').spawnSync
 
-function listFiles (targetDir, patterns) {
+function listFiles (targetDir, patterns, ignoreCase) {
   let result = []
 
-  const pattern = '(' + patterns.join('|') + ')'
+  const pattern = new RegExp('(' + patterns.join('|') + ')', ignoreCase ? 'i' : '')
   const args = ['-C', targetDir, 'rev-list', '--all']
   const revisions = spawnSync('git', args).stdout.toString()
   revisions.split('\n').forEach((commit) => {
@@ -23,7 +23,7 @@ function listFiles (targetDir, patterns) {
 }
 
 module.exports = function (targetDir, options) {
-  const result = listFiles(targetDir, options.blacklist)
+  const result = listFiles(targetDir, options.blacklist, options.ignoreCase)
 
   if (result.length > 0) {
     return {
