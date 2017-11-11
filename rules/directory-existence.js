@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0.
 
 const fileExistence = require('./file-existence')
-module.exports = function (targetDir, options) {
-  options.files = options.directories
-  return fileExistence(targetDir, options)
+module.exports = function (targetDir, rule) {
+  rule.options.files = rule.options.directories
+  return fileExistence(targetDir, rule)
 }

@@ -3,29 +3,28 @@
 
 const isWindows = require('is-windows')
 const spawnSync = require('child_process').spawnSync
+const Result = require('../lib/result')
 
-module.exports = function (targetDir, options) {
+module.exports = function (targetDir, rule) {
   const expected = /License: ([^\n]+)/
 
   const licenseeOutput = spawnSync(isWindows() ? 'licensee.bat' : 'licensee', [targetDir]).stdout
 
+  let result = new Result(rule, '', targetDir, false)
   if (licenseeOutput == null) {
-    return {
-      failures: [`Licensee is not installed`]
-    }
+    result.message = 'Licensee is not installed'
+    return [result]
   }
 
-  const results = licenseeOutput.toString().match(expected)
+  const license = licenseeOutput.toString().match(expected)
+  result.passed = license != null
 
-  if (results != null) {
+  if (result.passed) {
     // License: Apache License 2.0
-    const identified = results[1]
-    return {
-      passes: [`Licensee identified the license for project: ${identified}`]
-    }
+    const identified = license[1]
+    result.message = `Licensee identified the license for project: ${identified}`
   } else {
-    return {
-      failures: ['Licensee did not identify a license for project']
-    }
+    result.message = 'Licensee did not identify a license for project'
   }
+  return [result]
 }

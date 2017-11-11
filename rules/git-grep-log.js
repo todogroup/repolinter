@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.
 
 const spawnSync = require('child_process').spawnSync
+const Result = require('../lib/result')
 
 function grepLog (targetDir, patterns, ignoreCase) {
   let args = ['-C', targetDir, 'log', '--all', '--format=full', '-E']
@@ -10,19 +11,38 @@ function grepLog (targetDir, patterns, ignoreCase) {
     args.push('-i')
   }
   const log = spawnSync('git', args).stdout.toString()
-  return log
+  return parseLog(log)
 }
 
-module.exports = function (targetDir, options) {
-  const result = grepLog(targetDir, options.blacklist, options.ignoreCase)
+function parseLog (log) {
+  const logEntries = log.split('\ncommit ').filter(x => !!x)
 
-  if (result) {
-    return {
-      failures: [`The following commit messages contain blacklisted words:\n${result}`]
-    }
-  }
+  return logEntries.map(entry => {
+    return extractInfo(entry)
+  })
+}
 
+function extractInfo (commit) {
+  const [hash, , , ...message] = commit.split('\n')
   return {
-    passes: ['No blacklisted words found in any commit messages.']
+    hash: hash.split(' ')[1],
+    message: message.join('\n')
   }
+}
+
+module.exports = function (targetDir, rule) {
+  const options = rule.options
+  const commits = grepLog(targetDir, options.blacklist, options.ignoreCase)
+
+  let results = commits.map(commit => {
+    const message = `Commit ${commit.hash} contains blacklisted words:\n${commit.message}`
+
+    return new Result(rule, message, commit.hash, false)
+  })
+
+  if (results.length === 0) {
+    results.push(new Result(rule, 'No blacklisted words found in any commit messages.', '', true))
+  }
+
+  return results
 }

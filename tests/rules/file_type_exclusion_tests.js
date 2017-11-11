@@ -3,34 +3,59 @@
 
 const chai = require('chai')
 const expect = chai.expect
+const Result = require('../../lib/result')
 
 describe('rule', () => {
   describe('file_type_exclusion', () => {
-    it('returns passes if requested file type doesn\'t exist', () => {
-      const fileTypeExclusion = require('../../rules/file-type-exclusion')
-      const result = fileTypeExclusion('.', {
-        fs: {
-          findAll () {
-          }
-        },
-        type: ['*.dll']
-      })
+    const fileTypeExclusion = require('../../rules/file-type-exclusion')
 
-      expect(result).to.deep.equal({ passes: ['Excluded file type doesn\'t exist (*.dll)'] })
+    it('returns passed result if requested file type doesn\'t exist', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAll () {
+              return []
+            }
+          },
+          type: ['*.dll']
+        }
+      }
+
+      const expected = [
+        new Result(
+            rule,
+            'Excluded file type doesn\'t exist (*.dll)',
+            '.',
+            true
+          )
+      ]
+      const actual = fileTypeExclusion('.', rule)
+
+      expect(actual).to.deep.equal(expected)
     })
 
-    it('returns failures if requested file type exists', () => {
-      const fileTypeExclusion = require('../../rules/file-type-exclusion')
-      const result = fileTypeExclusion('.', {
-        fs: {
-          findAll () {
-            return 'foo.dll'
-          }
-        },
-        type: ['*.dll']
-      })
+    it('returns failed result if requested file type exists', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAll () {
+              return ['foo.dll']
+            }
+          },
+          type: ['*.dll']
+        }
+      }
+      const expected = [
+        new Result(
+            rule,
+            'Excluded file type exists (foo.dll)',
+            'foo.dll',
+            false
+          )
+      ]
+      const actual = fileTypeExclusion('.', rule)
 
-      expect(result).to.deep.equal({ failures: ['Excluded file type exists (foo.dll)'] })
+      expect(actual).to.deep.equal(expected)
     })
   })
 })

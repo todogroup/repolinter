@@ -5,9 +5,11 @@ const linguist = require('./lib/linguist')
 const jsonfile = require('jsonfile')
 const path = require('path')
 const findConfig = require('find-config')
+const Result = require('./lib/result')
 
 module.exports.defaultFormatter = require('./formatters/symbol_formatter')
 module.exports.jsonFormatter = require('./formatters/json_formatter')
+
 module.exports.resultFormatter = exports.defaultFormatter
 
 module.exports.lint = function (targetDir) {
@@ -41,19 +43,17 @@ module.exports.lint = function (targetDir) {
         rule.module = ruleIdParts.length === 2 ? ruleIdParts[1] : ruleIdParts[0]
         if (rule.enabled) {
           // TODO: Do something more secure
-          let result = {}
+          let results = []
           try {
             const ruleFunction = require(path.join(__dirname, 'rules', rule.module))
-            result = ruleFunction(targetDir, rule.options)
-            // TODO: Track warnings and errors separately
-            if (result.failures && result.failures.length > 0) {
-              anyFailures = true
-            }
+            results = ruleFunction(targetDir, rule)
+
+            anyFailures = results.some(result => !result.passed && result.level === 'error')
           } catch (error) {
-            result.failures = [error.message]
+            results.push(new Result(rule, error.message, targetDir, false))
           }
-          renderResults(rule, result.failures, rule.level)
-          renderResults(rule, result.passes, 'success')
+          renderResults(results.filter(result => !result.passed))
+          renderResults(results.filter(result => result.passed))
         }
       })
     }
@@ -63,18 +63,20 @@ module.exports.lint = function (targetDir) {
     process.exitCode = 1
   }
 
-  function renderResults (rule, results, success) {
-    if (results) {
-      results.forEach(result => renderResult(rule, result, success))
-    }
+  function renderResults (results) {
+    formatResults(results).filter(x => !!x).forEach(renderResult)
   }
 
-  function renderResult (rule, message, level) {
-    console.log(formatResult(rule, message, level))
+  function formatResults (results) {
+    return results.map(formatResult)
   }
 
-  function formatResult (rule, message, level) {
-    return exports.resultFormatter.format(rule, message, level)
+  function renderResult (result) {
+    console.log(result)
+  }
+
+  function formatResult (result) {
+    return exports.resultFormatter.format(result)
   }
 
   function parseRule (rule) {

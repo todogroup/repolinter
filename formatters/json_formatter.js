@@ -2,14 +2,8 @@
 // Licensed under the Apache License, Version 2.0.
 
 class JsonFormatter {
-  format (rule, message, level) {
-    let output = {
-      rule: rule.id,
-      message: message,
-      level: level
-    }
-
-    return JSON.stringify(output)
+  format (result) {
+    return JSON.stringify(result)
   }
 }
 
