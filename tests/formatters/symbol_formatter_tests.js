@@ -4,18 +4,26 @@
 const chai = require('chai')
 const expect = chai.expect
 const logSymbols = require('log-symbols')
+const Result = require('../../lib/result')
 
 describe('formatters', () => {
   describe('symbol_formatter', () => {
     it('returns a simple string with the correct log symbol', () => {
       const symbolFormatter = require('../../formatters/symbol_formatter')
-      const rule = {id: 'some-rule'}
 
-      const successResult = symbolFormatter.format(rule, 'a message', 'success')
+      let result = new Result(
+        { id: 'some-rule', level: 'success' },
+        'a message',
+        'target',
+        true
+      )
+      const successResult = symbolFormatter.format(result)
       const successSymbol = logSymbols['success']
       expect(successResult).to.deep.equal(`${successSymbol} some-rule: a message`)
 
-      const errorResult = symbolFormatter.format(rule, 'a message', 'error')
+      result.rule.level = 'error'
+      result.passed = false
+      const errorResult = symbolFormatter.format(result)
       const errorSymbol = logSymbols['error']
       expect(errorResult).to.deep.equal(`${errorSymbol} some-rule: a message`)
     })

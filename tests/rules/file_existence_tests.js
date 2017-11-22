@@ -3,36 +3,63 @@
 
 const chai = require('chai')
 const expect = chai.expect
+const Result = require('../../lib/result')
 
 describe('rule', () => {
   describe('files_existence', () => {
-    it('returns passes if requested file exists', () => {
-      const fileExistence = require('../../rules/file-existence')
-      const result = fileExistence('.', {
-        fs: {
-          findFirst () {
-            return 'foo'
-          }
-        },
-        files: ['LICENSE*'],
-        name: 'License file'
-      })
+    const fileExistence = require('../../rules/file-existence')
 
-      expect(result).to.deep.equal({ passes: ['found (foo)'] })
+    it('returns a passed result if requested file exists', () => {
+      const rule = {
+        options: {
+          fs: {
+            findFirst () {
+              return 'LICENSE.md'
+            }
+          },
+          files: ['LICENSE*'],
+          name: 'License file'
+        }
+      }
+
+      const expected = [
+        new Result(
+            rule,
+            'found (LICENSE.md)',
+            'LICENSE.md',
+            true
+          )
+      ]
+
+      const actual = fileExistence('.', rule)
+
+      expect(actual).to.deep.equal(expected)
     })
 
-    it('returns failures if requested file doesn\'t exist', () => {
-      const fileExistence = require('../../rules/file-existence')
-      const result = fileExistence('.', {
-        fs: {
-          findFirst () {
-          }
-        },
-        files: ['LICENSE*'],
-        name: 'License file'
-      })
+    it('returns a failure result if requested file doesn\'t exist', () => {
+      const rule = {
+        options: {
+          fs: {
+            findFirst () {
+            }
+          },
+          files: ['LICENSE*'],
+          name: 'License file'
+        }
+      }
 
-      expect(result).to.deep.equal({ failures: ['not found'] })
+      const expected = [
+        new Result(
+            rule,
+            'not found',
+            '.',
+            false
+          )
+      ]
+
+      const actual = fileExistence('.', rule)
+
+      expect(actual).to.deep.equal(expected)
     })
   })
 })

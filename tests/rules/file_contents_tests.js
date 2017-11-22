@@ -3,61 +3,90 @@
 
 const chai = require('chai')
 const expect = chai.expect
+const Result = require('../../lib/result')
 
 describe('rule', () => {
   describe('files_contents', () => {
-    it('returns passes if requested file contents exists', () => {
-      const fileContents = require('../../rules/file-contents')
-      const result = fileContents('.', {
-        fs: {
-          findAll () {
-            return ['README.md']
-          },
-          getFileContents () {
-            return 'foo'
-          }
-        },
-        files: ['README*'],
-        content: 'foo'
-      })
+    const fileContents = require('../../rules/file-contents')
 
-      expect(result).to.deep.equal({ passes: ['File README.md contains foo'] })
+    it('returns passes if requested file contents exists', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAll () {
+              return ['README.md']
+            },
+            getFileContents () {
+              return 'foo'
+            }
+          },
+          files: ['README*'],
+          content: 'foo'
+        }
+      }
+
+      const expected = [
+        new Result(
+            rule,
+            'File README.md contains foo',
+            'README.md',
+            true
+          )
+      ]
+
+      const actual = fileContents('.', rule)
+      expect(actual).to.deep.equal(expected)
     })
 
     it('returns fails if requested file contents does not exist', () => {
-      const fileContents = require('../../rules/file-contents')
-      const result = fileContents('.', {
-        fs: {
-          findAll () {
-            return ['README.md']
+      const rule = {
+        options: {
+          fs: {
+            findAll () {
+              return ['README.md']
+            },
+            getFileContents () {
+              return 'foo'
+            }
           },
-          getFileContents () {
-            return 'foo'
-          }
-        },
-        files: ['README*'],
-        content: 'bar'
-      })
+          files: ['README*'],
+          content: 'bar'
+        }
+      }
 
-      expect(result).to.deep.equal({ failures: ['File README.md doesn\'t contain bar'] })
+      const expected = [
+        new Result(
+            rule,
+            'File README.md doesn\'t contain bar',
+            'README.md',
+            false
+          )
+      ]
+
+      const actual = fileContents('.', rule)
+
+      expect(actual).to.deep.equal(expected)
     })
 
     it('returns nothing if requested file does not exist', () => {
-      const fileContents = require('../../rules/file-contents')
-      const result = fileContents('.', {
-        fs: {
-          findAll () {
-            return []
+      const rule = {
+        options: {
+          fs: {
+            findAll () {
+              return []
+            },
+            getFileContents () {
+
+            }
           },
-          getFileContents () {
+          file: 'README.md',
+          content: 'foo'
+        }
+      }
 
-          }
-        },
-        file: 'README.md',
-        content: 'foo'
-      })
-
-      expect(result).to.deep.equal({})
+      const actual = fileContents('.', rule)
+      const expected = []
+      expect(actual).to.deep.equal(expected)
     })
   })
 })

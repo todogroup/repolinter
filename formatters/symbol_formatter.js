@@ -4,8 +4,8 @@
 const logSymbols = require('log-symbols')
 
 class SymbolFormatter {
-  format (rule, message, level) {
-    return `${logSymbols[level]} ${rule.id}: ${message}`
+  format (result) {
+    return `${logSymbols[result.getStatus()]} ${result.rule.id}: ${result.message}`
   }
 }
 

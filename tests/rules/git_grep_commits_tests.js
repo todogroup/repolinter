@@ -3,6 +3,7 @@
 
 const chai = require('chai')
 const expect = chai.expect
+const Result = require('../../lib/result')
 
 chai.use(require('chai-string'))
 
@@ -15,26 +16,38 @@ describe('rule', () => {
     const DIFF_WRONG_CASE = 'COPYRIGHT 2017 TODO GROUP\\. ALL RIGHTS RESERVED\\.'
 
     it('passes if the blacklist pattern does not match any commit', () => {
-      const result = gitGrepCommits('.', {
-        blacklist: [DIFF_WRONG_CASE],
-        ignoreCase: false
-      })
+      const rule = {
+        options: {
+          blacklist: [DIFF_WRONG_CASE],
+          ignoreCase: false
+        }
+      }
+      const expected = [
+        new Result(
+            rule,
+            'No blacklisted words found in any commits.',
+            '',
+            true
+          )
+      ]
+      const actual = gitGrepCommits('.', rule)
 
-      expect(result).to.deep.equal({
-        passes: ['No blacklisted words found in any commits.']
-      })
+      expect(actual).to.deep.equal(expected)
     })
 
     it('fails if the blacklist pattern matches a commit', () => {
-      const result = gitGrepCommits('.', {
-        blacklist: [DIFF_WRONG_CASE],
-        ignoreCase: true
-      })
+      const rule = {
+        options: {
+          blacklist: [DIFF_CORRECT_CASE],
+          ignoreCase: true
+        }
+      }
 
-      expect(result).to.have.property('failures')
-      expect(result.failures.length).to.equal(1)
-      expect(result.failures[0]).to.startWith('The following commits contain blacklisted words:')
-      expect(result.failures[0]).to.match(new RegExp(DIFF_CORRECT_CASE))
+      const actual = gitGrepCommits('.', rule)
+      expect(actual[0].message).to.match(new RegExp(/Commit \w{40} contains blacklisted words:\n/))
+      expect(actual[0].message).to.match(new RegExp(DIFF_CORRECT_CASE))
+      expect(actual[0].extra[0].text).to.match(new RegExp(DIFF_CORRECT_CASE))
+      expect(actual[0].passed).to.equal(false)
     })
   })
 })
