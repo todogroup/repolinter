@@ -4,11 +4,11 @@
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 
-module.exports = function (targetDir, rule) {
+module.exports = function (fileSystem, rule) {
   const options = rule.options
-  const args = ['-C', targetDir, 'rev-parse', '--show-prefix']
+  const args = ['-C', fileSystem.targetDir, 'rev-parse', '--show-prefix']
   const gitResult = spawnSync('git', args)
-  let result = new Result(rule, '', targetDir)
+  let result = new Result(rule, '', fileSystem.targetDir)
   if (gitResult.status === 0) {
     const prefix = gitResult.stdout.toString().trim()
     if (!prefix) {

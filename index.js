@@ -6,20 +6,27 @@ const jsonfile = require('jsonfile')
 const path = require('path')
 const findConfig = require('find-config')
 const Result = require('./lib/result')
+const FileSystem = require('./lib/file_system')
+const fileSystem = new FileSystem()
 
 module.exports.defaultFormatter = require('./formatters/symbol_formatter')
 module.exports.jsonFormatter = require('./formatters/json_formatter')
 
 module.exports.resultFormatter = exports.defaultFormatter
 
-module.exports.lint = function (targetDir) {
+module.exports.lint = function (targetDir, filterPaths = []) {
+  fileSystem.targetDir = targetDir
   console.log(`Target directory: ${targetDir}`)
+  if (filterPaths.length > 0) {
+    console.log(`Paths to include in checks:\n\t${filterPaths.join('\n\t')}`)
+    fileSystem.filterPaths = filterPaths
+  }
 
   let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
   rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
   rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
 
-  console.log(`Ruleset: ${rulesetPath}`)
+  console.log(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
 
   let languages = ['all']
   try {
@@ -46,7 +53,7 @@ module.exports.lint = function (targetDir) {
           let results = []
           try {
             const ruleFunction = require(path.join(__dirname, 'rules', rule.module))
-            results = ruleFunction(targetDir, rule)
+            results = ruleFunction(fileSystem, rule)
 
             anyFailures = results.some(result => !result.passed && result.level === 'error')
           } catch (error) {
@@ -79,20 +86,24 @@ module.exports.lint = function (targetDir) {
     return exports.resultFormatter.format(result)
   }
 
-  function parseRule (rule) {
-    const result = {}
+  function parseRule (configItem) {
+    const rule = {}
 
-    if (Array.isArray(rule) && rule.length > 0) {
-      result.enabled = parseEnabled(rule[0])
-      result.level = parseLevel(rule[0])
-      result.options = rule.length > 1 ? rule[1] : {}
-    } else if (typeof rule === 'boolean' || typeof rule === 'string') {
-      result.enabled = parseEnabled(rule)
-      result.level = parseLevel(rule)
-      result.options = {}
+    if (Array.isArray(configItem) && configItem.length > 0) {
+      rule.enabled = parseEnabled(configItem[0])
+      rule.level = parseLevel(configItem[0])
+      rule.options = configItem.length > 1 ? configItem[1] : {}
+    } else if (typeof configItem === 'boolean' || typeof configItem === 'string') {
+      rule.enabled = parseEnabled(configItem)
+      rule.level = parseLevel(configItem)
+      rule.options = {}
     }
 
-    return result
+    if (!rule.options.fs) {
+      rule.options.fs = fileSystem
+    }
+
+    return rule
   }
 
   function parseEnabled (value) {

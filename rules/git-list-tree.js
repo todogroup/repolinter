@@ -4,29 +4,32 @@
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 
-function listFiles (targetDir, patterns, ignoreCase) {
+function listFiles (fileSystem, patterns, ignoreCase) {
   let files = []
 
   const pattern = new RegExp('(' + patterns.join('|') + ')', ignoreCase ? 'i' : '')
-  const args = ['-C', targetDir, 'rev-list', '--all']
+  const args = ['-C', fileSystem.targetDir, 'rev-list', '--all']
   const revisions = spawnSync('git', args).stdout.toString()
   revisions.split('\n').forEach((commit) => {
-    const args = ['-C', targetDir, 'ls-tree', '-r', '--name-only', commit]
+    const args = ['-C', fileSystem.targetDir, 'ls-tree', '-r', '--name-only', commit]
     const list = spawnSync('git', args).stdout.toString()
-    list.split('\n').filter(path => path.match(pattern)).forEach(path => {
-      files.push({ 'commit': commit, 'path': path })
-    })
+    list.split('\n')
+      .filter(path => path.match(pattern))
+      .filter(path => fileSystem.shouldInclude(path))
+      .forEach(path => {
+        files.push({ 'commit': commit, 'path': path })
+      })
   })
 
   return files
 }
 
-module.exports = function (targetDir, rule) {
+module.exports = function (fileSystem, rule) {
   const options = rule.options
-  const files = listFiles(targetDir, options.blacklist, options.ignoreCase)
+  const files = listFiles(fileSystem, options.blacklist, options.ignoreCase)
 
   let results = files.map(file => {
-    const message = `Commit ${file.commit} contains blacklisted paths:\n${file.path}`
+    const message = `Commit ${file.commit.substr(0, 7)} contains blacklisted paths:\n${file.path}`
 
     return new Result(rule, message, file.commit, false)
   })

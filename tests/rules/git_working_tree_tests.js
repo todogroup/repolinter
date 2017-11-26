@@ -3,6 +3,7 @@
 
 const chai = require('chai')
 const expect = chai.expect
+const FileSystem = require('../../lib/file_system')
 
 describe('rule', () => {
   describe('git_working_tree', function () {
@@ -11,7 +12,7 @@ describe('rule', () => {
     const gitWorkingTree = require('../../rules/git-working-tree')
 
     it('passes if the specified directory is managed with Git', () => {
-      const result = gitWorkingTree('.', {
+      const result = gitWorkingTree(new FileSystem(), {
         options: { allowSubDir: false }
       })
 
@@ -19,7 +20,7 @@ describe('rule', () => {
     })
 
     it('passes if the specified sub-directory is managed in Git and sub-directories are allowed', () => {
-      const result = gitWorkingTree('tests', {
+      const result = gitWorkingTree(new FileSystem('tests'), {
         options: { allowSubDir: true }
       })
 
@@ -27,7 +28,7 @@ describe('rule', () => {
     })
 
     it('fails if the specified sub-directory is managed in Git but sub-directories are not allowed', () => {
-      const result = gitWorkingTree('tests', {
+      const result = gitWorkingTree(new FileSystem('tests'), {
         options: { allowSubDir: false }
       })
 
@@ -35,7 +36,7 @@ describe('rule', () => {
     })
 
     it('fails if the specified directory is not managed in Git', () => {
-      const result = gitWorkingTree('/', {
+      const result = gitWorkingTree(new FileSystem('/'), {
         options: { allowSubDir: false }
       })
 

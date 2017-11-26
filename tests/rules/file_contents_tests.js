@@ -18,7 +18,8 @@ describe('rule', () => {
             },
             getFileContents () {
               return 'foo'
-            }
+            },
+            targetDir: '.'
           },
           files: ['README*'],
           content: 'foo'
@@ -34,7 +35,7 @@ describe('rule', () => {
           )
       ]
 
-      const actual = fileContents('.', rule)
+      const actual = fileContents(null, rule)
       expect(actual).to.deep.equal(expected)
     })
 
@@ -47,7 +48,8 @@ describe('rule', () => {
             },
             getFileContents () {
               return 'foo'
-            }
+            },
+            targetDir: '.'
           },
           files: ['README*'],
           content: 'bar'
@@ -63,7 +65,7 @@ describe('rule', () => {
           )
       ]
 
-      const actual = fileContents('.', rule)
+      const actual = fileContents(null, rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -77,14 +79,15 @@ describe('rule', () => {
             },
             getFileContents () {
 
-            }
+            },
+            targetDir: '.'
           },
           file: 'README.md',
           content: 'foo'
         }
       }
 
-      const actual = fileContents('.', rule)
+      const actual = fileContents(null, rule)
       const expected = []
       expect(actual).to.deep.equal(expected)
     })

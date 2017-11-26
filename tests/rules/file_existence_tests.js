@@ -15,7 +15,8 @@ describe('rule', () => {
           fs: {
             findFirst () {
               return 'LICENSE.md'
-            }
+            },
+            targetDir: '.'
           },
           files: ['LICENSE*'],
           name: 'License file'
@@ -31,7 +32,7 @@ describe('rule', () => {
           )
       ]
 
-      const actual = fileExistence('.', rule)
+      const actual = fileExistence(null, rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -41,7 +42,8 @@ describe('rule', () => {
         options: {
           fs: {
             findFirst () {
-            }
+            },
+            targetDir: '.'
           },
           files: ['LICENSE*'],
           name: 'License file'
@@ -57,7 +59,7 @@ describe('rule', () => {
           )
       ]
 
-      const actual = fileExistence('.', rule)
+      const actual = fileExistence(null, rule)
 
       expect(actual).to.deep.equal(expected)
     })

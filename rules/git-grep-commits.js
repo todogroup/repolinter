@@ -4,11 +4,11 @@
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 
-function grepCommits (targetDir, patterns, ignoreCase) {
+function grepCommits (fileSystem, patterns, ignoreCase) {
   const pattern = '(' + patterns.join('|') + ')'
-  const revisions = grepRevisions(targetDir)
+  const revisions = grepRevisions(fileSystem.targetDir)
   const commits = revisions.map((revision) => {
-    return { hash: revision, files: grepFiles(targetDir, pattern, ignoreCase, revision) }
+    return { hash: revision, files: grepFiles(fileSystem, pattern, ignoreCase, revision) }
   }).filter(commit => commit.files.length > 0)
 
   return commits
@@ -19,24 +19,23 @@ function grepRevisions (targetDir) {
   return spawnSync('git', args).stdout.toString().trim().split('\n')
 }
 
-function grepFiles (targetDir, pattern, ignoreCase, revision) {
-  const args = ['-C', targetDir, 'grep', '-E', ignoreCase ? '-i' : '', pattern, revision]
+function grepFiles (fileSystem, pattern, ignoreCase, revision) {
+  const args = ['-C', fileSystem.targetDir, 'grep', '-E', ignoreCase ? '-i' : '', pattern, revision]
   return spawnSync('git', args).stdout.toString().split('\n').filter(x => !!x).map((entry) => {
     const [path, ...rest] = entry.substring(revision.length + 1).split(':')
     return { path: path, text: rest.join(':') }
-  })
+  }).filter(file => { return fileSystem.shouldInclude(file.path) })
 }
 
-module.exports = function (targetDir, rule) {
+module.exports = function (fileSystem, rule) {
   const options = rule.options
-  const commits = grepCommits(targetDir, options.blacklist, options.ignoreCase)
-
+  const commits = grepCommits(fileSystem, options.blacklist, options.ignoreCase)
   let results = commits.map(commit => {
     const result = new Result(rule, '', commit.hash, false)
     const fileInfo = commit.files.map(file => {
       return `\t${file.path}: ${file.text}`
     }).join('\n')
-    result.message = `Commit ${commit.hash} contains blacklisted words:\n${fileInfo}`
+    result.message = `Commit ${commit.hash.substr(0, 7)} contains blacklisted words:\n${fileInfo}`
     result.extra = commit.files
     return result
   })

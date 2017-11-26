@@ -4,6 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const Result = require('../../lib/result')
+const FileSystem = require('../../lib/file_system')
 
 chai.use(require('chai-string'))
 
@@ -30,7 +31,7 @@ describe('rule', () => {
             true
           )
       ]
-      const actual = gitGrepCommits('.', rule)
+      const actual = gitGrepCommits(new FileSystem(), rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -43,8 +44,8 @@ describe('rule', () => {
         }
       }
 
-      const actual = gitGrepCommits('.', rule)
-      expect(actual[0].message).to.match(new RegExp(/Commit \w{40} contains blacklisted words:\n/))
+      const actual = gitGrepCommits(new FileSystem(), rule)
+      expect(actual[0].message).to.match(new RegExp(/Commit \w{7} contains blacklisted words:\n/))
       expect(actual[0].message).to.match(new RegExp(DIFF_CORRECT_CASE))
       expect(actual[0].extra[0].text).to.match(new RegExp(DIFF_CORRECT_CASE))
       expect(actual[0].passed).to.equal(false)
