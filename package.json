@@ -7,7 +7,7 @@
     "repolinter": "bin/repolinter.js"
   },
   "scripts": {
-    "test": "standard --env mocha && mocha tests/**/*.js",
+    "test": "standard --env mocha && mocha tests/**/*.js --no-timeouts",
     "coverage": "nyc npm test"
   },
   "keywords": [
