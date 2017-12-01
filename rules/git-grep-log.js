@@ -17,9 +17,7 @@ function grepLog (fileSystem, patterns, ignoreCase) {
 function parseLog (log) {
   const logEntries = log.split('\ncommit ').filter(x => !!x)
 
-  return logEntries.map(entry => {
-    return extractInfo(entry)
-  })
+  return logEntries.map(entry => extractInfo(entry))
 }
 
 function extractInfo (commit) {
@@ -41,7 +39,7 @@ module.exports = function (fileSystem, rule) {
   })
 
   if (results.length === 0) {
-    results.push(new Result(rule, 'No blacklisted words found in any commit messages.', '', true))
+    results.push(new Result(rule, `No blacklisted words found in any commit messages.\nBlacklist: ${options.blacklist.join(', ')}`, '', true))
   }
 
   return results

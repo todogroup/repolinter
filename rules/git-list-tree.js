@@ -16,9 +16,7 @@ function listFiles (fileSystem, patterns, ignoreCase) {
     list.split('\n')
       .filter(path => path.match(pattern))
       .filter(path => fileSystem.shouldInclude(path))
-      .forEach(path => {
-        files.push({ 'commit': commit, 'path': path })
-      })
+      .forEach(path => files.push({ 'commit': commit, 'path': path }))
   })
 
   return files
@@ -35,7 +33,7 @@ module.exports = function (fileSystem, rule) {
   })
 
   if (results.length === 0) {
-    results.push(new Result(rule, 'No blacklisted paths found in any commits.', '', true))
+    results.push(new Result(rule, `No blacklisted paths found in any commits.\nBlacklist: ${options.blacklist.join(', ')}`, '', true))
   }
 
   return results

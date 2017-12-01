@@ -24,7 +24,7 @@ function grepFiles (fileSystem, pattern, ignoreCase, revision) {
   return spawnSync('git', args).stdout.toString().split('\n').filter(x => !!x).map((entry) => {
     const [path, ...rest] = entry.substring(revision.length + 1).split(':')
     return { path: path, text: rest.join(':') }
-  }).filter(file => { return fileSystem.shouldInclude(file.path) })
+  }).filter(file => fileSystem.shouldInclude(file.path))
 }
 
 module.exports = function (fileSystem, rule) {
@@ -41,7 +41,7 @@ module.exports = function (fileSystem, rule) {
   })
 
   if (results.length === 0) {
-    results.push(new Result(rule, 'No blacklisted words found in any commits.', '', true))
+    results.push(new Result(rule, `No blacklisted words found in any commits.\nBlacklist: ${options.blacklist.join(', ')}`, '', true))
   }
 
   return results

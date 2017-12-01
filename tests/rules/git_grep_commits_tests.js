@@ -26,7 +26,7 @@ describe('rule', () => {
       const expected = [
         new Result(
             rule,
-            'No blacklisted words found in any commits.',
+            'No blacklisted words found in any commits.\nBlacklist: COPYRIGHT 2017 TODO GROUP\\. ALL RIGHTS RESERVED\\.',
             '',
             true
           )

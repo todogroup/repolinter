@@ -53,7 +53,7 @@ describe('rule', () => {
       const expected = [
         new Result(
             rule,
-            'not found',
+            'not found: (LICENSE*)',
             '.',
             false
           )

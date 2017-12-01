@@ -11,14 +11,16 @@ const fileSystem = new FileSystem()
 
 module.exports.defaultFormatter = require('./formatters/symbol_formatter')
 module.exports.jsonFormatter = require('./formatters/json_formatter')
-
 module.exports.resultFormatter = exports.defaultFormatter
+
+module.exports.outputInfo = console.log
+module.exports.outputResult = console.log
 
 module.exports.lint = function (targetDir, filterPaths = []) {
   fileSystem.targetDir = targetDir
-  console.log(`Target directory: ${targetDir}`)
+  exports.outputInfo(`Target directory: ${targetDir}`)
   if (filterPaths.length > 0) {
-    console.log(`Paths to include in checks:\n\t${filterPaths.join('\n\t')}`)
+    exports.outputInfo(`Paths to include in checks:\n\t${filterPaths.join('\n\t')}`)
     fileSystem.filterPaths = filterPaths
   }
 
@@ -26,17 +28,17 @@ module.exports.lint = function (targetDir, filterPaths = []) {
   rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
   rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
 
-  console.log(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
+  exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
 
   let languages = ['all']
   try {
     const detectedLanguages = Object.getOwnPropertyNames(linguist.identifyLanguagesSync(targetDir)).map(language => language.toLowerCase())
     languages = languages.concat(detectedLanguages)
-    console.log(`Languages: ${detectedLanguages.join(', ')}`)
+    exports.outputInfo(`Languages: ${detectedLanguages.join(', ')}`)
   } catch (error) {
-    console.log(`Languages: Linguist not found in path, only running language-independent rules`)
+    exports.outputInfo(`Languages: Linguist not found in path, only running language-independent rules`)
   }
-  console.log('')
+  exports.outputInfo('')
 
   let anyFailures = false
   const ruleset = jsonfile.readFileSync(rulesetPath)
@@ -79,7 +81,7 @@ module.exports.lint = function (targetDir, filterPaths = []) {
   }
 
   function renderResult (result) {
-    console.log(result)
+    exports.outputResult(result)
   }
 
   function formatResult (result) {

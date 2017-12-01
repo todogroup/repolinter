@@ -16,7 +16,7 @@ module.exports = function (fileSystem, rule) {
     result.message = `found (${file})`
   } else {
     result.target = fs.targetDir
-    result.message = `not found`
+    result.message = `not found: (${options.files.join(', ')})`
   }
 
   return [result]

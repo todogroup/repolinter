@@ -27,7 +27,7 @@ describe('rule', () => {
       const expected = [
         new Result(
             rule,
-            'No blacklisted words found in any commit messages.',
+            'No blacklisted words found in any commit messages.\nBlacklist: THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES',
             '',
             true
           )
