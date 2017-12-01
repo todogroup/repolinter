@@ -4,6 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const Result = require('../../lib/result')
+const FileSystem = require('../../lib/file_system')
 
 describe('rule', () => {
   describe('file-starts-with', () => {
@@ -25,7 +26,7 @@ describe('rule', () => {
         true
       )]
 
-      const actual = fileStartsWith('.', rule)
+      const actual = fileStartsWith(new FileSystem(), rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -39,7 +40,8 @@ describe('rule', () => {
             },
             readLines () {
               return 'some javascript code'
-            }
+            },
+            targetDir: '.'
           },
           files: ['*.js'],
           lineCount: 5,
@@ -56,7 +58,7 @@ describe('rule', () => {
           )
       ]
 
-      const actual = fileStartsWith('.', rule)
+      const actual = fileStartsWith(null, rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -67,7 +69,8 @@ describe('rule', () => {
           fs: {
             findAll () {
               return []
-            }
+            },
+            targetDir: '.'
           },
           files: ['*'],
           lineCount: 1,
@@ -75,7 +78,7 @@ describe('rule', () => {
         }
       }
 
-      const actual = fileStartsWith('.', rule)
+      const actual = fileStartsWith(null, rule)
 
       expect(actual.length).to.equal(0)
     })

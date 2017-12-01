@@ -15,7 +15,8 @@ describe('rule', () => {
           fs: {
             findAll () {
               return []
-            }
+            },
+            targetDir: '.'
           },
           type: ['*.dll']
         }
@@ -29,7 +30,7 @@ describe('rule', () => {
             true
           )
       ]
-      const actual = fileTypeExclusion('.', rule)
+      const actual = fileTypeExclusion(null, rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -40,7 +41,8 @@ describe('rule', () => {
           fs: {
             findAll () {
               return ['foo.dll']
-            }
+            },
+            targetDir: '.'
           },
           type: ['*.dll']
         }
@@ -53,7 +55,7 @@ describe('rule', () => {
             false
           )
       ]
-      const actual = fileTypeExclusion('.', rule)
+      const actual = fileTypeExclusion(null, rule)
 
       expect(actual).to.deep.equal(expected)
     })

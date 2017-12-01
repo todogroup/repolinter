@@ -4,6 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const Result = require('../../lib/result')
+const FileSystem = require('../../lib/file_system')
 
 chai.use(require('chai-string'))
 
@@ -26,12 +27,12 @@ describe('rule', () => {
       const expected = [
         new Result(
            rule,
-           'No blacklisted paths found in any commits.',
+           'No blacklisted paths found in any commits.\nBlacklist: rules/git-list-TREE\\.js',
            '',
            true
          )
       ]
-      const actual = gitListTree('.', rule)
+      const actual = gitListTree(new FileSystem(), rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -44,8 +45,8 @@ describe('rule', () => {
         }
       }
 
-      const actual = gitListTree('.', rule)
-      expect(actual[0].message).to.match(new RegExp(/Commit \w{40} contains blacklisted paths:\n/))
+      const actual = gitListTree(new FileSystem(), rule)
+      expect(actual[0].message).to.match(new RegExp(/Commit \w{7} contains blacklisted paths:\n/))
       expect(actual[0].message).to.match(new RegExp(PATH_CORRECT_CASE))
       expect(actual[0].passed).to.equal(false)
     })
