@@ -26,7 +26,7 @@ describe('rule', () => {
         new Result(
             rule,
             'Excluded file type doesn\'t exist (*.dll)',
-            '.',
+            null,
             true
           )
       ]

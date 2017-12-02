@@ -54,7 +54,7 @@ describe('rule', () => {
         new Result(
             rule,
             'not found: (LICENSE*)',
-            '.',
+            null,
             false
           )
       ]

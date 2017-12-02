@@ -59,7 +59,7 @@ module.exports.lint = function (targetDir, filterPaths = []) {
 
             anyFailures = results.some(result => !result.passed && result.level === 'error')
           } catch (error) {
-            results.push(new Result(rule, error.message, targetDir, false))
+            results.push(new Result(rule, error.message, null, false))
           }
           renderResults(results.filter(result => !result.passed))
           renderResults(results.filter(result => result.passed))

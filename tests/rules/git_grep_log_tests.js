@@ -27,8 +27,8 @@ describe('rule', () => {
       const expected = [
         new Result(
             rule,
-            'No blacklisted words found in any commit messages.\nBlacklist: THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES',
-            '',
+            'No blacklisted words found in any commit messages.\n\tBlacklist: THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES',
+            null,
             true
           )
       ]
@@ -48,8 +48,8 @@ describe('rule', () => {
       const actual = gitGrepLog(new FileSystem(), rule)
 
       expect(actual.length).to.equal(1)
-      expect(actual[0].message).to.match(new RegExp(/Commit \w{7} contains blacklisted words:\n/))
-      expect(actual[0].message).to.match(new RegExp(LOG_CORRECT_CASE))
+      expect(actual[0].message).to.match(new RegExp(/The commit message for commit \w{7} contains blacklisted words\.\n/))
+      expect(actual[0].data.commit.message).to.match(new RegExp(LOG_CORRECT_CASE))
       expect(actual[0].passed).to.equal(false)
     })
   })

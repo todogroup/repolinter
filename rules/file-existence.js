@@ -9,15 +9,13 @@ module.exports = function (fileSystem, rule) {
   const file = fs.findFirst(options.files)
 
   const passed = !!file
-  let result = new Result(rule, '', file, passed)
+  const message = (() => {
+    if (passed) {
+      return `found (${file})`
+    } else {
+      return `not found: (${options.files.join(', ')})`
+    }
+  })()
 
-  if (passed) {
-    result.target = file
-    result.message = `found (${file})`
-  } else {
-    result.target = fs.targetDir
-    result.message = `not found: (${options.files.join(', ')})`
-  }
-
-  return [result]
+  return [new Result(rule, message, file || null, passed)]
 }

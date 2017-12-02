@@ -16,7 +16,7 @@ module.exports = function (fileSystem, rule) {
   if (results.length === 0) {
     const message = `Excluded file type doesn't exist (${options.type})`
 
-    results.push(new Result(rule, message, fs.targetDir, true))
+    results.push(new Result(rule, message, null, true))
   }
 
   return results
