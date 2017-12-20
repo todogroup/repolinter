@@ -4,6 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const Result = require('../../lib/result')
+const FileSystem = require('../../lib/file_system')
 
 chai.use(require('chai-string'))
 
@@ -25,12 +26,12 @@ describe('rule', () => {
       const expected = [
         new Result(
             rule,
-            'No blacklisted words found in any commits.',
-            '',
+            'No blacklisted words found in any commits.\n\tBlacklist: COPYRIGHT 2017 TODO GROUP\\. ALL RIGHTS RESERVED\\.',
+            null,
             true
           )
       ]
-      const actual = gitGrepCommits('.', rule)
+      const actual = gitGrepCommits(new FileSystem(), rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -43,10 +44,9 @@ describe('rule', () => {
         }
       }
 
-      const actual = gitGrepCommits('.', rule)
-      expect(actual[0].message).to.match(new RegExp(/Commit \w{40} contains blacklisted words:\n/))
-      expect(actual[0].message).to.match(new RegExp(DIFF_CORRECT_CASE))
-      expect(actual[0].extra[0].text).to.match(new RegExp(DIFF_CORRECT_CASE))
+      const actual = gitGrepCommits(new FileSystem(), rule)
+      expect(actual[0].message).to.match(new RegExp(/\(bin\/repolinter\.js\) contains blacklisted words in commit \w{7}, and \d+ more commits\./))
+      expect(actual[0].data.file.commits[0].lines[0]).to.match(new RegExp(DIFF_CORRECT_CASE))
       expect(actual[0].passed).to.equal(false)
     })
   })

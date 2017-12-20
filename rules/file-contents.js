@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0.
 const Result = require('../lib/result')
 
-module.exports = function (targetDir, rule) {
+module.exports = function (fileSystem, rule) {
   const options = rule.options
-  const fs = options.fs || require('../lib/file_system')
-  const files = fs.findAll(targetDir, options.files)
+  const fs = options.fs || fileSystem
+  const files = fs.findAll(options.files)
 
   const results = files.map(file => {
     const fileContents = fs.getFileContents(file)

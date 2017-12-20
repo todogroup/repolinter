@@ -4,10 +4,10 @@
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 
-function grepLog (targetDir, patterns, ignoreCase) {
-  let args = ['-C', targetDir, 'log', '--all', '--format=full', '-E']
-    .concat(patterns.map(pattern => `--grep=${pattern}`))
-  if (ignoreCase) {
+function grepLog (fileSystem, options) {
+  let args = ['-C', fileSystem.targetDir, 'log', '--all', '--format=full', '-E']
+    .concat(options.blacklist.map(pattern => `--grep=${pattern}`))
+  if (options.ignoreCase) {
     args.push('-i')
   }
   const log = spawnSync('git', args).stdout.toString()
@@ -17,9 +17,7 @@ function grepLog (targetDir, patterns, ignoreCase) {
 function parseLog (log) {
   const logEntries = log.split('\ncommit ').filter(x => !!x)
 
-  return logEntries.map(entry => {
-    return extractInfo(entry)
-  })
+  return logEntries.map(entry => extractInfo(entry))
 }
 
 function extractInfo (commit) {
@@ -30,18 +28,29 @@ function extractInfo (commit) {
   }
 }
 
-module.exports = function (targetDir, rule) {
+module.exports = function (fileSystem, rule) {
   const options = rule.options
-  const commits = grepLog(targetDir, options.blacklist, options.ignoreCase)
+  const commits = grepLog(fileSystem, options)
 
   let results = commits.map(commit => {
-    const message = `Commit ${commit.hash} contains blacklisted words:\n${commit.message}`
+    const message = [
+      `The commit message for commit ${commit.hash.substr(0, 7)} contains blacklisted words.\n`,
+      `\tBlacklist: ${options.blacklist.join(', ')}`
+    ].join('\n')
 
-    return new Result(rule, message, commit.hash, false)
+    let result = new Result(rule, message, null, false)
+    result.data = {commit: commit}
+
+    return result
   })
 
   if (results.length === 0) {
-    results.push(new Result(rule, 'No blacklisted words found in any commit messages.', '', true))
+    results.push(new Result(
+      rule,
+      `No blacklisted words found in any commit messages.\n\tBlacklist: ${options.blacklist.join(', ')}`,
+      null,
+      true
+    ))
   }
 
   return results

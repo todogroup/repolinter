@@ -4,6 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const Result = require('../../lib/result')
+const FileSystem = require('../../lib/file_system')
 
 chai.use(require('chai-string'))
 
@@ -13,7 +14,6 @@ describe('rule', () => {
 
     const gitListTree = require('../../rules/git-list-tree')
     const PATH_WRONG_CASE = 'rules/git-list-TREE\\.js'
-    const PATH_CORRECT_CASE = 'rules/git-list-tree\\.js'
 
     it('passes if the blacklist pattern does not match any path', () => {
       const rule = {
@@ -26,12 +26,12 @@ describe('rule', () => {
       const expected = [
         new Result(
            rule,
-           'No blacklisted paths found in any commits.',
-           '',
+           'No blacklisted paths found in any commits.\n\tBlacklist: rules/git-list-TREE\\.js',
+           null,
            true
          )
       ]
-      const actual = gitListTree('.', rule)
+      const actual = gitListTree(new FileSystem(), rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -44,9 +44,8 @@ describe('rule', () => {
         }
       }
 
-      const actual = gitListTree('.', rule)
-      expect(actual[0].message).to.match(new RegExp(/Commit \w{40} contains blacklisted paths:\n/))
-      expect(actual[0].message).to.match(new RegExp(PATH_CORRECT_CASE))
+      const actual = gitListTree(new FileSystem(), rule)
+      expect(actual[0].message).to.match(new RegExp(/Blacklisted path \(rules\/git-list-tree\.js\) found in commit \w{7}, and \d+ more commits\./))
       expect(actual[0].passed).to.equal(false)
     })
   })

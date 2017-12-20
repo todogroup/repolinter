@@ -4,45 +4,91 @@
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 
-function grepCommits (targetDir, patterns, ignoreCase) {
-  const pattern = '(' + patterns.join('|') + ')'
-  const revisions = grepRevisions(targetDir)
-  const commits = revisions.map((revision) => {
-    return { hash: revision, files: grepFiles(targetDir, pattern, ignoreCase, revision) }
-  }).filter(commit => commit.files.length > 0)
-
-  return commits
+function listCommitsWithLines (fileSystem, options) {
+  const pattern = '(' + options.blacklist.join('|') + ')'
+  const commits = gitAllCommits(fileSystem.targetDir)
+  return commits.map((commit) => {
+    return {
+      hash: commit,
+      lines: gitLinesAtCommit(fileSystem.targetDir, pattern, options.ignoreCase, commit)
+               .filter(line => fileSystem.shouldInclude(line.path))
+    }
+  }).filter(commit => commit.lines.length > 0)
 }
 
-function grepRevisions (targetDir) {
+function gitAllCommits (targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']
   return spawnSync('git', args).stdout.toString().trim().split('\n')
 }
 
-function grepFiles (targetDir, pattern, ignoreCase, revision) {
-  const args = ['-C', targetDir, 'grep', '-E', ignoreCase ? '-i' : '', pattern, revision]
-  return spawnSync('git', args).stdout.toString().split('\n').filter(x => !!x).map((entry) => {
-    const [path, ...rest] = entry.substring(revision.length + 1).split(':')
-    return { path: path, text: rest.join(':') }
-  })
+function gitGrep (targetDir, pattern, ignoreCase, commit) {
+  const args = ['-C', targetDir, 'grep', '-E', ignoreCase ? '-i' : '', pattern, commit]
+  return spawnSync('git', args).stdout.toString().split('\n').filter(x => !!x)
 }
 
-module.exports = function (targetDir, rule) {
-  const options = rule.options
-  const commits = grepCommits(targetDir, options.blacklist, options.ignoreCase)
+function gitLinesAtCommit (targetDir, pattern, ignoreCase, commit) {
+  const lines = gitGrep(targetDir, pattern, ignoreCase, commit)
+                  .map((entry) => {
+                    const [path, ...rest] = entry.substring(commit.length + 1).split(':')
+                    return { path: path, content: rest.join(':') }
+                  })
 
-  let results = commits.map(commit => {
-    const result = new Result(rule, '', commit.hash, false)
-    const fileInfo = commit.files.map(file => {
-      return `\t${file.path}: ${file.text}`
-    }).join('\n')
-    result.message = `Commit ${commit.hash} contains blacklisted words:\n${fileInfo}`
-    result.extra = commit.files
+  return lines
+}
+
+function listFiles (fileSystem, options) {
+  let files = []
+
+  const commits = listCommitsWithLines(fileSystem, options)
+  commits.forEach(commit => {
+    commit.lines.forEach(line => {
+      const existingFile = files.find(f => f.path === line.path)
+
+      if (existingFile) {
+        const existingCommit = existingFile.commits.find(c => c.hash === commit.hash)
+
+        if (existingCommit) {
+          existingCommit.lines.push(line.content)
+        } else {
+          existingFile.commits.push({hash: commit.hash, lines: [line.content]})
+        }
+      } else {
+        files.push({path: line.path, commits: [{hash: commit.hash, lines: [line.content]}]})
+      }
+    })
+  })
+
+  return files
+}
+
+module.exports = function (fileSystem, rule) {
+  const options = rule.options
+  const files = listFiles(fileSystem, options)
+  let results = files.map(file => {
+    const [firstCommit, ...rest] = file.commits
+    const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
+
+    const message = [
+      `(${file.path}) contains blacklisted words in commit ${firstCommit.hash.substr(0, 7)}${restMessage}.`,
+      `\tBlacklist: ${options.blacklist.join(', ')}`
+    ].join('\n')
+    let result = new Result(rule, message, file.path, false)
+    result.data = {file: file}
+
     return result
   })
 
   if (results.length === 0) {
-    results.push(new Result(rule, 'No blacklisted words found in any commits.', '', true))
+    const message = [
+      'No blacklisted words found in any commits.',
+      `\tBlacklist: ${options.blacklist.join(', ')}`
+    ].join('\n')
+    results.push(new Result(
+      rule,
+      message,
+      null,
+      true
+    ))
   }
 
   return results
