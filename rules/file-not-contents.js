@@ -12,8 +12,8 @@ module.exports = function (fileSystem, rule) {
     const fileContents = fs.getFileContents(file)
     const regexp = new RegExp(options.content, options.flags)
 
-    const passed = fileContents && fileContents.toString().search(regexp) == -1
-    const message = `File ${file} ${passed ? 'doesn\'t contain' : 'contains' } ${options.content}`
+    const passed = fileContents && fileContents.toString().search(regexp) === -1
+    const message = `File ${file} ${passed ? 'doesn\'t contain' : 'contains'} ${options.content}`
 
     return new Result(rule, message, file, passed)
   })
