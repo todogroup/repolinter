@@ -1,7 +1,6 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 
-const linguist = require('./lib/linguist')
 const jsonfile = require('jsonfile')
 const path = require('path')
 const findConfig = require('find-config')
@@ -29,24 +28,29 @@ module.exports.lint = function (targetDir, filterPaths = []) {
   rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
 
   exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
+  const ruleset = jsonfile.readFileSync(rulesetPath)
 
-  let languages = ['all']
-  try {
-    const detectedLanguages = Object.getOwnPropertyNames(linguist.identifyLanguagesSync(targetDir)).map(language => language.toLowerCase())
-    languages = languages.concat(detectedLanguages)
-    exports.outputInfo(`Languages: ${detectedLanguages.join(', ')}`)
-  } catch (error) {
-    exports.outputInfo(`Languages: Linguist not found in path, only running language-independent rules`)
+  let targets = ['all']
+
+  // Identify axioms and execute them
+  if (ruleset.axioms) {
+    Object.getOwnPropertyNames(ruleset.axioms).forEach(axiomId => {
+      const axiomName = ruleset.axioms[axiomId]
+      // TODO: Do something more secure
+      // Execute axiom
+      const axiomFunction = require(path.join(__dirname, 'axioms', axiomId))
+      targets = targets.concat(axiomFunction(targetDir).map(axiomOutput => axiomName + '=' + axiomOutput))
+    })
   }
-  exports.outputInfo('')
 
   let anyFailures = false
-  const ruleset = jsonfile.readFileSync(rulesetPath)
-  languages.forEach(language => {
-    const languageRules = ruleset.rules[language]
-    if (languageRules) {
-      Object.getOwnPropertyNames(languageRules).forEach(ruleId => {
-        const rule = parseRule(languageRules[ruleId])
+
+  // Execute all rule targets
+  targets.forEach(target => {
+    const targetRules = ruleset.rules[target]
+    if (targetRules) {
+      Object.getOwnPropertyNames(targetRules).forEach(ruleId => {
+        const rule = parseRule(targetRules[ruleId])
         const ruleIdParts = ruleId.split(':')
         rule.id = ruleIdParts[0]
         rule.module = ruleIdParts.length === 2 ? ruleIdParts[1] : ruleIdParts[0]

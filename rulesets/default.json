@@ -1,4 +1,8 @@
 {
+  "axioms": {
+    "linguist":"language",
+    "licensee":"license"
+  },
   "rules": {
     "all": {
       "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"]}],
@@ -12,17 +16,20 @@
       "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml"]}],
       "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "All rights reserved", "Licensed under"]}]
     },
-    "javascript": {
+    "language=javascript": {
       "package-metadata-exists:file-existence": ["error", {"files": ["package.json"]}]
     },
-    "ruby": {
+    "language=ruby": {
       "package-metadata-exists:file-existence": ["error", {"files": ["Gemfile"]}]
     },
-    "java": {
+    "language=java": {
       "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
     },
-    "python": {
+    "language=python": {
       "package-metadata-exists:file-existence": ["error", {"files": ["requirements.txt"]}]
+    },
+    "license=Apache License 2.0": {
+      "notice-file-exists:file-existence": ["error", {"files": ["NOTICE*"]}]
     }
   }
 }
