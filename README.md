@@ -140,7 +140,7 @@ Rules can be configured to only run if the repository contains a specific langua
 
 ## Rules
 
-The rules system is made up of rule types which
+The rules system is made up of rule types which can be customized to fit your needs.
 
 ### directory-existence
 Fails if none of the directories specified in the ```directories``` option exist.
