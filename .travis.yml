@@ -1,6 +1,10 @@
 language: node_js
 node_js:
   - "node"
+cache:
+  bundler: true
+  directories:
+    - node_modules
 before_script:
   - bundle install
 script:
