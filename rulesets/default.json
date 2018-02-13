@@ -23,6 +23,9 @@
     },
     "python": {
       "package-metadata-exists:file-existence": ["error", {"files": ["setup.py", "requirements.txt"]}]
+    },
+    "objective-c": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["Cartfile", "Podfile", "*.podspec"]}]
     }
   }
 }
