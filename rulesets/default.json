@@ -22,7 +22,7 @@
       "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
     },
     "python": {
-      "package-metadata-exists:file-existence": ["error", {"files": ["requirements.txt"]}]
+      "package-metadata-exists:file-existence": ["error", {"files": ["setup.py", "requirements.txt"]}]
     }
   }
 }
