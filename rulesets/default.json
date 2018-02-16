@@ -29,6 +29,12 @@
     },
     "swift": {
       "package-metadata-exists:file-existence": ["error", {"files": ["Package.swift"]}]
+    },
+    "erlang": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["rebar.config"]}]
+    },
+    "elixir": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["mix.exs"]}]
     }
   }
 }
