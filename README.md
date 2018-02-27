@@ -10,6 +10,8 @@ To run against a git repository, use the `--git` option: `npx repolinter --git h
 
 Note, if you are running a version of npm < 5.2.0, run `npm install npx` first.
 
+You can also run Repo Linter locally by cloning this repository and running `bin/repolinter.js` with either a directory of a git repository the same as above. This is useful during development.
+
 ## Examples
 
 To quickly get started, checkout this repository and run `npx repolinter` against itself.
