@@ -14,7 +14,7 @@
       "license-detectable-by-licensee": ["error"],
       "test-directory-exists:directory-existence": ["error", {"directories": ["test*", "specs"]}],
       "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml", "Jenkinsfile"]}],
-      "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "License"]}]
+      "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "License"], "flags": "i"}]
     },
     "language=javascript": {
       "package-metadata-exists:file-existence": ["error", {"files": ["package.json"]}]
