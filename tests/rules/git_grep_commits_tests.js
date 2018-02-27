@@ -45,7 +45,7 @@ describe('rule', () => {
       }
 
       const actual = gitGrepCommits(new FileSystem(), rule)
-      expect(actual[0].message).to.match(new RegExp(/\(bin\/repolinter\.js\) contains blacklisted words in commit \w{7}, and \d+ more commits\./))
+      expect(actual[0].message).to.match(new RegExp(/ contains blacklisted words in commit \w{7}, and \d+ more commits\./))
       expect(actual[0].data.file.commits[0].lines[0]).to.match(new RegExp(DIFF_CORRECT_CASE))
       expect(actual[0].passed).to.equal(false)
     })

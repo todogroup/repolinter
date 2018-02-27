@@ -1,4 +1,8 @@
 {
+  "axioms": {
+    "linguist":"language",
+    "licensee":"license"
+  },
   "rules": {
     "all": {
       "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"]}],
@@ -12,28 +16,31 @@
       "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml", "Jenkinsfile"]}],
       "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "License"]}]
     },
-    "javascript": {
+    "language=javascript": {
       "package-metadata-exists:file-existence": ["error", {"files": ["package.json"]}]
     },
-    "ruby": {
+    "language=ruby": {
       "package-metadata-exists:file-existence": ["error", {"files": ["Gemfile"]}]
     },
-    "java": {
+    "language=java": {
       "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
     },
-    "python": {
+    "license=Apache License 2.0": {
+      "notice-file-exists:file-existence": ["error", {"files": ["NOTICE*"]}]
+    },
+    "language=python": {
       "package-metadata-exists:file-existence": ["error", {"files": ["setup.py", "requirements.txt"]}]
     },
-    "objective-c": {
+    "language=objective-c": {
       "package-metadata-exists:file-existence": ["error", {"files": ["Cartfile", "Podfile", "*.podspec"]}]
     },
-    "swift": {
+    "language=swift": {
       "package-metadata-exists:file-existence": ["error", {"files": ["Package.swift"]}]
     },
-    "erlang": {
+    "language=erlang": {
       "package-metadata-exists:file-existence": ["error", {"files": ["rebar.config"]}]
     },
-    "elixir": {
+    "language=elixir": {
       "package-metadata-exists:file-existence": ["error", {"files": ["mix.exs"]}]
     }
   }
