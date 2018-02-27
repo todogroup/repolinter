@@ -11,7 +11,10 @@ module.exports = function (fileSystem, rule) {
   let results = []
   files.forEach(file => {
     const lines = fs.readLines(file, options.lineCount)
-    const misses = options.patterns.filter(pattern => !lines.match(pattern))
+    const misses = options.patterns.filter((pattern) => {
+      const regexp = new RegExp(pattern, options.flags)
+      return !lines.match(regexp)
+    })
 
     let message = `The first ${options.lineCount} lines of '${file}'`
     const passed = misses.length === 0
