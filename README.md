@@ -74,6 +74,9 @@ Fails if there isn't a file matching ```CONTRIB*``` in the root of the target di
 ### code-of-conduct-file-exists
 Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``` or ```CODE_OF_CONDUCT*``` in the root of the target directory.
 
+### code-of-conduct-file-contains-email
+Fails of the code of conduct file does not contain an email address.
+
 ### readme-references-license
 Fails if the files matching ```README*``` doesn't match the regular expression ```license```.
 
@@ -146,7 +149,7 @@ The rules system is made up of rule types which can be customized to fit your ne
 Fails if none of the directories specified in the ```directories``` option exist.
 
 ### file-contents
-Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option.
+Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular expression or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output.
 
 ### file-existence
 Fails if none of the files specified in the ```files``` option exist.
