@@ -38,6 +38,36 @@ describe('lib', () => {
         })
         expect(files).to.deep.equal(includedFiles)
       })
+
+      it('should honor nocase true', () => {
+        const includedFiles = ['index.js']
+        const fs = new FileSystem(path.resolve('.'), includedFiles)
+
+        const files = fs.findAll('**/iNdEx.Js', true).map(file => {
+          return path.relative(path.resolve('.'), file)
+        })
+        expect(files).to.deep.equal(includedFiles)
+      })
+
+      it('should honor nocase false', () => {
+        const includedFiles = ['index.js']
+        const fs = new FileSystem(path.resolve('.'), includedFiles)
+
+        const files = fs.findAll('**/iNdEx.Js', false).map(file => {
+          return path.relative(path.resolve('.'), file)
+        })
+        expect(files).to.deep.equal([])
+      })
+
+      it('should not honor nocase by default', () => {
+        const includedFiles = ['index.js']
+        const fs = new FileSystem(path.resolve('.'), includedFiles)
+
+        const files = fs.findAll('**/iNdEx.Js').map(file => {
+          return path.relative(path.resolve('.'), file)
+        })
+        expect(files).to.deep.equal([])
+      })
     })
   })
 })

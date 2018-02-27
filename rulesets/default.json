@@ -12,7 +12,7 @@
       "readme-references-license:file-contents": ["error", {"files": ["README*"], "content": "license", "flags": "i"}],
       "binaries-not-present:file-type-exclusion": ["error", {"type": ["**/*.exe", "**/*.dll"]}],
       "license-detectable-by-licensee": ["error"],
-      "test-directory-exists:directory-existence": ["error", {"directories": ["test*", "specs"]}],
+      "test-directory-exists:directory-existence": ["error", {"directories": ["**/test*", "**/specs"], "nocase": "true"}],
       "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml", "Jenkinsfile"]}],
       "code-of-conduct-file-contains-email:file-contents": [
         "error",

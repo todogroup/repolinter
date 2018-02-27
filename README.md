@@ -91,7 +91,7 @@ Fails if there isn't a file supporting a Continuous Integration tool, matching `
 Produces a failure for each file matching ```**/*.js,!node_modules/**``` option if the first 5 lines don't match all the patterns ```copyright```, ```all rights reserved```, and ```licensed under```.
 
 ### test-directory-exists
-Fails if there isn't a directory matching ```test*``` or ```specs``` in the root of the target directory.
+Fails if there isn't a directory matching ```test*``` or ```specs``` in the directory tree of the target directory.
 
 
 ## Configuring rules
@@ -146,13 +146,13 @@ Rules can be configured to only run if the repository contains a specific langua
 The rules system is made up of rule types which can be customized to fit your needs.
 
 ### directory-existence
-Fails if none of the directories specified in the ```directories``` option exist.
+Fails if none of the directories specified in the ```directories``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user. Pass in ```"nocase": "true"``` in the options for a case-insensitive search.
 
 ### file-contents
 Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular expression or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output.
 
 ### file-existence
-Fails if none of the files specified in the ```files``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user.
+Fails if none of the files specified in the ```files``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user. Pass in ```"nocase": "true"``` in the options for a case-insensitive search.
 
 ### file-not-contents
 The opposite of ```file-contents```.
