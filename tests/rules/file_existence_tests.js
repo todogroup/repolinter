@@ -37,6 +37,36 @@ describe('rule', () => {
       expect(actual).to.deep.equal(expected)
     })
 
+    it('returns a passed result if requested file exists case-insensitivly', () => {
+      const rule = {
+        options: {
+          fs: {
+            findFirst (dontcare, nocase) {
+              expect(nocase).to.equal(true)
+              return 'LICENSE.md'
+            },
+            targetDir: '.'
+          },
+          files: ['lIcEnSe*'],
+          name: 'License file',
+          nocase: 'true'
+        }
+      }
+
+      const expected = [
+        new Result(
+            rule,
+            'found (LICENSE.md)',
+            'LICENSE.md',
+            true
+          )
+      ]
+
+      const actual = fileExistence(null, rule)
+
+      expect(actual).to.deep.equal(expected)
+    })
+
     it('returns a failure result if requested file doesn\'t exist', () => {
       const rule = {
         options: {
