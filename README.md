@@ -149,7 +149,7 @@ The rules system is made up of rule types which can be customized to fit your ne
 Fails if none of the directories specified in the ```directories``` option exist.
 
 ### file-contents
-Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular express or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output.
+Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular expression or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output.
 
 ### file-existence
 Fails if none of the files specified in the ```files``` option exist.
