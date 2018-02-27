@@ -10,7 +10,7 @@ To run against a git repository, use the `--git` option: `bin/repolinter.js --gi
 
 ## Examples
 
-To quickly get started, checkout this repository and run repolinter against itself.
+To quickly get started, checkout this repository and run `repolinter` against itself.
 
 ```
 git clone https://github.com/todogroup/repolinter
@@ -22,25 +22,25 @@ bin/repolinter.js
 ✔ binaries-not-present: Excluded file type doesn't exist (**/*.exe,**/*.dll)
 ✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
 ✔ test-directory-exists: found (tests)
-✔ source-license-headers-exist: exist
+✔ integrates-with-ci: found (.travis.yml)
+✔ source-license-headers-exist: The first 5 lines of 'bin/repolinter.js' contain all of the requested patterns.
 ✔ package-metadata-exists: found (Gemfile)
 ✔ package-metadata-exists: found (package.json)
 ```
 
 ## Command line dependencies
 
-The npm log-symbols package must be installed to run repolinter.
+The npm log-symbols package must be installed to run `repolinter`.
 ```
 npm install log-symbols
 ```
-
-Repo Linter will use https://github.com/benbalter/licensee and https://github.com/github/linguist when installed.
+Repolinter will use https://github.com/benbalter/licensee and https://github.com/github/linguist when installed.
 
 Licensee will lead to a test being done to see if the project's licensee is identified by Licensee.
 
 Linguist allows per-language tests to be performed.
 
-Run `bundle install` to get Lincensee and Linguist support.
+Run `bundle install` to get Licensee and Linguist support.
 
 ## Custom Result Formatter
 By default, results will be shown as in the example format above.
@@ -48,23 +48,55 @@ By default, results will be shown as in the example format above.
 When using `repolinter` in another project, you can set `resultFormatter` to a custom formatter. Any custom formatter needs to have a `format` function that takes a single [Result](./lib/result.js) argument, and returns a string.
 
 ## Default ruleset
-The default ruleset (```rulesets/default.json```) enables the following rules:
+The default ruleset (```rulesets/default.json```) defines a set of common patterns against certain rules.  i.e., the `license-file-exists` and `readme-file-exists` default rules both trigger a `file-exists` test but against different file patterns.
 
 All languages:
-* [binaries-not-present](#binaries-not-present)
-* [contributing-file-exist](#contributing-file-exists)
-* [license-detectable-by-licensee](#license-detectable-by-licensee)
 * [license-file-exists](#license-file-exists)
 * [readme-file-exists](#readme-file-exists)
+* [contributing-file-exists](#contributing-file-exists)
+* [code-of-conduct-file-exists](#code-of-conduct-file-exists)
 * [readme-references-license](#readme-references-license)
-* [source-license-headers-exist]([#source-license-headers-exist)
+* [binaries-not-present](#binaries-not-present)
+* [license-detectable-by-licensee](#license-detectable-by-licensee)
 * [test-directory-exists](#test-directory-exists)
+* [integrates-with-ci](#integrates-with-ci)
+* [source-license-headers-exist]([#source-license-headers-exist)
+
+### license-file-exists
+Fails if there isn't a file matching ```LICENSE*``` or ```COPYING*``` in the root of the target directory.
+
+### readme-file-exists
+Fails if there isn't a file matching ```README*``` in the root of the target directory.
+
+### contributing-file-exists
+Fails if there isn't a file matching ```CONTRIB*``` in the root of the target directory.
+
+### code-of-conduct-file-exists
+Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``` or ```CODE_OF_CONDUCT*``` in the root of the target directory.
+
+### readme-references-license
+Fails if the files matching ```README*``` doesn't match the regular expression ```license```.
+
+### binaries-not-present
+Fails if ```*.dll``` or ```*.exe``` files are in the target directory.
+
+### integrates-with-ci
+Fails if there isn't a file supporting a Continuous Integration tool, matching ```.gitlab-ci.yml```, ```.travis.yml```, ```appveyor.yml```, ```circle.yml```, or ```Jenkinsfile```
+ in the root of the target directory.
+
+### source-license-headers-exist
+Produces a failure for each file matching ```**/*.js,!node_modules/**``` option if the first 5 lines don't match all the patterns ```copyright```, ```all rights reserved```, and ```licensed under```.
+
+### test-directory-exists
+Fails if there isn't a directory matching ```test*``` or ```specs``` in the root of the target directory.
+
 
 ## Configuring rules
+
 Currently you need to create a new ruleset to add, remove, or configure rules. We'll be adding the ability to inherit from an existing ruleset to simplify this in the future.
 
 ### Overriding the ruleset globally or for a project
-To override the default ruleset copy ```rulesets/default.json``` to ```repolint.json``` (or ```repolinter.json```) in the target directory, any ancenstor directory of the target directory, or your user directory.
+To override the default ruleset copy ```rulesets/default.json``` to ```repolint.json``` (or ```repolinter.json```) in the target directory, any ancestor directory of the target directory, or your user directory.
 
 ### Disabling rules
 To disable a rule change it's value to ```false```, for example:
@@ -106,22 +138,21 @@ To configure a rule's options change the second argument of the rule to an objec
 Rules can be configured to only run if the repository contains a specific language. Languages are detected using Linguist which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
 
 
-
 ## Rules
-### binaries-not-present
-Fails if ```*.dll``` or ```*.exe``` files are in the target directory.
 
-### contributing-file-exists
-Fails if there isn't a file matching ```CONTRIB*``` in the root of the target directory.
+The rules system is made up of rule types which can be customized to fit your needs.
 
 ### directory-existence
 Fails if none of the directories specified in the ```directories``` option exist.
 
 ### file-contents
-Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. 
+Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option.
 
 ### file-existence
 Fails if none of the files specified in the ```files``` option exist.
+
+### file-not-contents
+The opposite of ```file-contents```.
 
 ### file-starts-with
 Produces a failure for each file matching the ```files``` option if the first ```lineCount``` lines don't match all of the regular expressions specified in the ```patterns``` option.
@@ -129,28 +160,27 @@ Produces a failure for each file matching the ```files``` option if the first ``
 ### file-type-exclusion
 Fails if any files match the ```type``` option.
 
+### git-grep-commits
+Searches Git commits for configurable blacklisted words. These
+words can in fact be extended regular expressions. These checks can be
+a bit time consuming, depending on the size of the Git history.
+
+### git-grep-log
+Searches Git commit messages for configurable blacklisted words. These
+words can in fact be extended regular expressions. These checks can be
+a bit time consuming, depending on the size of the Git history.
+
+### git-list-tree
+Check for blacklisted paths in Git.
+
+### git-working-tree
+Checks whether the directory is managed with Git.
+
 ### license-detectable-by-licensee
 Fails if Licensee doesn't detect the repository's license.
 
-This rule requires ```licensee``` in the path, see (command line dependencies)[#command-line-dependencies] for details.
+This rule requires ```licensee``` in the path, see [command line dependencies](#command-line-dependencies) for details.
 
-### license-file-exists
-Fails if there isn't a file matching ```LICENSE*``` or ```COPYING*``` in the root of the target directory.
-
-### readme-file-exists
-Fails if there isn't a file matching ```README*``` in the root of the target directory.
-
-### readme-references-license
-Fails if the files matching ```README*``` doesn't match the regular expression ```license```.
-
-### code-of-conduct-file-exists
-Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``` or ```CODE_OF_CONDUCT*``` in the root of the target directory.
-
-### source-license-headers-exist
-Produces a failure for each file matching ```**/*.js,!node_modules/**``` option if the first 5 lines don't match all the patterns ```copyright```, ```all rights reserved```, and ```licensed under```.
-
-### test-directory-exists
-Fails if there isn't a directory matching ```test*``` or ```specs``` in the root of the target directory.
 
 ## License
 

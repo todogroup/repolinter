@@ -13,8 +13,8 @@
       "binaries-not-present:file-type-exclusion": ["error", {"type": ["**/*.exe", "**/*.dll"]}],
       "license-detectable-by-licensee": ["error"],
       "test-directory-exists:directory-existence": ["error", {"directories": ["test*", "specs"]}],
-      "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml"]}],
-      "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "All rights reserved", "Licensed under"]}]
+      "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml", "Jenkinsfile"]}],
+      "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "License"]}]
     },
     "language=javascript": {
       "package-metadata-exists:file-existence": ["error", {"files": ["package.json"]}]
@@ -25,11 +25,23 @@
     "language=java": {
       "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
     },
-    "language=python": {
-      "package-metadata-exists:file-existence": ["error", {"files": ["requirements.txt"]}]
-    },
     "license=Apache License 2.0": {
       "notice-file-exists:file-existence": ["error", {"files": ["NOTICE*"]}]
+    },
+    "language=python": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["setup.py", "requirements.txt"]}]
+    },
+    "language=objective-c": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["Cartfile", "Podfile", "*.podspec"]}]
+    },
+    "language=swift": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["Package.swift"]}]
+    },
+    "language=erlang": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["rebar.config"]}]
+    },
+    "language=elixir": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["mix.exs"]}]
     }
   }
 }
