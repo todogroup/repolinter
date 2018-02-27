@@ -39,6 +39,37 @@ describe('rule', () => {
       expect(actual).to.deep.equal(expected)
     })
 
+    it('returns passes if requested file contents exists with human-readable contents', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAll () {
+              return ['README.md']
+            },
+            getFileContents () {
+              return 'foo'
+            },
+            targetDir: '.'
+          },
+          files: ['README*'],
+          content: '[abcdef][oO0][^q]',
+          'human-readable-content': 'actually foo'
+        }
+      }
+
+      const expected = [
+        new Result(
+            rule,
+            'File README.md contains actually foo',
+            'README.md',
+            true
+          )
+      ]
+
+      const actual = fileContents(null, rule)
+      expect(actual).to.deep.equal(expected)
+    })
+
     it('returns fails if requested file contents does not exist', () => {
       const rule = {
         options: {

@@ -12,10 +12,14 @@ module.exports = function (fileSystem, rule) {
     const regexp = new RegExp(options.content, options.flags)
 
     const passed = fileContents && fileContents.toString().search(regexp) !== -1
-    const message = `File ${file} ${passed ? 'contains' : 'doesn\'t contain'} ${options.content}`
+    const message = `File ${file} ${passed ? 'contains' : 'doesn\'t contain'} ${getContent()}`
 
     return new Result(rule, message, file, passed)
   })
+
+  function getContent () {
+    return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content
+  }
 
   return results
 }
