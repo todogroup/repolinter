@@ -146,7 +146,7 @@ Rules can be configured to only run if the repository contains a specific langua
 The rules system is made up of rule types which can be customized to fit your needs.
 
 ### directory-existence
-Fails if none of the directories specified in the ```directories``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user. Pass in ```"nocase": "true"``` in the options for a case-insensitive search.
+Fails if none of the directories specified in the ```directories``` option exist. Pass in a ```fail-message``` option to further explain why the directory should exist to the user. Pass in ```"nocase": "true"``` in the options for a case-insensitive search.
 
 ### file-contents
 Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular expression or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output.
