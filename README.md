@@ -4,17 +4,19 @@ Lint open source repositories for common issues.
 
 ## Usage
 
-To run against a directory, add it to the command line `bin/repolinter.js /my/code/dir`.
+To run against a directory, add it to the command line `npx repolinter /my/code/dir`.
 
-To run against a git repository, use the `--git` option: `bin/repolinter.js --git https://my.git.code/awesome`.
+To run against a git repository, use the `--git` option: `npx repolinter --git https://my.git.code/awesome`.
+
+Note, if you are running a version of npm < 5.2.0, run `npm install npx` first.
 
 ## Examples
 
-To quickly get started, checkout this repository and run `repolinter` against itself.
+To quickly get started, checkout this repository and run `npx repolinter` against itself.
 
 ```
 git clone https://github.com/todogroup/repolinter
-bin/repolinter.js
+npx repolinter
 ✔ license-file-exists: found (LICENSE)
 ✔ readme-file-exists: found (README.md)
 ✔ contributing-file-exists: found (CONTRIBUTING)
