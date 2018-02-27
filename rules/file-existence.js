@@ -13,7 +13,7 @@ module.exports = function (fileSystem, rule) {
     if (passed) {
       return `found (${file})`
     } else {
-      return `not found: (${options.files.join(', ')})`
+      return `not found: (${options.files.join(', ')})${options['fail-message'] !== undefined ? ' ' + options['fail-message'] : ''}`
     }
   })()
 

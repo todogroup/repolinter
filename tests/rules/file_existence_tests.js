@@ -63,5 +63,33 @@ describe('rule', () => {
 
       expect(actual).to.deep.equal(expected)
     })
+
+    it('returns a failure result if requested file doesn\'t exist with a failure message', () => {
+      const rule = {
+        options: {
+          fs: {
+            findFirst () {
+            },
+            targetDir: '.'
+          },
+          files: ['LICENSE*'],
+          name: 'License file',
+          'fail-message': 'The license file should exist.'
+        }
+      }
+
+      const expected = [
+        new Result(
+            rule,
+            'not found: (LICENSE*) The license file should exist.',
+            null,
+            false
+          )
+      ]
+
+      const actual = fileExistence(null, rule)
+
+      expect(actual).to.deep.equal(expected)
+    })
   })
 })

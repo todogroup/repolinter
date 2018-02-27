@@ -149,7 +149,7 @@ Fails if none of the directories specified in the ```directories``` option exist
 Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option.
 
 ### file-existence
-Fails if none of the files specified in the ```files``` option exist.
+Fails if none of the files specified in the ```files``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user.
 
 ### file-not-contents
 The opposite of ```file-contents```.
