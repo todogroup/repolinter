@@ -5,9 +5,16 @@ const linguist = require('../lib/linguist')
 module.exports = function (targetDir) {
   let languages = []
   try {
-    languages = linguist.identifyLanguagesSync(targetDir).map(language => language.toLowerCase())
+    jsonObj = linguist.identifyLanguagesSync(targetDir)
+    for(var language in jsonObj) {
+      languages.push(language.toLowerCase())
+    }
   } catch (error) {
-    console.log(`Linguist Axiom: Linguist not found in path, only running language-independent rules`)
+    if(error.message === 'Linguist not installed') {
+      console.log(`Linguist Axiom: Linguist not found in path, only running language-independent rules`)
+    } else {
+      console.log(error)
+    }
   }
   return languages
 }
