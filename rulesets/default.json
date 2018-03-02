@@ -13,7 +13,7 @@
       "binaries-not-present:file-type-exclusion": ["error", {"type": ["**/*.exe", "**/*.dll"]}],
       "license-detectable-by-licensee": ["error"],
       "test-directory-exists:directory-existence": ["error", {"directories": ["**/test*", "**/specs"], "nocase": "true"}],
-      "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml", "Jenkinsfile"]}],
+      "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml", ".circleci/config.yml", "Jenkinsfile"]}],
       "code-of-conduct-file-contains-email:file-contents": [
         "error",
         {
