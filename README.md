@@ -22,12 +22,14 @@ npx repolinter
 ✔ license-file-exists: found (LICENSE)
 ✔ readme-file-exists: found (README.md)
 ✔ contributing-file-exists: found (CONTRIBUTING)
+✔ code-of-conduct-file-exists: found (CODE-OF-CONDUCT)
 ✔ readme-references-license: File README.md contains license
 ✔ binaries-not-present: Excluded file type doesn't exist (**/*.exe,**/*.dll)
 ✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
 ✔ test-directory-exists: found (tests)
 ✔ integrates-with-ci: found (.travis.yml)
-✔ source-license-headers-exist: The first 5 lines of 'bin/repolinter.js' contain all of the requested patterns.
+✔ source-license-headers-exist: The first 5 lines of 'index.js' contain all of the requested patterns.
+...
 ✔ package-metadata-exists: found (Gemfile)
 ✔ package-metadata-exists: found (package.json)
 ```
