@@ -61,7 +61,7 @@ All languages:
 * [readme-file-exists](#readme-file-exists)
 * [contributing-file-exists](#contributing-file-exists)
 * [code-of-conduct-file-exists](#code-of-conduct-file-exists)
-* [support-file-exists](#code-of-conduct-file-exists)
+* [support-file-exists](#support-file-exists)
 * [readme-references-license](#readme-references-license)
 * [binaries-not-present](#binaries-not-present)
 * [license-detectable-by-licensee](#license-detectable-by-licensee)
