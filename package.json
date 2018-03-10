@@ -37,6 +37,7 @@
     "jsonfile": "^3.0.0",
     "log-symbols": "^1.0.2",
     "matched": "^0.4.4",
+    "npm": "^5.7.1",
     "path": "^0.12.7",
     "rimraf": "^2.6.1",
     "simple-git": "^1.73.0",

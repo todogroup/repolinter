@@ -61,6 +61,7 @@ All languages:
 * [readme-file-exists](#readme-file-exists)
 * [contributing-file-exists](#contributing-file-exists)
 * [code-of-conduct-file-exists](#code-of-conduct-file-exists)
+* [support-file-exists](#support-file-exists)
 * [readme-references-license](#readme-references-license)
 * [binaries-not-present](#binaries-not-present)
 * [license-detectable-by-licensee](#license-detectable-by-licensee)
@@ -79,6 +80,9 @@ Fails if there isn't a file matching ```CONTRIB*``` in the root of the target di
 
 ### code-of-conduct-file-exists
 Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``` or ```CODE_OF_CONDUCT*``` in the root of the target directory.
+
+### support-file-exists
+Fails if there isn't a file matching ```SUPPORT*``` in the root of the target directory. See https://blog.github.com/2017-07-20-support-file-support/ for more details.
 
 ### code-of-conduct-file-contains-email
 Fails of the code of conduct file does not contain an email address.
