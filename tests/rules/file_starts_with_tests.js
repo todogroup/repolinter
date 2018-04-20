@@ -1,5 +1,5 @@
 // Copyright 2017 TODO Group. All rights reserved.
-// Licensed under the Apache License, Version 2.0.
+// SPDX-License-Identifier: Apache-2.0
 
 const chai = require('chai')
 const expect = chai.expect
@@ -15,7 +15,7 @@ describe('rule', () => {
         options: {
           files: ['rules/file-starts-with.js'],
           lineCount: 2,
-          patterns: ['Copyright', 'All rights reserved', 'Licensed under']
+          patterns: ['Copyright', 'License']
         }
       }
 

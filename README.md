@@ -197,4 +197,4 @@ This rule requires ```licensee``` in the path, see [command line dependencies](#
 
 ## License
 
-This project is licensed under the [Apache 2.0](LICENSE) license.
+This project is licensed under the [Apache 2.0](LICENSE) license using http://reuse.software best practice.
