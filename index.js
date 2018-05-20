@@ -61,7 +61,7 @@ module.exports.lint = function (targetDir, filterPaths = []) {
             const ruleFunction = require(path.join(__dirname, 'rules', rule.module))
             results = ruleFunction(fileSystem, rule)
 
-            anyFailures = results.some(result => !result.passed && result.level === 'error')
+            anyFailures = results.some(result => !result.passed && result.rule.level === 'error')
           } catch (error) {
             results.push(new Result(rule, error.message, null, false))
           }
