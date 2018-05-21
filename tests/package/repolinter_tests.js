@@ -22,5 +22,10 @@ describe('package', () => {
 
       console.log = log
     })
+
+    it('returns error code', () => {
+      repolinter.lint(path.resolve('tests/package'))
+      expect(process.exitCode).to.equal(1)
+    })
   })
 })
