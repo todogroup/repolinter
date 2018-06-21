@@ -15,7 +15,7 @@ module.exports.resultFormatter = exports.defaultFormatter
 module.exports.outputInfo = console.log
 module.exports.outputResult = console.log
 
-module.exports.lint = function (targetDir, filterPaths = []) {
+module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
   fileSystem.targetDir = targetDir
   exports.outputInfo(`Target directory: ${targetDir}`)
   if (filterPaths.length > 0) {
@@ -23,13 +23,13 @@ module.exports.lint = function (targetDir, filterPaths = []) {
     fileSystem.filterPaths = filterPaths
   }
 
-  let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
-  rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
-  rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
-
-  exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
-  const ruleset = jsonfile.readFileSync(rulesetPath)
-
+  if (!ruleset){
+    let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
+    rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
+    rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
+    exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
+    ruleset = jsonfile.readFileSync(rulesetPath);
+  }
   let targets = ['all']
 
   // Identify axioms and execute them
@@ -46,7 +46,7 @@ module.exports.lint = function (targetDir, filterPaths = []) {
   let anyFailures = false
   // Execute all rule targets
   
-  // global variable for return statement 
+  // global variable for return statement
   let evaluation = new Array();
   targets.forEach(target => {
     const targetRules = ruleset.rules[target]
@@ -134,3 +134,5 @@ module.exports.lint = function (targetDir, filterPaths = []) {
     return 'error'
   }
 }
+
+
