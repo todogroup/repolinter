@@ -21,8 +21,8 @@ function listFiles (fileSystem, options) {
   const commits = gitAllCommits(fileSystem.targetDir)
   commits.forEach((commit) => {
     const includedFiles = gitFilesAtCommit(fileSystem.targetDir, commit)
-                          .filter(file => file.match(pattern))
-                          .filter(file => fileSystem.shouldInclude(file))
+      .filter(file => file.match(pattern))
+      .filter(file => fileSystem.shouldInclude(file))
     includedFiles.forEach(path => {
       const existingFile = files.find(f => f.path === path)
       if (existingFile) {

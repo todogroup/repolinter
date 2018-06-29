@@ -25,11 +25,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-           rule,
-           'No blacklisted paths found in any commits.\n\tBlacklist: rules/git-list-TREE\\.js',
-           null,
-           true
-         )
+          rule,
+          'No blacklisted paths found in any commits.\n\tBlacklist: rules/git-list-TREE\\.js',
+          null,
+          true
+        )
       ]
       const actual = gitListTree(new FileSystem(), rule)
 

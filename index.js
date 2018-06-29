@@ -23,12 +23,12 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
     fileSystem.filterPaths = filterPaths
   }
 
-  if (!ruleset){
+  if (!ruleset) {
     let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
     rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
     rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
     exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
-    ruleset = jsonfile.readFileSync(rulesetPath);
+    ruleset = jsonfile.readFileSync(rulesetPath)
   }
   let targets = ['all']
 
@@ -45,9 +45,9 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
 
   let anyFailures = false
   // Execute all rule targets
-  
+
   // global variable for return statement
-  let evaluation = new Array();
+  let evaluation = []
   targets.forEach(target => {
     const targetRules = ruleset.rules[target]
     if (targetRules) {
@@ -58,31 +58,31 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
         rule.module = ruleIdParts.length === 2 ? ruleIdParts[1] : ruleIdParts[0]
         if (rule.enabled) {
           // TODO: Do something more secure
-          let results = new Array();
+          let results = []
           try {
             const ruleFunction = require(path.join(__dirname, 'rules', rule.module))
             results = ruleFunction(fileSystem, rule)
-            evaluation.push(results);
+            evaluation.push(results)
             anyFailures = anyFailures || results.some(result => !result.passed && result.rule.level === 'error')
           } catch (error) {
             results.push(new Result(rule, error.message, null, false))
-            evaluation.push(results);
+            evaluation.push(results)
           }
         }
       })
     }
-  });
+  })
 
-  evaluation.forEach(singleResult =>{
+  evaluation.forEach(singleResult => {
     renderResults(singleResult.filter(result => !result.passed))
     renderResults(singleResult.filter(result => result.passed))
-  });
+  })
 
   if (anyFailures) {
     process.exitCode = 1
   }
 
-  return evaluation;
+  return evaluation
 
   function renderResults (results) {
     formatResults(results).filter(x => !!x).forEach(renderResult)

@@ -51,11 +51,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            `The first 5 lines of 'somefile.js' do not contain the patterns:\n\tCopyright\n\tRights`,
-            'somefile.js',
-            false
-          )
+          rule,
+          `The first 5 lines of 'somefile.js' do not contain the patterns:\n\tCopyright\n\tRights`,
+          'somefile.js',
+          false
+        )
       ]
 
       const actual = fileStartsWith(null, rule)

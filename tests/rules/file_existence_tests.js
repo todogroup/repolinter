@@ -25,11 +25,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'found (LICENSE.md)',
-            'LICENSE.md',
-            true
-          )
+          rule,
+          'found (LICENSE.md)',
+          'LICENSE.md',
+          true
+        )
       ]
 
       const actual = fileExistence(null, rule)
@@ -55,11 +55,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'found (LICENSE.md)',
-            'LICENSE.md',
-            true
-          )
+          rule,
+          'found (LICENSE.md)',
+          'LICENSE.md',
+          true
+        )
       ]
 
       const actual = fileExistence(null, rule)
@@ -82,11 +82,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'not found: (LICENSE*)',
-            null,
-            false
-          )
+          rule,
+          'not found: (LICENSE*)',
+          null,
+          false
+        )
       ]
 
       const actual = fileExistence(null, rule)
@@ -110,11 +110,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'not found: (LICENSE*) The license file should exist.',
-            null,
-            false
-          )
+          rule,
+          'not found: (LICENSE*) The license file should exist.',
+          null,
+          false
+        )
       ]
 
       const actual = fileExistence(null, rule)

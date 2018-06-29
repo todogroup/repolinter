@@ -28,11 +28,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'File README.md doesn\'t contain bar',
-            'README.md',
-            true
-          )
+          rule,
+          'File README.md doesn\'t contain bar',
+          'README.md',
+          true
+        )
       ]
 
       const actual = fileContents(null, rule)
@@ -58,11 +58,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'File README.md contains foo',
-            'README.md',
-            false
-          )
+          rule,
+          'File README.md contains foo',
+          'README.md',
+          false
+        )
       ]
 
       const actual = fileContents(null, rule)

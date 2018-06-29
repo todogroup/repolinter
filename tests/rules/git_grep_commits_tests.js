@@ -25,11 +25,11 @@ describe('rule', () => {
       }
       const expected = [
         new Result(
-            rule,
-            'No blacklisted words found in any commits.\n\tBlacklist: COPYRIGHT 2017 TODO GROUP\\. ALL RIGHTS RESERVED\\.',
-            null,
-            true
-          )
+          rule,
+          'No blacklisted words found in any commits.\n\tBlacklist: COPYRIGHT 2017 TODO GROUP\\. ALL RIGHTS RESERVED\\.',
+          null,
+          true
+        )
       ]
       const actual = gitGrepCommits(new FileSystem(), rule)
 
