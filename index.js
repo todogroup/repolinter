@@ -66,6 +66,7 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
             anyFailures = anyFailures || results.some(result => !result.passed && result.rule.level === 'error')
           } catch (error) {
             results.push(new Result(rule, error.message, null, false))
+            evaluation.push(results);
           }
         }
       })
@@ -77,7 +78,9 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
     renderResults(singleResult.filter(result => result.passed))
   });
 
-  if (anyFailures) process.exitCode = 1;
+  if (anyFailures) {
+    process.exitCode = 1
+  }
 
   return evaluation;
 
@@ -134,5 +137,3 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
     return 'error'
   }
 }
-
-
