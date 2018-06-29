@@ -26,11 +26,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'No blacklisted words found in any commit messages.\n\tBlacklist: THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES',
-            null,
-            true
-          )
+          rule,
+          'No blacklisted words found in any commit messages.\n\tBlacklist: THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES',
+          null,
+          true
+        )
       ]
       const actual = gitGrepLog(new FileSystem(), rule)
 

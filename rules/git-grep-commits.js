@@ -11,7 +11,7 @@ function listCommitsWithLines (fileSystem, options) {
     return {
       hash: commit,
       lines: gitLinesAtCommit(fileSystem.targetDir, pattern, options.ignoreCase, commit)
-               .filter(line => fileSystem.shouldInclude(line.path))
+        .filter(line => fileSystem.shouldInclude(line.path))
     }
   }).filter(commit => commit.lines.length > 0)
 }
@@ -28,10 +28,10 @@ function gitGrep (targetDir, pattern, ignoreCase, commit) {
 
 function gitLinesAtCommit (targetDir, pattern, ignoreCase, commit) {
   const lines = gitGrep(targetDir, pattern, ignoreCase, commit)
-                  .map((entry) => {
-                    const [path, ...rest] = entry.substring(commit.length + 1).split(':')
-                    return { path: path, content: rest.join(':') }
-                  })
+    .map((entry) => {
+      const [path, ...rest] = entry.substring(commit.length + 1).split(':')
+      return { path: path, content: rest.join(':') }
+    })
 
   return lines
 }

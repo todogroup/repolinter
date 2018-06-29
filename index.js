@@ -15,7 +15,7 @@ module.exports.resultFormatter = exports.defaultFormatter
 module.exports.outputInfo = console.log
 module.exports.outputResult = console.log
 
-module.exports.lint = function (targetDir, filterPaths = []) {
+module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
   fileSystem.targetDir = targetDir
   exports.outputInfo(`Target directory: ${targetDir}`)
   if (filterPaths.length > 0) {
@@ -23,13 +23,13 @@ module.exports.lint = function (targetDir, filterPaths = []) {
     fileSystem.filterPaths = filterPaths
   }
 
-  let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
-  rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
-  rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
-
-  exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
-  const ruleset = jsonfile.readFileSync(rulesetPath)
-
+  if (!ruleset) {
+    let rulesetPath = findConfig('repolint.json', {cwd: targetDir})
+    rulesetPath = rulesetPath || findConfig('repolinter.json', {cwd: targetDir})
+    rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
+    exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
+    ruleset = jsonfile.readFileSync(rulesetPath)
+  }
   let targets = ['all']
 
   // Identify axioms and execute them
@@ -44,8 +44,10 @@ module.exports.lint = function (targetDir, filterPaths = []) {
   }
 
   let anyFailures = false
-
   // Execute all rule targets
+
+  // global variable for return statement
+  let evaluation = []
   targets.forEach(target => {
     const targetRules = ruleset.rules[target]
     if (targetRules) {
@@ -60,21 +62,27 @@ module.exports.lint = function (targetDir, filterPaths = []) {
           try {
             const ruleFunction = require(path.join(__dirname, 'rules', rule.module))
             results = ruleFunction(fileSystem, rule)
-
+            evaluation.push(results)
             anyFailures = anyFailures || results.some(result => !result.passed && result.rule.level === 'error')
           } catch (error) {
             results.push(new Result(rule, error.message, null, false))
+            evaluation.push(results)
           }
-          renderResults(results.filter(result => !result.passed))
-          renderResults(results.filter(result => result.passed))
         }
       })
     }
   })
 
+  evaluation.forEach(singleResult => {
+    renderResults(singleResult.filter(result => !result.passed))
+    renderResults(singleResult.filter(result => result.passed))
+  })
+
   if (anyFailures) {
     process.exitCode = 1
   }
+
+  return evaluation
 
   function renderResults (results) {
     formatResults(results).filter(x => !!x).forEach(renderResult)
@@ -94,7 +102,6 @@ module.exports.lint = function (targetDir, filterPaths = []) {
 
   function parseRule (configItem) {
     const rule = {}
-
     if (Array.isArray(configItem) && configItem.length > 0) {
       rule.enabled = parseEnabled(configItem[0])
       rule.level = parseLevel(configItem[0])

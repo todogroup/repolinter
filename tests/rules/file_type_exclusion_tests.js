@@ -24,11 +24,11 @@ describe('rule', () => {
 
       const expected = [
         new Result(
-            rule,
-            'Excluded file type doesn\'t exist (*.dll)',
-            null,
-            true
-          )
+          rule,
+          'Excluded file type doesn\'t exist (*.dll)',
+          null,
+          true
+        )
       ]
       const actual = fileTypeExclusion(null, rule)
 
@@ -49,11 +49,11 @@ describe('rule', () => {
       }
       const expected = [
         new Result(
-            rule,
-            'Excluded file type exists (foo.dll)',
-            'foo.dll',
-            false
-          )
+          rule,
+          'Excluded file type exists (foo.dll)',
+          'foo.dll',
+          false
+        )
       ]
       const actual = fileTypeExclusion(null, rule)
 
