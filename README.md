@@ -42,7 +42,7 @@ npm install log-symbols
 ```
 Repolinter will use https://github.com/benbalter/licensee and https://github.com/github/linguist when installed.
 
-Licensee will lead to a test being done to see if the project's licensee is identified by Licensee.
+Licensee will lead to a test being done to see if the project's licensee is identified by Licensee. Version 9.9.0 or later is needed, older versions will probably cause errors.
 
 Linguist allows per-language tests to be performed.
 
