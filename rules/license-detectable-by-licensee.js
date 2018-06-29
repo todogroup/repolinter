@@ -1,28 +1,25 @@
-// Copyright 2017 TODO Group. All rights reserved.
+// Copyright 2018 TODO Group. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-const isWindows = require('is-windows')
-const spawnSync = require('child_process').spawnSync
+const licensee = require('../lib/licensee')
 const Result = require('../lib/result')
 
 module.exports = function (fileSystem, rule) {
-  const expected = /License: ([^\n]+)/
-
-  const licenseeOutput = spawnSync(isWindows() ? 'licensee.bat' : 'licensee', [fileSystem.targetDir]).stdout
-
   let result = new Result(rule, '', null, false)
-  if (licenseeOutput == null) {
-    result.message = 'Licensee is not installed'
+
+  let licenses = []
+  try {
+    licenses = licensee.identifyLicensesSync(fileSystem.targetDir)
+  } catch (error) {
+    result.message = error.message
     return [result]
   }
 
-  const license = licenseeOutput.toString().match(expected)
-  result.passed = license != null
-
+  result.passed = licenses.length > 0
   result.message = (() => {
     if (result.passed) {
       // License: Apache License 2.0
-      const identified = license[1]
+      const identified = licenses[0]
       return `Licensee identified the license for project: ${identified}`
     } else {
       return 'Licensee did not identify a license for project'
