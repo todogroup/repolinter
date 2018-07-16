@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0.
 
 const linguist = require('../lib/linguist')
-module.exports = function (targetDir) {
+module.exports = function (fileSystem) {
   let languages = []
   try {
-    var jsonObj = linguist.identifyLanguagesSync(targetDir)
+    var jsonObj = linguist.identifyLanguagesSync(fileSystem.targetDir)
     for (var language in jsonObj) {
       languages.push(language.toLowerCase())
     }

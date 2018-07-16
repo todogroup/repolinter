@@ -1,7 +1,8 @@
 {
   "axioms": {
     "linguist":"language",
-    "licensee":"license"
+    "licensee":"license",
+    "packagers":"packager"
   },
   "rules": {
     "all": {

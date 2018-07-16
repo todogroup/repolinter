@@ -154,9 +154,40 @@ To configure a rule's options change the second argument of the rule to an objec
 }
 ```
 
-### Language-specific rules
-Rules can be configured to only run if the repository contains a specific language. Languages are detected using Linguist which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
+### Axioms: Running rules only in certain situations
+Rules can be configured to only run if the repository passes a particular test or 'axiom'.
 
+Axioms are defined in an axiom block in the ruleset. For example:
+
+```
+  "axioms": {
+    "linguist":"language",
+    "licensee":"license"
+  }
+```
+
+This will run both the linguist and licensee axioms and put their output into 'language' and 'license' respectively.
+
+The axioms are then tied to rules. For example, the following rule will only run when the linguist axiom has put the value 'java' into the language value:
+
+```
+    "language=java": {
+      "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
+    }
+```
+
+You can also match any response by using a '\*'; however note that currently there is no wildcard matching, ie: you couldn't match 'j*' to get both java and javascript.
+
+There are currently three axioms defined:
+
+#### Linguist
+Languages are detected using Linguist which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
+
+#### Licensee
+Licenses are detected using Licensee which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
+
+#### Packagers
+Package systems (for example Maven, NPM and PyPI) are detected by looking for certain common filenames. See the axioms/packagers.js file for the full mapping. 
 
 ## Rules
 
