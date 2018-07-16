@@ -3,6 +3,7 @@
 
 const jsonfile = require('jsonfile')
 const path = require('path')
+const fs = require('fs')
 const findConfig = require('find-config')
 const Result = require('./lib/result')
 const FileSystem = require('./lib/file_system')
@@ -15,7 +16,7 @@ module.exports.resultFormatter = exports.defaultFormatter
 module.exports.outputInfo = console.log
 module.exports.outputResult = console.log
 
-module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
+module.exports.lint = function lint (targetDir, filterPaths = [], ruleset = null) {
   fileSystem.targetDir = targetDir
   exports.outputInfo(`Target directory: ${targetDir}`)
   if (filterPaths.length > 0) {
@@ -61,10 +62,20 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
           // TODO: Do something more secure
           let results = []
           try {
-            const ruleFunction = require(path.join(__dirname, 'rules', rule.module))
-            results = ruleFunction(fileSystem, rule)
-            evaluation.push(results)
-            anyFailures = anyFailures || results.some(result => !result.passed && result.rule.level === 'error')
+            // Does a .js file exist?
+            let ruleFile = path.join(__dirname, 'rules', rule.module)
+            if (fs.existsSync(ruleFile + '.js')) {
+              const ruleFunction = require(ruleFile)
+              results = ruleFunction(fileSystem, rule)
+              evaluation.push(results)
+              anyFailures = anyFailures || results.some(result => !result.passed && result.rule.level === 'error')
+            } else
+            // Otherwise, does a .json file exist?
+            if (fs.existsSync(ruleFile + '.json')) {
+              // We have a json file and need to recurse into this code
+              let childRuleset = jsonfile.readFileSync(ruleFile + '.json')
+              lint(targetDir, filterPaths, childRuleset)
+            }
           } catch (error) {
             results.push(new Result(rule, error.message, null, false))
             evaluation.push(results)
