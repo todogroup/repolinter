@@ -159,18 +159,22 @@ Rules can be configured to only run if the repository passes a particular test o
 
 Axioms are defined in an axiom block in the ruleset. For example:
 
+```
   "axioms": {
     "linguist":"language",
     "licensee":"license"
   }
+```
 
 This will run both the linguist and licensee axioms and put their output into 'language' and 'license' respectively.
 
 The axioms are then tied to rules. For example, the following rule will only run when the linguist axiom has put the value 'java' into the language value:
 
+```
     "language=java": {
       "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
     }
+```
 
 You can also match any response by using a '*'; however note that currently there is no wildcard matching, ie: you couldn't match 'j*' to get both java and javascript.
 
