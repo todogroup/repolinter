@@ -232,6 +232,9 @@ Fails if Licensee doesn't detect the repository's license.
 
 This rule requires ```licensee``` in the path, see [command line dependencies](#command-line-dependencies) for details.
 
+## Implementing Rules
+
+Rules are written in JavaScript (see the rules/ directory for examples). A rule can also be written in JSON as a 'rule set' (i.e. a configuraton of rules) allowing rules to be composed from smaller items. The rules/apache-notice.json is an example of a rule implemented in JSON.
 
 ## License
 
