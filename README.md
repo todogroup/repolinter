@@ -30,6 +30,8 @@ npx repolinter
 ✔ integrates-with-ci: found (.travis.yml)
 ✔ source-license-headers-exist: The first 5 lines of 'index.js' contain all of the requested patterns.
 ...
+✔ github-issue-template-exists: found (ISSUE_TEMPLATE)
+✔ github-pull-request-template-exists: found (PULL_REQUEST_TEMPLATE)
 ✔ package-metadata-exists: found (Gemfile)
 ✔ package-metadata-exists: found (package.json)
 ```
@@ -103,6 +105,11 @@ Produces a failure for each file matching ```**/*.js,!node_modules/**``` option 
 ### test-directory-exists
 Fails if there isn't a directory matching ```test*``` or ```specs``` in the directory tree of the target directory.
 
+### github-issue-template-exists
+Fails if there isn't a file matching ```ISSUE_TEMPLATE*``` in the root of the target directory or under the ```.github``` directory. See https://blog.github.com/2016-02-17-issue-and-pull-request-templates/ for more details.
+
+### github-pull-request-template-exists
+Fails if there isn't a file matching ```PULL_REQUEST_TEMPLATE*``` in the root of the target directory or under the ```.github``` directory. See https://blog.github.com/2016-02-17-issue-and-pull-request-templates/ for more details.
 
 ## Configuring rules
 
