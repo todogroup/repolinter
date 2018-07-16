@@ -176,7 +176,7 @@ The axioms are then tied to rules. For example, the following rule will only run
     }
 ```
 
-You can also match any response by using a '*'; however note that currently there is no wildcard matching, ie: you couldn't match 'j*' to get both java and javascript.
+You can also match any response by using a '\*'; however note that currently there is no wildcard matching, ie: you couldn't match 'j*' to get both java and javascript.
 
 There are currently three axioms defined:
 
