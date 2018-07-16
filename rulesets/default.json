@@ -12,7 +12,6 @@
       "support-file-exists:file-existence": ["error", {"files": ["SUPPORT*"], "nocase": "true"}],
       "readme-references-license:file-contents": ["error", {"files": ["README*"], "content": "license", "flags": "i"}],
       "binaries-not-present:file-type-exclusion": ["error", {"type": ["**/*.exe", "**/*.dll", "!node_modules/**"]}],
-      "license-detectable-by-licensee": ["error"],
       "test-directory-exists:directory-existence": ["error", {"directories": ["**/test*", "**/specs"], "nocase": "true"}],
       "integrates-with-ci:file-existence": ["error", {"files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", "circle.yml", ".circleci/config.yml", "Jenkinsfile"]}],
       "code-of-conduct-file-contains-email:file-contents": [
@@ -35,7 +34,10 @@
     "language=java": {
       "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
     },
-    "license=Apache License 2.0": {
+    "license=*": {
+      "license-detectable-by-licensee": ["error"]
+    },
+    "license=Apache-2.0": {
       "notice-file-exists:file-existence": [
         "error",
         {

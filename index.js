@@ -39,6 +39,7 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
       // TODO: Do something more secure
       // Execute axiom
       const axiomFunction = require(path.join(__dirname, 'axioms', axiomId))
+      targets = targets.concat(axiomName + '=*')
       targets = targets.concat(axiomFunction(targetDir).map(axiomOutput => axiomName + '=' + axiomOutput))
     })
   }
