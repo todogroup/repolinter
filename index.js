@@ -40,7 +40,7 @@ module.exports.lint = function (targetDir, filterPaths = [], ruleset = null) {
       // Execute axiom
       const axiomFunction = require(path.join(__dirname, 'axioms', axiomId))
       targets = targets.concat(axiomName + '=*')
-      targets = targets.concat(axiomFunction(targetDir).map(axiomOutput => axiomName + '=' + axiomOutput))
+      targets = targets.concat(axiomFunction(fileSystem).map(axiomOutput => axiomName + '=' + axiomOutput))
     })
   }
 
