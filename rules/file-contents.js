@@ -8,6 +8,11 @@ module.exports = function (fileSystem, rule) {
   const fs = options.fs || fileSystem
   const files = fs.findAll(options.files)
 
+  if (files.length === 0 && options['fail-on-non-existent']) {
+    const message = `not found: (${options.files.join(', ')})`
+    return [new Result(rule, message, options.files, false)]
+  }
+
   const results = files.map(file => {
     const fileContents = fs.getFileContents(file)
     const regexp = new RegExp(options.content, options.flags)
