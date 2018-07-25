@@ -113,7 +113,7 @@ describe('rule', () => {
             },
             targetDir: '.'
           },
-          file: 'README.md',
+          files: ['README.md'],
           content: 'foo'
         }
       }
