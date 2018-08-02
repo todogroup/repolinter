@@ -113,13 +113,44 @@ describe('rule', () => {
             },
             targetDir: '.'
           },
-          file: 'README.md',
+          files: ['README.md'],
           content: 'foo'
         }
       }
 
       const actual = fileContents(null, rule)
       const expected = []
+      expect(actual).to.deep.equal(expected)
+    })
+
+    it('returns failure if file does not exist with failure flag', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAll () {
+              return []
+            },
+            getFileContents () {
+
+            },
+            targetDir: '.'
+          },
+          files: ['README.md', 'READMOI.md'],
+          content: 'foo',
+          'fail-on-non-existent': true
+        }
+      }
+
+      const actual = fileContents(null, rule)
+      const expected = [
+        new Result(
+          rule,
+          'not found: (README.md, READMOI.md)',
+          ['README.md', 'READMOI.md'],
+          false
+        )
+      ]
+
       expect(actual).to.deep.equal(expected)
     })
   })
