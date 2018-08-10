@@ -187,7 +187,7 @@ Languages are detected using Linguist which must be in your path, see [command l
 Licenses are detected using Licensee which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
 
 #### Packagers
-Package systems (for example Maven, NPM and PyPI) are detected by looking for certain common filenames. See the axioms/packagers.js file for the full mapping. 
+Package systems (for example Maven, NPM and PyPI) are detected by looking for certain common filenames. See the axioms/packagers.js file for the full mapping.
 
 ## Rules
 
