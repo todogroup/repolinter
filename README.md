@@ -187,7 +187,7 @@ Languages are detected using Linguist which must be in your path, see [command l
 Licenses are detected using Licensee which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
 
 #### Packagers
-Package systems (for example Maven, NPM and PyPI) are detected by looking for certain common filenames. See the axioms/packagers.js file for the full mapping. 
+Package systems (for example Maven, NPM and PyPI) are detected by looking for certain common filenames. See the axioms/packagers.js file for the full mapping.
 
 ## Rules
 
@@ -197,7 +197,7 @@ The rules system is made up of rule types which can be customized to fit your ne
 Fails if none of the directories specified in the ```directories``` option exist. Pass in a ```fail-message``` option to further explain why the directory should exist to the user. Pass in ```"nocase": "true"``` in the options for a case-insensitive search.
 
 ### file-contents
-Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular expression or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output.
+Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular expression or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output. By default, no output is returned if no file exists given the inputs. Use the ```fail-on-non-existent``` option to return a failure.
 
 ### file-existence
 Fails if none of the files specified in the ```files``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user. Pass in ```"nocase": "true"``` in the options for a case-insensitive search.
