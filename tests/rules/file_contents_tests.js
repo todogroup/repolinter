@@ -146,7 +146,7 @@ describe('rule', () => {
         new Result(
           rule,
           'not found: (README.md, READMOI.md)',
-          ['README.md', 'READMOI.md'],
+          null,
           false
         )
       ]
