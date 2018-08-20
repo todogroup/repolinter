@@ -10,7 +10,7 @@ module.exports = function (fileSystem, rule) {
 
   if (files.length === 0 && options['fail-on-non-existent']) {
     const message = `not found: (${options.files.join(', ')})`
-    return [new Result(rule, message, options.files, false)]
+    return [new Result(rule, message, null, false)]
   }
 
   const results = files.map(file => {
