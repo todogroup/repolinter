@@ -63,6 +63,20 @@ describe('rule', () => {
       expect(actual).to.deep.equal(expected)
     })
 
+    it('returns empty list if file is image skip binary files is enabled', () => {
+      const rule = {
+        options: {
+          'skip-binary-files': true,
+          files: ['docs/images/P_RepoLinter01_logo_only.png'],
+          lineCount: 5,
+          patterns: ['javascript', 'Copyright', 'Rights']
+        }
+      }
+
+      const actual = fileStartsWith(new FileSystem(), rule)
+      expect(actual.length).to.equal(0)
+    })
+
     it('returns an empty list if the request files don\'t exist', () => {
       const rule = {
         options: {

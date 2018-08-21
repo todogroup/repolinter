@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "find-config": "^1.0.0",
+    "isbinaryfile": "^3.0.3",
     "jsonfile": "^3.0.0",
     "log-symbols": "^1.0.2",
     "matched": "^0.4.4",
