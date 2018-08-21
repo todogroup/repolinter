@@ -6,7 +6,7 @@ const Result = require('../lib/result')
 module.exports = function (fileSystem, rule) {
   const options = rule.options
   const fs = options.fs || fileSystem
-  const files = fs.findAll(options.files)
+  const files = fs.findAllFiles(options.files, options.nocase === true)
 
   let results = []
   files.forEach(file => {
