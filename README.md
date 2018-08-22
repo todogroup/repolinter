@@ -203,7 +203,7 @@ Fails if the content of any of the files specified in the ```files``` option doe
 Fails if none of the files specified in the ```files``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user. Pass in ```"nocase": "true"``` in the options for a case-insensitive search.
 
 ### file-not-contents
-The opposite of ```file-contents```.
+The opposite of ```file-contents```. By default, no output is returned if no file exists given the inputs. Use the ```succeed-on-non-existent``` option to return a success result.
 
 ### file-starts-with
 Produces a failure for each file matching the ```files``` option if the first ```lineCount``` lines don't match all of the regular expressions specified in the ```patterns``` option.
