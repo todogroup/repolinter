@@ -10,10 +10,10 @@
       "readme-file-exists:file-existence": ["error", {"files": ["README*"]}],
       "contributing-file-exists:file-existence": ["error", {"files": ["CONTRIB*"]}],
       "code-of-conduct-file-exists:file-existence": ["error", {"files": ["CODEOFCONDUCT*", "CODE-OF-CONDUCT*", "CODE_OF_CONDUCT*"]}],
-      "support-file-exists:file-existence": ["error", {"files": ["SUPPORT*"], "nocase": "true"}],
+      "support-file-exists:file-existence": ["error", {"files": ["SUPPORT*"], "nocase": true}],
       "readme-references-license:file-contents": ["error", {"files": ["README*"], "content": "license", "flags": "i"}],
       "binaries-not-present:file-type-exclusion": ["error", {"type": ["**/*.exe", "**/*.dll", "!node_modules/**"]}],
-      "test-directory-exists:directory-existence": ["error", {"directories": ["**/test*", "**/specs"], "nocase": "true"}],
+      "test-directory-exists:directory-existence": ["error", {"directories": ["**/test*", "**/specs"], "nocase": true}],
       "integrates-with-ci:file-existence": [
         "error",
         {

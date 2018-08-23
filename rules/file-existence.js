@@ -6,7 +6,7 @@ const Result = require('../lib/result')
 module.exports = function (fileSystem, rule) {
   const options = rule.options
   const fs = options.fs || fileSystem
-  const file = fs.findFirst(options.files, options.nocase === 'true')
+  const file = fs.findFirstFile(options.files, options.nocase)
 
   const passed = !!file
   const message = (() => {
