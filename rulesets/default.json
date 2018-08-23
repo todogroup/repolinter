@@ -7,7 +7,7 @@
   "rules": {
     "all": {
       "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"]}],
-      "readme-file-exists:file-existence": ["error", {"files": ["README*"]}],
+      "readme-file-exists:file-existence": ["error", {"files": ["README*"], "nocase": true}],
       "contributing-file-exists:file-existence": ["error", {"files": ["CONTRIB*"]}],
       "code-of-conduct-file-exists:file-existence": ["error", {"files": ["CODEOFCONDUCT*", "CODE-OF-CONDUCT*", "CODE_OF_CONDUCT*"]}],
       "support-file-exists:file-existence": ["error", {"files": ["SUPPORT*"], "nocase": true}],
