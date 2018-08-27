@@ -13,7 +13,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findAll () {
+            findAllFiles () {
               return ['README.md']
             },
             getFileContents () {
@@ -43,7 +43,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findAll () {
+            findAllFiles () {
               return ['README.md']
             },
             getFileContents () {
@@ -70,11 +70,41 @@ describe('rule', () => {
       expect(actual).to.deep.equal(expected)
     })
 
+    it('returns success if success flag enabled but file does not exist', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAllFiles () {
+              return []
+            },
+            getFileContents () {
+
+            },
+            targetDir: '.'
+          },
+          files: ['READMOI.md'],
+          content: 'foo',
+          'succeed-on-non-existent': true
+        }
+      }
+
+      const actual = fileContents(null, rule)
+      const expected = [
+        new Result(
+          rule,
+          'not found: (READMOI.md)',
+          null,
+          true
+        )
+      ]
+      expect(actual).to.deep.equal(expected)
+    })
+
     it('returns nothing if requested file does not exist', () => {
       const rule = {
         options: {
           fs: {
-            findAll () {
+            findAllFiles () {
               return []
             },
             getFileContents () {
