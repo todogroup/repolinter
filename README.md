@@ -206,7 +206,7 @@ Fails if none of the files specified in the ```files``` option exist. Pass in a 
 The opposite of ```file-contents```.
 
 ### file-starts-with
-Produces a failure for each file matching the ```files``` option if the first ```lineCount``` lines don't match all of the regular expressions specified in the ```patterns``` option.
+Produces a failure for each file matching the ```files``` option if the first ```lineCount``` lines don't match all of the regular expressions specified in the ```patterns``` option. Set the ```skip-binary-files``` option to skip files that aren't text.
 
 ### file-type-exclusion
 Fails if any files match the ```type``` option.

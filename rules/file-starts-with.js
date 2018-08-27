@@ -8,8 +8,13 @@ module.exports = function (fileSystem, rule) {
   const fs = options.fs || fileSystem
   const files = fs.findAllFiles(options.files, options.nocase === true)
 
+  let filteredFiles = files
+  if (options['skip-binary-files']) {
+    filteredFiles = filteredFiles.filter(file => !fs.isBinaryFile(file))
+  }
+
   let results = []
-  files.forEach(file => {
+  filteredFiles.forEach(file => {
     const lines = fs.readLines(file, options.lineCount)
     const misses = options.patterns.filter((pattern) => {
       const regexp = new RegExp(pattern, options.flags)
