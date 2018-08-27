@@ -35,7 +35,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findAll () {
+            findAllFiles () {
               return ['somefile.js']
             },
             readLines () {
@@ -67,7 +67,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findAll () {
+            findAllFiles () {
               return []
             },
             targetDir: '.'
