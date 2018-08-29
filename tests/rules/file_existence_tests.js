@@ -13,7 +13,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findFirst () {
+            findFirstFile () {
               return 'LICENSE.md'
             },
             targetDir: '.'
@@ -41,7 +41,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findFirst (dontcare, nocase) {
+            findFirstFile (dontcare, nocase) {
               expect(nocase).to.equal(true)
               return 'LICENSE.md'
             },
@@ -49,7 +49,7 @@ describe('rule', () => {
           },
           files: ['lIcEnSe*'],
           name: 'License file',
-          nocase: 'true'
+          nocase: true
         }
       }
 
@@ -71,7 +71,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findFirst () {
+            findFirstFile () {
             },
             targetDir: '.'
           },
@@ -98,7 +98,7 @@ describe('rule', () => {
       const rule = {
         options: {
           fs: {
-            findFirst () {
+            findFirstFile () {
             },
             targetDir: '.'
           },
