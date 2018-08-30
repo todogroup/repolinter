@@ -13,6 +13,11 @@ module.exports = function (fileSystem, rule) {
     filteredFiles = filteredFiles.filter(file => !fs.isBinaryFile(file))
   }
 
+  if (filteredFiles.length === 0 && options['succeed-on-non-existent']) {
+    const message = `not found: (${options.files.join(', ')})`
+    return [new Result(rule, message, null, true)]
+  }
+
   let results = []
   filteredFiles.forEach(file => {
     const lines = fs.readLines(file, options.lineCount)

@@ -77,6 +77,37 @@ describe('rule', () => {
       expect(actual.length).to.equal(0)
     })
 
+    it('returns a single result when glob has no matches and has succeed-on-non-existent option', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAllFiles () {
+              return []
+            },
+            targetDir: '.'
+          },
+          files: ['*'],
+          lineCount: 1,
+          patterns: ['something-unmatchable'],
+          'succeed-on-non-existent': true
+        }
+      }
+
+      const expected = [
+        new Result(
+          rule,
+          'not found: (*)',
+          null,
+          true
+        )
+      ]
+
+      const actual = fileStartsWith(null, rule)
+
+      expect(actual.length).to.equal(1)
+      expect(actual).to.deep.equal(expected)
+    })
+
     it('returns an empty list if the request files don\'t exist', () => {
       const rule = {
         options: {
