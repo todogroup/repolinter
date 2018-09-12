@@ -69,7 +69,7 @@ All languages:
 * [license-detectable-by-licensee](#license-detectable-by-licensee)
 * [test-directory-exists](#test-directory-exists)
 * [integrates-with-ci](#integrates-with-ci)
-* [source-license-headers-exist]([#source-license-headers-exist)
+* [source-license-headers-exist](#source-license-headers-exist)
 
 ### license-file-exists
 Fails if there isn't a file matching ```LICENSE*``` or ```COPYING*``` in the root of the target directory.
