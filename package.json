@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "standard --env mocha && mocha tests/**/*.js --no-timeouts",
-    "coverage": "nyc npm test"
+    "coverage": "nyc npm test",
+    "fix": "standard --fix"
   },
   "keywords": [
     "lint",

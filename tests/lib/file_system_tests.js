@@ -9,6 +9,17 @@ describe('lib', () => {
   describe('file_system', () => {
     const FileSystem = require('../../lib/file_system')
 
+    describe('findAllFiles', () => {
+      it('should ignore symlinks for ** globs', () => {
+        const symlink = './tests/lib/symlink_for_test'
+        const stats = require('fs').lstatSync(symlink)
+        expect(stats.isSymbolicLink()).to.equal(true)
+        const fs = new FileSystem(path.resolve('./tests'))
+        const files = fs.findAllFiles('**/lib/symlink_for_test')
+        expect(files).to.have.lengthOf(0)
+      })
+    })
+
     describe('findAll', () => {
       it('should honor filtered directories', () => {
         const includedDirectories = ['lib/', 'rules/']

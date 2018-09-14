@@ -206,7 +206,7 @@ Fails if none of the files specified in the ```files``` option exist. Pass in a 
 The opposite of ```file-contents```. By default, no output is returned if no file exists given the inputs. Use the ```succeed-on-non-existent``` option to return a success result.
 
 ### file-starts-with
-Produces a failure for each file matching the ```files``` option if the first ```lineCount``` lines don't match all of the regular expressions specified in the ```patterns``` option. Set the ```skip-binary-files``` option to skip files that aren't text.
+Produces a failure for each file matching the ```files``` option if the first ```lineCount``` lines don't match all of the regular expressions specified in the ```patterns``` option. Set the ```skip-binary-files``` option to skip files that aren't text. By default, no output is returned if no file exists given the inputs. In that case, use the ```succeed-on-non-existent``` option to return a success result. Certain files can be omitted from being checked by using the ```skip-paths-matching``` option as an object with `extensions` and `patterns` array members.
 
 ### file-type-exclusion
 Fails if any files match the ```type``` option.

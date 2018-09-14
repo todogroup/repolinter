@@ -13,6 +13,32 @@ module.exports = function (fileSystem, rule) {
     filteredFiles = filteredFiles.filter(file => !fs.isBinaryFile(file))
   }
 
+  if (options['skip-paths-matching']) {
+    let regexes = []
+    const extensions = options['skip-paths-matching']['extensions']
+    if (extensions && extensions.length > 0) {
+      const extJoined = extensions.join('|')
+      // \.(svg|png|exe)$
+      regexes.push(new RegExp('\.(' + extJoined + ')$', 'i')) // eslint-disable-line no-useless-escape
+    }
+
+    const patterns = options['skip-paths-matching']['patterns']
+    if (patterns && patterns.length > 0) {
+      const filteredPatterns = patterns
+        .filter(p => typeof p === 'string' && p !== '')
+        .map(p => new RegExp(p, options['skip-paths-matching']['flags']))
+      regexes = regexes.concat(filteredPatterns)
+    }
+    filteredFiles = filteredFiles.filter(file =>
+      !regexes.some(regex => file.match(regex))
+    )
+  }
+
+  if (filteredFiles.length === 0 && options['succeed-on-non-existent']) {
+    const message = `not found: (${options.files.join(', ')})`
+    return [new Result(rule, message, null, true)]
+  }
+
   let results = []
   filteredFiles.forEach(file => {
     const lines = fs.readLines(file, options.lineCount)
