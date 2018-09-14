@@ -108,6 +108,35 @@ describe('rule', () => {
       expect(actual).to.deep.equal(expected)
     })
 
+    it('skips files with the `skip-paths-matching` option', () => {
+      const rule = {
+        options: {
+          fs: {
+            findAllFiles () {
+              return ['Skip/paBle-path.js', 'afile.js', 'badextension.sVg']
+            },
+            readLines () {
+              return 'some javascript code'
+            },
+            targetDir: '.'
+          },
+          files: ['*'],
+          lineCount: 1,
+          patterns: ['some'],
+          'skip-paths-matching': {
+            extensions: ['bmp', 'svg'],
+            patterns: ['skip/pable', 'another-pattern-to-skip'],
+            flags: 'i'
+          }
+        }
+      }
+
+      const actual = fileStartsWith(null, rule)
+
+      expect(actual.length).to.equal(1)
+      expect(actual[0].target).to.equal('afile.js')
+    })
+
     it('returns an empty list if the request files don\'t exist', () => {
       const rule = {
         options: {
