@@ -17,7 +17,7 @@
       "integrates-with-ci:file-existence": [
         "error",
         {
-          "files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", ".appveyor.yml", "circle.yml", ".circleci/config.yml", "Jenkinsfile"]
+          "files": [".gitlab-ci.yml", ".travis.yml", "appveyor.yml", ".appveyor.yml", "circle.yml", ".circleci/config.yml", "Jenkinsfile", ".drone.yml"]
         }
       ],
       "code-of-conduct-file-contains-email:file-contents": [
