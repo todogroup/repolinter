@@ -38,7 +38,7 @@ describe('rule', () => {
             findAllFiles () {
               return ['somefile.js']
             },
-            readLines () {
+            getFileLines () {
               return 'some javascript code'
             },
             targetDir: '.'
@@ -115,7 +115,7 @@ describe('rule', () => {
             findAllFiles () {
               return ['Skip/paBle-path.js', 'afile.js', 'badextension.sVg']
             },
-            readLines () {
+            getFileLines () {
               return 'some javascript code'
             },
             targetDir: '.'
@@ -154,6 +154,23 @@ describe('rule', () => {
 
       const actual = fileStartsWith(null, rule)
 
+      expect(actual.length).to.equal(0)
+    })
+
+    it('should handle broken symlinks', () => {
+      const brokenSymlink = './tests/rules/broken_symlink_for_test'
+      const stat = require('fs').lstatSync(brokenSymlink)
+      expect(stat.isSymbolicLink()).to.equal(true)
+      const fs = new FileSystem(require('path').resolve('.'))
+
+      const rule = {
+        options: {
+          files: [brokenSymlink],
+          lineCount: 1,
+          patterns: ['something']
+        }
+      }
+      const actual = fileStartsWith(fs, rule)
       expect(actual.length).to.equal(0)
     })
   })
