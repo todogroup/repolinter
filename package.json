@@ -11,6 +11,9 @@
     "coverage": "nyc npm test",
     "fix": "standard --fix"
   },
+  "standard": {
+    "env": [ "mocha" ]
+  },
   "keywords": [
     "lint",
     "linter",
