@@ -23,6 +23,7 @@ npx repolinter
 ✔ readme-file-exists: found (README.md)
 ✔ contributing-file-exists: found (CONTRIBUTING)
 ✔ code-of-conduct-file-exists: found (CODE-OF-CONDUCT)
+✔ changelog-file-exists: found (CHANGELOG)
 ✔ readme-references-license: File README.md contains license
 ✔ binaries-not-present: Excluded file type doesn't exist (**/*.exe,**/*.dll)
 ✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
@@ -63,6 +64,7 @@ All languages:
 * [readme-file-exists](#readme-file-exists)
 * [contributing-file-exists](#contributing-file-exists)
 * [code-of-conduct-file-exists](#code-of-conduct-file-exists)
+* [changelog-file-exists](#changelog-file-exists)
 * [support-file-exists](#support-file-exists)
 * [readme-references-license](#readme-references-license)
 * [binaries-not-present](#binaries-not-present)
@@ -82,6 +84,9 @@ Fails if there isn't a file matching ```CONTRIB*``` in the root of the target di
 
 ### code-of-conduct-file-exists
 Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``` or ```CODE_OF_CONDUCT*``` in the root of the target directory.
+
+### changelog-file-exists
+Fails if there isn't a file matching ```CHANGELOG*``` in the root of the target directory.
 
 ### support-file-exists
 Fails if there isn't a file matching ```SUPPORT*``` in the root of the target directory. See https://blog.github.com/2017-07-20-support-file-support/ for more details.
