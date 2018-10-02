@@ -20,9 +20,6 @@ ENV GEM_HOME /usr/local/bundle
 ENV BUNDLE_PATH="$GEM_HOME"
 ENV PATH $GEM_HOME/bin:$BUNDLE_PATH/gems/bin:$PATH
 
-RUN which licensee
-RUN which github-linguist
-
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
