@@ -50,10 +50,10 @@ function listFiles (fileSystem, options) {
         if (existingCommit) {
           existingCommit.lines.push(line.content)
         } else {
-          existingFile.commits.push({hash: commit.hash, lines: [line.content]})
+          existingFile.commits.push({ hash: commit.hash, lines: [line.content] })
         }
       } else {
-        files.push({path: line.path, commits: [{hash: commit.hash, lines: [line.content]}]})
+        files.push({ path: line.path, commits: [{ hash: commit.hash, lines: [line.content] }] })
       }
     })
   })
@@ -73,7 +73,7 @@ module.exports = function (fileSystem, rule) {
       `\tBlacklist: ${options.blacklist.join(', ')}`
     ].join('\n')
     let result = new Result(rule, message, file.path, false)
-    result.data = {file: file}
+    result.data = { file: file }
 
     return result
   })

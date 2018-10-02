@@ -39,7 +39,7 @@ module.exports = function (fileSystem, rule) {
     ].join('\n')
 
     let result = new Result(rule, message, null, false)
-    result.data = {commit: commit}
+    result.data = { commit: commit }
 
     return result
   })
