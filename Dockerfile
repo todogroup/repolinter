@@ -4,10 +4,10 @@ ENV BUILD_DEPS make build-essential cmake pkg-config libicu-dev zlib1g-dev libcu
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y $BUILD_DEPS && \
-    gem install licensee github-linguist && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get remove -y $BUILD_DEPS
-# TODO: also remove unneeded transient dependencies
+    gem install --no-document licensee github-linguist && \
+    apt-get remove -y $BUILD_DEPS && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 
 FROM node:10-slim
