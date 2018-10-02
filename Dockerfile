@@ -1,6 +1,6 @@
-FROM ruby:2.5 as ruby-deps
+FROM ruby:2.5.1-slim as ruby-deps
 
-ENV BUILD_DEPS cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev
+ENV BUILD_DEPS make build-essential cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y $BUILD_DEPS && \
@@ -9,7 +9,8 @@ RUN apt-get update && \
     apt-get remove -y $BUILD_DEPS
 # TODO: also remove unneeded transient dependencies
 
-FROM node:latest
+
+FROM node:10-slim
 
 # Copy Ruby dependencies
 COPY --from=ruby-deps . .
