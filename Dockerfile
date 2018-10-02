@@ -1,9 +1,22 @@
+# To build:
+#
+#   docker build -t repolinter .
+#
+# To run against the current directory:
+#
+#   docker run -t -v $PWD:/src repolinter
+#
+# To run against a remote GitHub repository
+#
+#   docker run -t repolinter --git https://github.com/username/repo.git
+#
 FROM ruby:2.5.1-slim as ruby-deps
 
+ENV RUNTIME_DEPS git
 ENV BUILD_DEPS make build-essential cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y $BUILD_DEPS && \
+    apt-get install --no-install-recommends -y $RUNTIME_DEPS $BUILD_DEPS && \
     gem install --no-document licensee github-linguist && \
     apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y && \
