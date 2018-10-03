@@ -12,7 +12,7 @@
 #
 FROM ruby:2.5.1-slim as ruby-deps
 
-ENV RUNTIME_DEPS git
+ENV RUNTIME_DEPS git libicu57
 ENV BUILD_DEPS make build-essential cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev
 
 RUN apt-get update && \
