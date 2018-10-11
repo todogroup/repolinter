@@ -4,10 +4,11 @@
 const chai = require('chai')
 const expect = chai.expect
 const Result = require('../../lib/result')
+const FileSystem = require('../../lib/file_system')
 
 describe('rule', () => {
   describe('files_not_contents', () => {
-    const fileContents = require('../../rules/file-not-contents')
+    const fileNotContents = require('../../rules/file-not-contents')
 
     it('returns passes if requested file contents do not exist', () => {
       const rule = {
@@ -35,7 +36,7 @@ describe('rule', () => {
         )
       ]
 
-      const actual = fileContents(null, rule)
+      const actual = fileNotContents(null, rule)
       expect(actual).to.deep.equal(expected)
     })
 
@@ -65,7 +66,7 @@ describe('rule', () => {
         )
       ]
 
-      const actual = fileContents(null, rule)
+      const actual = fileNotContents(null, rule)
 
       expect(actual).to.deep.equal(expected)
     })
@@ -88,7 +89,7 @@ describe('rule', () => {
         }
       }
 
-      const actual = fileContents(null, rule)
+      const actual = fileNotContents(null, rule)
       const expected = [
         new Result(
           rule,
@@ -117,9 +118,25 @@ describe('rule', () => {
         }
       }
 
-      const actual = fileContents(null, rule)
+      const actual = fileNotContents(null, rule)
       const expected = []
       expect(actual).to.deep.equal(expected)
+    })
+    it('should handle broken symlinks', () => {
+      const brokenSymlink = './tests/rules/broken_symlink_for_test'
+      const stat = require('fs').lstatSync(brokenSymlink)
+      expect(stat.isSymbolicLink()).to.equal(true)
+      const fs = new FileSystem(require('path').resolve('.'))
+
+      const rule = {
+        options: {
+          files: [brokenSymlink],
+          lineCount: 1,
+          patterns: ['something']
+        }
+      }
+      const actual = fileNotContents(fs, rule)
+      expect(actual.length).to.equal(0)
     })
   })
 })

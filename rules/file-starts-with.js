@@ -34,14 +34,12 @@ module.exports = function (fileSystem, rule) {
     )
   }
 
-  if (filteredFiles.length === 0 && options['succeed-on-non-existent']) {
-    const message = `not found: (${options.files.join(', ')})`
-    return [new Result(rule, message, null, true)]
-  }
-
-  let results = []
+  const results = []
   filteredFiles.forEach(file => {
-    const lines = fs.readLines(file, options.lineCount)
+    const lines = fs.getFileLines(file, options.lineCount)
+    if (!lines) {
+      return
+    }
     const misses = options.patterns.filter((pattern) => {
       const regexp = new RegExp(pattern, options.flags)
       return !lines.match(regexp)
@@ -57,6 +55,11 @@ module.exports = function (fileSystem, rule) {
 
     results.push(new Result(rule, message, file, passed))
   })
+
+  if (results.length === 0 && options['succeed-on-non-existent']) {
+    const message = `not found: (${options.files.join(', ')})`
+    return [new Result(rule, message, null, true)]
+  }
 
   return results
 }
