@@ -6,10 +6,10 @@
   },
   "rules": {
     "all": {
-      "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"]}],
+      "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"], "nocase": true}],
       "readme-file-exists:file-existence": ["error", {"files": ["README*"], "nocase": true}],
-      "contributing-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}CONTRIB*"]}],
-      "code-of-conduct-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}CODEOFCONDUCT*", "{docs/,.github/,}CODE[-_]OF[-_]CONDUCT*"]}],
+      "contributing-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}CONTRIB*"], "nocase": true}],
+      "code-of-conduct-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}CODEOFCONDUCT*", "{docs/,.github/,}CODE[-_]OF[-_]CONDUCT*"], "nocase": true}],
       "changelog-file-exists:file-existence": ["error", {"files": ["CHANGELOG*"], "nocase": true}],
       "support-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}SUPPORT*"], "nocase": true}],
       "readme-references-license:file-contents": ["error", {"files": ["README*"], "content": "license", "flags": "i"}],
