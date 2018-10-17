@@ -116,6 +116,9 @@ Fails if there isn't a file matching ```ISSUE_TEMPLATE*``` in the root of the ta
 ### github-pull-request-template-exists
 Fails if there isn't a file matching ```PULL_REQUEST_TEMPLATE*``` in the root of the target directory or under the ```.github``` directory. See https://blog.github.com/2016-02-17-issue-and-pull-request-templates/ for more details.
 
+### files-contain-term-patents
+Fails if the term ```PATENTS``` (case insensitive) is included in any of the repositories files. 
+
 ## Configuring rules
 
 Currently you need to create a new ruleset to add, remove, or configure rules. We'll be adding the ability to inherit from an existing ruleset to simplify this in the future.

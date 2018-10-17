@@ -32,7 +32,15 @@
       ],
       "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.js", "!node_modules/**"], "lineCount": 5, "patterns": ["Copyright", "License"], "flags": "i"}],
       "github-issue-template-exists:file-existence": ["error", {"files": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*"]}],
-      "github-pull-request-template-exists:file-existence": ["error", {"files": ["PULL_REQUEST_TEMPLATE*", ".github/PULL_REQUEST_TEMPLATE*"]}]
+      "github-pull-request-template-exists:file-existence": ["error", {"files": ["PULL_REQUEST_TEMPLATE*", ".github/PULL_REQUEST_TEMPLATE*"]}],
+      "files-contain-term-patents:file-not-contents": [
+        "error",
+        {
+          "files": ["**", "!node_modules/**"],
+          "content": "PATENTS",
+          "flags" : "i"
+        }
+      ]
     },
     "language=javascript": {
       "package-metadata-exists:file-existence": ["error", {"files": ["package.json"]}]
