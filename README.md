@@ -72,6 +72,7 @@ All languages:
 * [test-directory-exists](#test-directory-exists)
 * [integrates-with-ci](#integrates-with-ci)
 * [source-license-headers-exist](#source-license-headers-exist)
+* [files-contain-term-patents](#files-contain-term-patents)
 
 ### license-file-exists
 Fails if there isn't a file matching ```LICENSE*``` or ```COPYING*``` in the root of the target directory.
