@@ -14,10 +14,13 @@ module.exports = function (fileSystem, rule) {
   }
 
   const results = files.map(file => {
-    const fileContents = fs.getFileContents(file)
-    const regexp = new RegExp(options.content, options.flags)
+    let fileContents = fs.getFileContents(file)
+    if (fileContents === undefined) {
+      fileContents = ''
+    }
 
-    const passed = fileContents && fileContents.toString().search(regexp) === -1
+    const regexp = new RegExp(options.content, options.flags)
+    const passed = fileContents.search(regexp) === -1
     const message = `File ${file} ${passed ? 'doesn\'t contain' : 'contains'} ${options.content}`
 
     return new Result(rule, message, file, passed)
