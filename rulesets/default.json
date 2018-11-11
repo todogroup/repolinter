@@ -8,8 +8,12 @@
     "all": {
       "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"], "nocase": true}],
       "readme-file-exists:file-existence": ["error", {"files": ["README*"], "nocase": true}],
-      "contributing-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}CONTRIB*"], "nocase": true}],
-      "code-of-conduct-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}CODEOFCONDUCT*", "{docs/,.github/,}CODE[-_]OF[-_]CONDUCT*"], "nocase": true}],
+
+      "contributing-file-exists:file-existence": ["error", {"files": ["CONTRIB*", ".github/CONTRIB*"]}],
+      "code-of-conduct-file-exists:file-existence": ["error", {"files": [
+        "CODEOFCONDUCT*", "CODE-OF-CONDUCT*", "CODE_OF_CONDUCT*",
+        ".github/CODEOFCONDUCT*", ".github/CODE-OF-CONDUCT*", ".github/CODE_OF_CONDUCT*"
+        ]}],
       "changelog-file-exists:file-existence": ["error", {"files": ["CHANGELOG*"], "nocase": true}],
       "support-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}SUPPORT*"], "nocase": true}],
       "readme-references-license:file-contents": ["error", {"files": ["README*"], "content": "license", "flags": "i"}],
@@ -24,7 +28,10 @@
       "code-of-conduct-file-contains-email:file-contents": [
         "error",
         {
-          "files": ["CODEOFCONDUCT*", "CODE-OF-CONDUCT*", "CODE_OF_CONDUCT*"],
+          "files": [
+            "CODEOFCONDUCT*", "CODE-OF-CONDUCT*", "CODE_OF_CONDUCT*",
+            ".github/CODEOFCONDUCT*", ".github/CODE-OF-CONDUCT*", ".github/CODE_OF_CONDUCT*"
+          ],
           "content": ".+@.+\\..+",
           "flags": "i",
           "human-readable-content": "email address"

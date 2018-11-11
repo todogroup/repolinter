@@ -28,7 +28,7 @@ function listFiles (fileSystem, options) {
       if (existingFile) {
         existingFile.commits.push(commit)
       } else {
-        files.push({path: path, commits: [commit]})
+        files.push({ path: path, commits: [commit] })
       }
     })
   })
@@ -49,7 +49,7 @@ module.exports = function (fileSystem, rule) {
       `\tBlacklist: ${options.blacklist.join(', ')}`
     ].join('\n')
     let result = new Result(rule, message, file.path, false)
-    result.data = {file: file}
+    result.data = { file: file }
 
     return result
   })
