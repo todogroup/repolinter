@@ -39,6 +39,8 @@ npx repolinter
 
 ## Command line dependencies
 
+You will need to have Node, Ruby/Ruby-Dev, and Bundle installed in order to use repolinter. If you are installing on OS X, you will also likely need to install RVM.
+
 The npm log-symbols package must be installed to run `repolinter`.
 ```
 npm install log-symbols
