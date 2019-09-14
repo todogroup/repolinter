@@ -90,6 +90,9 @@ Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``
 ### changelog-file-exists
 Fails if there isn't a file matching ```CHANGELOG*``` in the root of the target directory.
 
+### security-file-exists
+Fails if there isn't a file matching ```SECURITY.md``` in the root of the target directory. See https://help.github.com/en/articles/adding-a-security-policy-to-your-repository for more details.
+
 ### support-file-exists
 Fails if there isn't a file matching ```SUPPORT*``` in the root of the target directory. See https://blog.github.com/2017-07-20-support-file-support/ for more details.
 
