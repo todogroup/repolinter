@@ -1,4 +1,4 @@
-# ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) [![Build Status](https://travis-ci.org/todogroup/repolinter.svg?branch=master)](https://travis-ci.org/todogroup/repolinter)
+# ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) ![Build Status](https://github.com/todogroup/repolinter/Build/badge.svg)
 
 Lint open source repositories for common issues.
 
