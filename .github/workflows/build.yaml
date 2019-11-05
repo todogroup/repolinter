@@ -4,13 +4,15 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['12', '10']
+    name: Node ${{ matrix.node }} sample
     steps:
       - uses: actions/checkout@v1
-      - name: Use Node.js
+      - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '10'
-      - name: test
-        run: |
-          npm install
-          npm test
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      - run: npm test
