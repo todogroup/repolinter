@@ -1,4 +1,4 @@
-# ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) ![Build Status](https://github.com/todogroup/repolinter/Build/badge.svg)
+# ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) ![Build Status](https://github.com/todogroup/repolinter/workflows/Build/badge.svg)
 
 Lint open source repositories for common issues.
 
