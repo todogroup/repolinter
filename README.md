@@ -212,6 +212,9 @@ Fails if the content of any of the files specified in the ```files``` option doe
 ### file-existence
 Fails if none of the files specified in the ```files``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user. Pass in ```"nocase": true``` in the options for a case-insensitive search.
 
+### file-hash
+Fails if the content of file specified in the ```file``` option does not produce the hex value in the ```hash``` option.  The default algorithm is ```sha256``` and can be changed in the ```algorithm``` option. Use the ```succeed-on-non-existent``` option if a missing file is acceptable, otherwise a missing file produces a failure.
+
 ### file-not-contents
 The opposite of ```file-contents```. By default, no output is returned if no file exists given the inputs. Use the ```succeed-on-non-existent``` option to return a success result.
 
