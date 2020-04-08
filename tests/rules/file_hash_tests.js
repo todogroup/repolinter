@@ -4,7 +4,6 @@
 const chai = require('chai')
 const expect = chai.expect
 const Result = require('../../lib/result')
-const FileSystem = require('../../lib/file_system')
 
 describe('rule', () => {
   describe('files_hash', () => {
@@ -161,6 +160,5 @@ describe('rule', () => {
 
       expect(actual).to.deep.equal(expected)
     })
-
   })
 })
