@@ -18,12 +18,12 @@ describe('formatters', () => {
       )
 
       const successResult = jsonFormatter.format(result)
-      expect(successResult).to.equal(`{"rule":{"id":"some-rule","level":"success"},"message":"a message","target":"target","passed":true}`)
+      expect(successResult).to.equal('{"rule":{"id":"some-rule","level":"success"},"message":"a message","target":"target","passed":true}')
 
       result.passed = false
       result.rule.level = 'error'
       const errorResult = jsonFormatter.format(result)
-      expect(errorResult).to.deep.equal(`{"rule":{"id":"some-rule","level":"error"},"message":"a message","target":"target","passed":false}`)
+      expect(errorResult).to.deep.equal('{"rule":{"id":"some-rule","level":"error"},"message":"a message","target":"target","passed":false}')
     })
   })
 })

@@ -8,7 +8,7 @@ module.exports = function (fileSystem) {
     licenses = licensee.identifyLicensesSync(fileSystem.targetDir)
   } catch (error) {
     if (error.message === 'Licensee not installed') {
-      console.log(`Licensee Axiom: Licensee not found in path, only running license-independent rules`)
+      console.log('Licensee Axiom: Licensee not found in path, only running license-independent rules')
     } else {
       console.log(error)
     }

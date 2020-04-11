@@ -15,7 +15,7 @@ function gitFilesAtCommit (targetDir, commit) {
 }
 
 function listFiles (fileSystem, options) {
-  let files = []
+  const files = []
 
   const pattern = new RegExp('(' + options.blacklist.join('|') + ')', options.ignoreCase ? 'i' : '')
   const commits = gitAllCommits(fileSystem.targetDir)
@@ -40,7 +40,7 @@ module.exports = function (fileSystem, rule) {
   const options = rule.options
   const files = listFiles(fileSystem, options)
 
-  let results = files.map(file => {
+  const results = files.map(file => {
     const [firstCommit, ...rest] = file.commits
     const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
@@ -48,7 +48,7 @@ module.exports = function (fileSystem, rule) {
       `Blacklisted path (${file.path}) found in commit ${firstCommit.substr(0, 7)}${restMessage}.`,
       `\tBlacklist: ${options.blacklist.join(', ')}`
     ].join('\n')
-    let result = new Result(rule, message, file.path, false)
+    const result = new Result(rule, message, file.path, false)
     result.data = { file: file }
 
     return result

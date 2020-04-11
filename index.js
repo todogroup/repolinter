@@ -49,7 +49,7 @@ module.exports.lint = function lint (targetDir, filterPaths = [], ruleset = null
   // Execute all rule targets
 
   // global variable for return statement
-  let evaluation = []
+  const evaluation = []
   targets.forEach(target => {
     const targetRules = ruleset.rules[target]
     if (targetRules) {
@@ -63,7 +63,7 @@ module.exports.lint = function lint (targetDir, filterPaths = [], ruleset = null
           let results = []
           try {
             // Does a .js file exist?
-            let ruleFile = path.join(__dirname, 'rules', rule.module)
+            const ruleFile = path.join(__dirname, 'rules', rule.module)
             if (fs.existsSync(ruleFile + '.js')) {
               const ruleFunction = require(ruleFile)
               results = ruleFunction(fileSystem, rule)
@@ -73,7 +73,7 @@ module.exports.lint = function lint (targetDir, filterPaths = [], ruleset = null
             // Otherwise, does a .json file exist?
             if (fs.existsSync(ruleFile + '.json')) {
               // We have a json file and need to recurse into this code
-              let childRuleset = jsonfile.readFileSync(ruleFile + '.json')
+              const childRuleset = jsonfile.readFileSync(ruleFile + '.json')
               lint(targetDir, filterPaths, childRuleset)
             }
           } catch (error) {

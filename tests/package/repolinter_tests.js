@@ -10,11 +10,11 @@ const repolinter = require(path.resolve('.'))
 describe('package', () => {
   describe('repolinter', () => {
     it('allows a custom formatter', () => {
-      let customFormatter = {}
+      const customFormatter = {}
       customFormatter.format = sinon.spy()
       repolinter.resultFormatter = customFormatter
 
-      let log = console.log
+      const log = console.log
       console.log = function () { return null }
 
       repolinter.lint(path.resolve('tests/package'))

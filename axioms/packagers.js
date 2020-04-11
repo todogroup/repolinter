@@ -2,9 +2,9 @@
 // Licensed under the Apache License, Version 2.0.
 
 module.exports = function (fileSystem) {
-  let packageManagers = []
+  const packageManagers = []
 
-  let packageManagerPatterns = {
+  const packageManagerPatterns = {
     'pom.xml': 'maven',
     'project.xml': 'maven1',
     'package.json': 'npm',
@@ -13,7 +13,7 @@ module.exports = function (fileSystem) {
     '*.podspec': 'cocoapod',
     'Cargo.toml': 'cargo',
     '*.gemspec': 'rubygem',
-    'DESCRIPTION': 'cran',
+    DESCRIPTION: 'cran',
     'Makefile.PL': 'cpan',
     'Build.PL': 'cpan',
     'package.xml': 'pear',

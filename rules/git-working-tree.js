@@ -8,7 +8,7 @@ module.exports = function (fileSystem, rule) {
   const options = rule.options
   const args = ['-C', fileSystem.targetDir, 'rev-parse', '--show-prefix']
   const gitResult = spawnSync('git', args)
-  let result = new Result(rule, '', null, true)
+  const result = new Result(rule, '', null, true)
   if (gitResult.status === 0) {
     const prefix = gitResult.stdout.toString().trim()
     if (!prefix) {

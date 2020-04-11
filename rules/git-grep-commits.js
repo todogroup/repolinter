@@ -37,7 +37,7 @@ function gitLinesAtCommit (targetDir, pattern, ignoreCase, commit) {
 }
 
 function listFiles (fileSystem, options) {
-  let files = []
+  const files = []
 
   const commits = listCommitsWithLines(fileSystem, options)
   commits.forEach(commit => {
@@ -64,7 +64,7 @@ function listFiles (fileSystem, options) {
 module.exports = function (fileSystem, rule) {
   const options = rule.options
   const files = listFiles(fileSystem, options)
-  let results = files.map(file => {
+  const results = files.map(file => {
     const [firstCommit, ...rest] = file.commits
     const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
@@ -72,7 +72,7 @@ module.exports = function (fileSystem, rule) {
       `(${file.path}) contains blacklisted words in commit ${firstCommit.hash.substr(0, 7)}${restMessage}.`,
       `\tBlacklist: ${options.blacklist.join(', ')}`
     ].join('\n')
-    let result = new Result(rule, message, file.path, false)
+    const result = new Result(rule, message, file.path, false)
     result.data = { file: file }
 
     return result

@@ -18,7 +18,7 @@ module.exports = function (fileSystem, rule) {
     return [new Result(rule, message, null, status)]
   }
 
-  let algorithm = options['algorithm']
+  let algorithm = options.algorithm
   if (algorithm === undefined) {
     algorithm = 'sha256'
   }
@@ -31,7 +31,7 @@ module.exports = function (fileSystem, rule) {
   digester.update(fileContents)
   const hash = digester.digest('hex')
 
-  const passed = hash === options['hash']
+  const passed = hash === options.hash
   const message = `File ${file} ${passed ? 'matches hash' : 'doesn\'t match hash'}`
 
   return [new Result(rule, message, file, passed)]
