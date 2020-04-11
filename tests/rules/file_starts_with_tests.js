@@ -21,7 +21,7 @@ describe('rule', () => {
 
       const expected = [new Result(
         rule,
-        `The first 2 lines of 'rules/file-starts-with.js' contain all of the requested patterns.`,
+        'The first 2 lines of \'rules/file-starts-with.js\' contain all of the requested patterns.',
         'rules/file-starts-with.js',
         true
       )]
@@ -52,7 +52,7 @@ describe('rule', () => {
       const expected = [
         new Result(
           rule,
-          `The first 5 lines of 'somefile.js' do not contain the patterns:\n\tCopyright\n\tRights`,
+          'The first 5 lines of \'somefile.js\' do not contain the patterns:\n\tCopyright\n\tRights',
           'somefile.js',
           false
         )

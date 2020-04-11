@@ -15,18 +15,18 @@ module.exports = function (fileSystem, rule) {
 
   if (options['skip-paths-matching']) {
     let regexes = []
-    const extensions = options['skip-paths-matching']['extensions']
+    const extensions = options['skip-paths-matching'].extensions
     if (extensions && extensions.length > 0) {
       const extJoined = extensions.join('|')
       // \.(svg|png|exe)$
       regexes.push(new RegExp('\.(' + extJoined + ')$', 'i')) // eslint-disable-line no-useless-escape
     }
 
-    const patterns = options['skip-paths-matching']['patterns']
+    const patterns = options['skip-paths-matching'].patterns
     if (patterns && patterns.length > 0) {
       const filteredPatterns = patterns
         .filter(p => typeof p === 'string' && p !== '')
-        .map(p => new RegExp(p, options['skip-paths-matching']['flags']))
+        .map(p => new RegExp(p, options['skip-paths-matching'].flags))
       regexes = regexes.concat(filteredPatterns)
     }
     filteredFiles = filteredFiles.filter(file =>
@@ -48,7 +48,7 @@ module.exports = function (fileSystem, rule) {
     let message = `The first ${options.lineCount} lines of '${file}'`
     const passed = misses.length === 0
     if (passed) {
-      message += ` contain all of the requested patterns.`
+      message += ' contain all of the requested patterns.'
     } else {
       message += ` do not contain the patterns:\n\t${misses.join('\n\t')}`
     }

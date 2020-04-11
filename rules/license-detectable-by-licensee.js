@@ -5,7 +5,7 @@ const licensee = require('../lib/licensee')
 const Result = require('../lib/result')
 
 module.exports = function (fileSystem, rule) {
-  let result = new Result(rule, '', null, false)
+  const result = new Result(rule, '', null, false)
 
   let licenses = []
   try {

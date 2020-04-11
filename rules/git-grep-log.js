@@ -5,7 +5,7 @@ const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 
 function grepLog (fileSystem, options) {
-  let args = ['-C', fileSystem.targetDir, 'log', '--all', '--format=full', '-E']
+  const args = ['-C', fileSystem.targetDir, 'log', '--all', '--format=full', '-E']
     .concat(options.blacklist.map(pattern => `--grep=${pattern}`))
   if (options.ignoreCase) {
     args.push('-i')
@@ -32,13 +32,13 @@ module.exports = function (fileSystem, rule) {
   const options = rule.options
   const commits = grepLog(fileSystem, options)
 
-  let results = commits.map(commit => {
+  const results = commits.map(commit => {
     const message = [
       `The commit message for commit ${commit.hash.substr(0, 7)} contains blacklisted words.\n`,
       `\tBlacklist: ${options.blacklist.join(', ')}`
     ].join('\n')
 
-    let result = new Result(rule, message, null, false)
+    const result = new Result(rule, message, null, false)
     result.data = { commit: commit }
 
     return result

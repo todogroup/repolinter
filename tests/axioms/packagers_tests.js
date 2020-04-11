@@ -12,7 +12,7 @@ describe('packagers', () => {
   it('repolinter is only npm', () => {
     const fileSystem = new FileSystem(path.resolve('.'))
 
-    const expected = [ 'npm' ]
+    const expected = ['npm']
 
     const actual = packagers(fileSystem)
     expect(actual).to.deep.equal(expected)
