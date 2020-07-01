@@ -2,11 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const jsonfile = require('jsonfile')
+const ajv = require('ajv');
 const path = require('path')
 const fs = require('fs')
 const findConfig = require('find-config')
 const Result = require('./lib/result')
-const FileSystem = require('./lib/file_system')
+const RuleInfo = require('./lib/ruleinfo')
+const FormatResult = require('./lib/formatresult')
+const FileSystem = require('./lib/file_system');
 const fileSystem = new FileSystem()
 
 module.exports.defaultFormatter = require('./formatters/symbol_formatter')
@@ -16,7 +19,7 @@ module.exports.resultFormatter = exports.defaultFormatter
 module.exports.outputInfo = console.log
 module.exports.outputResult = console.log
 
-module.exports.lint = function lint (targetDir, filterPaths = [], ruleset = null) {
+function lint(targetDir, filterPaths = [], ruleset = null) {
   fileSystem.targetDir = targetDir
   exports.outputInfo(`Target directory: ${targetDir}`)
   if (filterPaths.length > 0) {
@@ -31,121 +34,157 @@ module.exports.lint = function lint (targetDir, filterPaths = [], ruleset = null
     exports.outputInfo(`Ruleset: ${path.relative(targetDir, rulesetPath)}`)
     ruleset = jsonfile.readFileSync(rulesetPath)
   }
-  let targets = ['all']
 
+  // validate config
+  const val = validateConfig(ruleset);
+  if (!val.passed) {
+    /** @ts-ignore */
+    exports.outputInfo(val.message)
+    process.exitCode = 1
+    return null
+  }
+
+  // determine axiom targets
+  let targets = [];
   // Identify axioms and execute them
-  if (ruleset.axioms) {
-    Object.getOwnPropertyNames(ruleset.axioms).forEach(axiomId => {
-      const axiomName = ruleset.axioms[axiomId]
+  if (ruleset.axioms)
+    targets = determineTargets(ruleset.axioms, fileSystem)
+  
+  // execute ruleset
+  const result = runRuleset(ruleset, targets)
+
+  // render all the results
+  const all_format_info = {
+    result,
+    targets,
+    ruleset,
+  }
+
+  const formatted = exports.defaultFormatter.format(all_format_info)
+  exports.outputResult(formatted)
+
+  if (result.filter(r => 
+    r.getStatus() === FormatResult.ERROR || 
+    (r.getStatus() !== FormatResult.IGNORED && !r.getLintResult().passed)))
+    process.exitCode = 1
+
+  return all_format_info
+}
+
+/**
+ * Run all operations in a ruleset, including linting and fixing. Returns
+ * a list of objects with the output of the linter rules
+ * 
+ * @param {{ axioms: string[], rules: object }} ruleset A ruleset configuration conforming to {@link ../rulesets/schema.json}
+ * @param {string[]|true} targets The axiom targets to enable for this run of the ruleset (ex. "language=javascript"). or true for all
+ * @param {string} self_dir The path containing the source files for the currently running linter instance
+ * @returns {FormatResult[]} Objects indicating the result of the linter rules
+ */
+function runRuleset(ruleset, targets, self_dir = __dirname) {
+  // TODO: Dry run? Report generation?
+  // TODO: Make sure rule type and fix type function are correct
+  // TODO: rewrite formatters
+  // TODO: write markdown formatter
+  return Object.entries(ruleset.rules)
+    // compile the ruleset into RuleInfo objects
+    .map(([name, cfg]) => 
+      new RuleInfo(
+        name, 
+        cfg.level, 
+        cfg.where, 
+        cfg.rule.type, 
+        cfg.rule.options, 
+        cfg.fix && cfg.fix.type, 
+        cfg.fix && cfg.fix.options
+      ))
+    // Execute all rule targets
+    .map(r => {
+      // check axioms and enable appropriately
+      if (r.level === "off")
+        return FormatResult.CreateIgnored(r, `ignored because level is "off"`)
+      // filter to only targets with no matches
+      if (targets !== true) {
+        const ignoreReasons = r.where.filter(check => !targets.filter(tar => check === tar))
+        if (ignoreReasons.length > 0)
+          return FormatResult.CreateIgnored(r, `ignored due to unsatisfied condition(s): "${ ignoreReasons.join('", "') }"`)
+      }
+      // check if the rule file exists
+      const ruleFile = path.join(self_dir, 'rules', r.ruleType)
+      if (!fs.existsSync(ruleFile + '.js'))
+        return FormatResult.CreateError(r, `${ ruleFile } does not exist`)
+      let result
+      try {
+        /** @type {(fs: FileSystem, options: object) => Result} */
+        const ruleFunc = require(ruleFile)
+        // run the rule!
+        result = ruleFunc(fileSystem, r.ruleConfig)
+      }
+      catch (e) {
+        return FormatResult.CreateError(r, `${ r.ruleType } threw an error: ${ e.message }`)
+      }
+      // if there's no fix or the rule passed, we're done
+      if (!r.fixType || result.passed)
+        return FormatResult.CreateLintOnly(r, result)
+      // else run the fix
+      const fixFile = path.join(self_dir, 'fixes', r.ruleType)
+      if (!fs.existsSync(ruleFile + '.js'))
+        return FormatResult.CreateError(r, `${ fixFile } does not exist`)
+      let fixresult
+      try {
+        /** @type {(fs: FileSystem, options: object, targets: string[]) => Result} */
+        const fixFunc = require(fixFile)
+        fixresult = fixFunc(fileSystem, r.fixConfig, result.target)
+      }
+      catch (e) {
+        return FormatResult.CreateError(r, `${ r.fixType } threw an error: ${ e.message }`)
+      }
+      // all done! return the final format object
+      return FormatResult.CreateLintAndFix(r, result, fixresult)
+    })
+}
+
+/**
+ * Given an axiom configuration, determine the appropriate targets to run against
+ * (e.g. "target=javascript").
+ * 
+ * @param {object} axiomconfig A configuration conforming to the "axioms" section in schema.json
+ * @param {FileSystem} fs The filesystem to run axioms against
+ * @param {string} self_dir The path containing the source files for the currently running linter instance
+ * @returns {string[]} A list of targets to run against
+ */
+function determineTargets(axiomconfig, fs, self_dir = __dirname) {
+  return Object.entries(axiomconfig)
+    .map(([axiomId, axiomName]) => {
       // TODO: Do something more secure
       // Execute axiom
-      const axiomFunction = require(path.join(__dirname, 'axioms', axiomId))
-      targets = targets.concat(axiomName + '=*')
-      targets = targets.concat(axiomFunction(fileSystem).map(axiomOutput => axiomName + '=' + axiomOutput))
+      const axiomFunction = require(path.join(self_dir, 'axioms', axiomId))
+      return [`${ axiomName }=*`].concat(axiomFunction(fs).map(axiomOutput => `${ axiomName }=${ axiomOutput }`))
     })
-  }
+    .reduce((a, v) => a.concat(v), [])
+}
 
-  let anyFailures = false
-  // Execute all rule targets
+/**
+ * Validate a repolint configuration against a known JSON schema
+ * 
+ * @param {object} config The configuration to validate
+ * @param {string} self_dir The path containing the source files for the currently running linter instance
+ * @returns {{ passed: false, error: string } | { passed: true }} Whether or not the config validation succeeded
+ */
+function validateConfig(config, self_dir = __dirname) {
+  // compile the json schema
+  const ajv_props = new ajv()
+  const fs = new FileSystem(self_dir)
+  // FIXME: cannot use fileSystem here because the target directory is wrong
+  for (const schema of fs.findAllFiles(["rules/*-config.json", "fixes/*-config.json"], true))
+    ajv_props.addSchema(jsonfile.readFileSync(schema))
+  const validator = ajv_props.compile(jsonfile.readFileSync('./rulesets/schema.json'))
 
-  // global variable for return statement
-  const evaluation = []
-  targets.forEach(target => {
-    const targetRules = ruleset.rules[target]
-    if (targetRules) {
-      Object.getOwnPropertyNames(targetRules).forEach(ruleId => {
-        const rule = parseRule(targetRules[ruleId])
-        const ruleIdParts = ruleId.split(':')
-        rule.id = ruleIdParts[0]
-        rule.module = ruleIdParts.length === 2 ? ruleIdParts[1] : ruleIdParts[0]
-        if (rule.enabled) {
-          // TODO: Do something more secure
-          let results = []
-          try {
-            // Does a .js file exist?
-            const ruleFile = path.join(__dirname, 'rules', rule.module)
-            if (fs.existsSync(ruleFile + '.js')) {
-              const ruleFunction = require(ruleFile)
-              results = ruleFunction(fileSystem, rule)
-              evaluation.push(results)
-              anyFailures = anyFailures || results.some(result => !result.passed && result.rule.level === 'error')
-            } else
-            // Otherwise, does a .json file exist?
-            if (fs.existsSync(ruleFile + '.json')) {
-              // We have a json file and need to recurse into this code
-              const childRuleset = jsonfile.readFileSync(ruleFile + '.json')
-              lint(targetDir, filterPaths, childRuleset)
-            }
-          } catch (error) {
-            results.push(new Result(rule, error.message, null, false))
-            evaluation.push(results)
-          }
-        }
-      })
+  // validate it against the supplied ruleset
+  if (!validator(config))
+    return {
+      passed: false,
+      error: `Configuration validation failed with errors: \n${ validator.errors.map(e => `\tconfiguration${ e.dataPath } ${ e.message }`).join('\n') }`
     }
-  })
-
-  evaluation.forEach(singleResult => {
-    renderResults(singleResult.filter(result => !result.passed))
-    renderResults(singleResult.filter(result => result.passed))
-  })
-
-  if (anyFailures) {
-    process.exitCode = 1
-  }
-
-  return evaluation
-
-  function renderResults (results) {
-    formatResults(results).filter(x => !!x).forEach(renderResult)
-  }
-
-  function formatResults (results) {
-    return results.map(formatResult)
-  }
-
-  function renderResult (result) {
-    exports.outputResult(result)
-  }
-
-  function formatResult (result) {
-    return exports.resultFormatter.format(result)
-  }
-
-  function parseRule (configItem) {
-    const rule = {}
-    if (Array.isArray(configItem) && configItem.length > 0) {
-      rule.enabled = parseEnabled(configItem[0])
-      rule.level = parseLevel(configItem[0])
-      rule.options = configItem.length > 1 ? configItem[1] : {}
-    } else if (typeof configItem === 'boolean' || typeof configItem === 'string') {
-      rule.enabled = parseEnabled(configItem)
-      rule.level = parseLevel(configItem)
-      rule.options = {}
-    }
-
-    if (!rule.options.fs) {
-      rule.options.fs = fileSystem
-    }
-
-    return rule
-  }
-
-  function parseEnabled (value) {
-    if (typeof value === 'boolean') {
-      return value
-    } else if (typeof value === 'string') {
-      return value.toLowerCase() !== 'off'
-    } else if (typeof value === 'object') {
-      return value.enabled || true
-    }
-    return true
-  }
-
-  function parseLevel (value) {
-    if (typeof value === 'string') {
-      return value.trim().toLowerCase()
-    }
-    return 'error'
-  }
+  else
+    return { passed: true }
 }
