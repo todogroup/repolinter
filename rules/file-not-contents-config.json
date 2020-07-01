@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/file-not-contents-config.json",
+    "type": "object",
+    "properties": {
+        "type": { "const": "file-not-contents" },
+        "options": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "nocase": { 
+                    "type": "boolean",
+                    "default": false
+                },
+                "files": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "content": { "type": "string" },
+                "human-readable-content": { "type": "string" },
+                "succeed-on-non-existent": { 
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "required": ["files", "content"]
+        }
+    },
+    "required": ["type", "options"],
+    "additionalProperties": false
+}

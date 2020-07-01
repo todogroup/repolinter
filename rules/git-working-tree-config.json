@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/git-working-tree-config.json",
+    "type": "object",
+    "properties": {
+        "type": { "const": "git-working-tree" },
+        "options": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "allowSubDir": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        }
+    },
+    "required": ["type", "options"],
+    "additionalProperties": false
+}

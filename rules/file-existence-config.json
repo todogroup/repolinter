@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/file-existence-config.json",
+    "type": "object",
+    "properties": {
+        "type": { "const": "file-existence" },
+        "options": {
+            "additionalProperties": false,
+            "properties": {
+                "nocase": { 
+                    "type": "boolean",
+                    "default": false
+                },
+                "files": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "fail-message": { "type": "string" }
+            },
+            "required": ["files"]
+        }
+    },
+    "required": ["type", "options"],
+    "additionalProperties": false
+}

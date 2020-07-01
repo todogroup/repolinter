@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rulesets/schema.json",
+    "type": "object",
+    "title": "RepoLinter JSON Configuration Schema",
+    "required": [
+        "rules",
+        "axioms"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "$schema": { "type": "string" },
+        "axioms": {
+            "type": "object",
+            "title": "The axioms schema",
+            "default": {},
+            "additionalProperties": false,
+            "properties": {
+                "linguist": {
+                    "type": "string"
+                },
+                "licensee": {
+                    "type": "string"
+                },
+                "packagers": {
+                    "type": "string"
+                }
+            }
+        },
+        "rules": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "level": { "enum": ["off", "warning", "error"] },
+                    "where": { 
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "rule": {
+                        "allOf": [
+                            { "if": { "properties": { "type": { "const": "directory-existence" } } }, "then": { "$ref": "../rules/directory-existence-config.json" } },
+                            { "if": { "properties": { "type": { "const": "file-contents" } } }, "then": { "$ref": "../rules/file-contents-config.json" } },
+                            { "if": { "properties": { "type": { "const": "file-existence" } } }, "then": { "$ref": "../rules/file-existence-config.json" } },
+                            { "if": { "properties": { "type": { "const": "file-hash" } } }, "then": { "$ref": "../rules/file-hash-config.json" } },
+                            { "if": { "properties": { "type": { "const": "file-not-contents" } } }, "then": { "$ref": "../rules/file-not-contents-config.json" } },
+                            { "if": { "properties": { "type": { "const": "file-starts-with" } } }, "then": { "$ref": "../rules/file-starts-with-config.json" } },
+                            { "if": { "properties": { "type": { "const": "file-type-exclusion" } } }, "then": { "$ref": "../rules/file-type-exclusion-config.json" } },
+                            { "if": { "properties": { "type": { "const": "git-grep-commits" } } }, "then": { "$ref": "../rules/git-grep-commits-config.json" } },
+                            { "if": { "properties": { "type": { "const": "git-grep-log" } } }, "then": { "$ref": "../rules/git-grep-log-config.json" } },
+                            { "if": { "properties": { "type": { "const": "git-list-tree" } } }, "then": { "$ref": "../rules/git-list-tree-config.json" } },
+                            { "if": { "properties": { "type": { "const": "git-working-tree" } } }, "then": { "$ref": "../rules/git-working-tree-config.json" } },
+                            { "if": { "properties": { "type": { "const": "license-detectable-by-licensee" } } }, "then": { "$ref": "../rules/license-detectable-by-licensee-config.json" } }
+                        ]
+                    },
+                    "fix": {
+                        "default": {},
+                        "allOf": [
+                            { "if": { "properties": { "type": { "const": "file-modify" } } }, "then": { "$ref": "../fixes/file-modify-config.json" } }
+                        ]
+                    }
+                },
+                "required": [ "level", "rule" ]
+            }
+        }
+    }
+}

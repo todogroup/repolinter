@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/git-grep-log-config.json",
+    "type": "object",
+    "properties": {
+        "type": { "const": "git-grep-log" },
+        "options": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "blacklist": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "ignoreCase": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "required": ["blacklist"]
+        }
+    },
+    "required": ["type", "options"],
+    "additionalProperties": false
+}
