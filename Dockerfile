@@ -4,7 +4,7 @@
 #
 # To run against the current directory:
 #
-#   docker run -t -v $PWD:/src repolinter
+#   docker run -t -v $PWD:/src -w /src repolinter
 #
 # To run against a remote GitHub repository
 #
