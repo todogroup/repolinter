@@ -23,6 +23,7 @@
       "name": "Launch Program",
       "program": "${workspaceRoot}/bin/repolinter.js",
       "args":[
+        "lint",
         "."
       ]
     }

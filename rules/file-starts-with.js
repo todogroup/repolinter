@@ -2,10 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
+const FileSystem = require ('../lib/file_system')
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
+/**
+ * Check that a list of files does not contain a regular expression.
+ * 
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function fileStartsWith(fs, options) {
   const files = fs.findAllFiles(options.files, options.nocase === true)
 
   let filteredFiles = files
@@ -34,7 +40,7 @@ module.exports = function (fileSystem, rule) {
     )
   }
 
-  const results = []
+  const targets = []
   filteredFiles.forEach(file => {
     const lines = fs.getFileLines(file, options.lineCount)
     if (!lines) {
@@ -53,13 +59,20 @@ module.exports = function (fileSystem, rule) {
       message += ` do not contain the patterns:\n\t${misses.join('\n\t')}`
     }
 
-    results.push(new Result(rule, message, file, passed))
+    targets.push({
+      passed,
+      path: file,
+      message
+    })
   })
 
-  if (results.length === 0 && options['succeed-on-non-existent']) {
+  if (targets.length === 0 && options['succeed-on-non-existent']) {
     const message = `not found: (${options.files.join(', ')})`
-    return [new Result(rule, message, null, true)]
+    return new Result(message, [], true)
   }
 
-  return results
+  const passed = !targets.find(t => !t.passed)
+  return new Result('', targets, passed)
 }
+
+module.exports = fileStartsWith

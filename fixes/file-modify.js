@@ -14,6 +14,7 @@ function errorResult(msg, fix, target = null) {
 }
 
 // TODO: Dry run?
+// TODO: only run on rule failed targets
 
 module.exports = function (fileSystem, fix, ruleResult, dryRun = false) {
     const options = fix.options

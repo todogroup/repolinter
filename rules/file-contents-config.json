@@ -17,6 +17,7 @@
                     "items": { "type": "string" }
                 },
                 "content": { "type": "string" },
+                "flags": { "type": "string" },
                 "human-readable-content": { "type": "string" },
                 "fail-on-non-exist": { 
                     "type": "boolean",

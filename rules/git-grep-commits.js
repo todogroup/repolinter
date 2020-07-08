@@ -3,6 +3,7 @@
 
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
+const FileSystem = require ('../lib/file_system')
 
 function listCommitsWithLines (fileSystem, options) {
   const pattern = '(' + options.blacklist.join('|') + ')'
@@ -61,10 +62,15 @@ function listFiles (fileSystem, options) {
   return files
 }
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const files = listFiles(fileSystem, options)
-  const results = files.map(file => {
+/**
+ * 
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function gitGrepCommits(fs, options) {
+  const files = listFiles(fs, options)
+  const targets = files.map(file => {
     const [firstCommit, ...rest] = file.commits
     const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
@@ -72,24 +78,23 @@ module.exports = function (fileSystem, rule) {
       `(${file.path}) contains blacklisted words in commit ${firstCommit.hash.substr(0, 7)}${restMessage}.`,
       `\tBlacklist: ${options.blacklist.join(', ')}`
     ].join('\n')
-    const result = new Result(rule, message, file.path, false)
-    result.data = { file: file }
 
-    return result
+    return {
+      passed: false,
+      path: file.path,
+      message,
+    }
   })
 
-  if (results.length === 0) {
+  if (targets.length === 0) {
     const message = [
       'No blacklisted words found in any commits.',
       `\tBlacklist: ${options.blacklist.join(', ')}`
     ].join('\n')
-    results.push(new Result(
-      rule,
-      message,
-      null,
-      true
-    ))
+    return new Result(message, [], true)
   }
 
-  return results
+  return new Result('', targets, false)
 }
+
+module.exports = gitGrepCommits

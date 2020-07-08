@@ -2,15 +2,25 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
+const FileSystem = require ('../lib/file_system')
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
+function getContent (options) {
+  return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content
+}
+
+/**
+ * Check if a list of files contains a regular expression.
+ * 
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function fileContents (fs, options) {
   const files = fs.findAll(options.files)
 
   if (files.length === 0 && options['fail-on-non-existent']) {
     const message = `not found: (${options.files.join(', ')})`
-    return [new Result(rule, message, null, false)]
+    return new Result(message, [], false)
   }
 
   const results = files.map(file => {
@@ -21,14 +31,18 @@ module.exports = function (fileSystem, rule) {
     const regexp = new RegExp(options.content, options.flags)
 
     const passed = fileContents.search(regexp) >= 0
-    const message = `File ${file} ${passed ? 'contains' : 'doesn\'t contain'} ${getContent()}`
+    const message = `${passed ? 'Contains' : 'Doesn\'t contain'} ${getContent(options)}`
 
-    return new Result(rule, message, file, passed)
+    return {
+      passed,
+      path: file,
+      message
+    }
   })
 
-  function getContent () {
-    return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content
-  }
+  const passed = !results.find(r => !r.passed)
 
-  return results
+  return new Result('', results, passed)
 }
+
+module.exports = fileContents

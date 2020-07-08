@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const fileExistence = require('./file-existence')
-module.exports = function (fileSystem, rule) {
-  rule.options.files = rule.options.directories
-  return fileExistence(fileSystem, rule)
+module.exports = function (fileSystem, opts) {
+  opts.files = opts.directories
+  return fileExistence(fileSystem, opts)
 }

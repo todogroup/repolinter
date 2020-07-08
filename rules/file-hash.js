@@ -3,10 +3,16 @@
 
 const Result = require('../lib/result')
 const crypto = require('crypto')
+const FileSystem = require ('../lib/file_system')
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
+/**
+ * Check if a file matches a certain cryptographic hash.
+ * 
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function fileHash(fs, options) {
   const file = fs.findFirstFile(options.file)
 
   if (file === undefined) {
@@ -15,7 +21,7 @@ module.exports = function (fileSystem, rule) {
     if (status === undefined) {
       status = false
     }
-    return [new Result(rule, message, null, status)]
+    return new Result(message, [], !!status)
   }
 
   let algorithm = options.algorithm
@@ -32,7 +38,9 @@ module.exports = function (fileSystem, rule) {
   const hash = digester.digest('hex')
 
   const passed = hash === options.hash
-  const message = `File ${file} ${passed ? 'matches hash' : 'doesn\'t match hash'}`
+  const message = passed ? 'Matches hash' : 'Doesn\'t match hash'
 
-  return [new Result(rule, message, file, passed)]
+  return new Result('', [{ path: file, passed, message }], passed)
 }
+
+module.exports = fileHash

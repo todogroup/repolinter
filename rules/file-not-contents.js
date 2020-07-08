@@ -1,16 +1,26 @@
 // Copyright 2017 TODO Group. All rights reserved.
-// Licensed under the Apache License, Version 2.0.
+// SPDX-License-Identifier: Apache-2.0
+
 const Result = require('../lib/result')
+const FileSystem = require ('../lib/file_system')
 
-// TODO: This is mostly a copy and paste of file-contents.js. Ideally it would be implemented as a NOT(file-contents.js)
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
-  const files = fs.findAllFiles(options.files)
+function getContent (options) {
+  return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content
+}
 
-  if (files.length === 0 && options['succeed-on-non-existent']) {
+/**
+ * Check that a list of files does not contain a regular expression.
+ * 
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function fileNotContents(fs, options) {
+  const files = fs.findAll(options.files)
+
+  if (files.length === 0 && options['fail-on-non-existent']) {
     const message = `not found: (${options.files.join(', ')})`
-    return [new Result(rule, message, null, true)]
+    return new Result(message, [], false)
   }
 
   const results = files.map(file => {
@@ -18,13 +28,21 @@ module.exports = function (fileSystem, rule) {
     if (fileContents === undefined) {
       fileContents = ''
     }
-
     const regexp = new RegExp(options.content, options.flags)
-    const passed = fileContents.search(regexp) === -1
-    const message = `File ${file} ${passed ? 'doesn\'t contain' : 'contains'} ${options.content}`
 
-    return new Result(rule, message, file, passed)
+    const passed = fileContents.search(regexp) === 0
+    const message = `${passed ? 'Doesn\'t contain' : 'Contains'} ${getContent(options)}`
+
+    return {
+      passed,
+      path: file,
+      message
+    }
   })
 
-  return results
+  const passed = !results.find(r => !r.passed)
+
+  return new Result('', results, passed)
 }
+
+module.exports = fileNotContents
