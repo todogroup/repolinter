@@ -13,11 +13,12 @@ class SymbolFormatter {
    * @param {Result} result The result to format, must be valid
    * @param {string} ruleName The name of the rule this result is from
    * @param {string} errorSymbol The symbol to use if the result did not pass
+   * @param {string} okSymbol The symbol to use if the result passed
    * @returns {string} The formatted string
    */
-  static formatResult(result, ruleName, errorSymbol) {
+  static formatResult(result, ruleName, errorSymbol, okSymbol = logSymbols.success) {
     // format lint output
-    const formatbase = `\n${result.passed ? logSymbols.success : errorSymbol} ${ruleName}: ${result.message}`
+    const formatbase = `\n${result.passed ? okSymbol : errorSymbol} ${ruleName}: ${result.message}`
     // condensed one-line version for rules with no fix and no targets
     if (!result.targets.length)
       return formatbase
@@ -28,7 +29,7 @@ class SymbolFormatter {
     }
     // expanded version for more complicated rules
     return formatbase + result.targets
-      .map(t => `\n\t${t.passed ? logSymbols.success : errorSymbol} ${t.path}: ${t.message}`)
+      .map(t => `\n\t${t.passed ? okSymbol : errorSymbol} ${t.path}: ${t.message}`)
       .join('')
   }
 
@@ -75,7 +76,7 @@ class SymbolFormatter {
     const fixresults = output.results.filter(r => r.fixResult)
     if (fixresults.length > 0) {
       ret += chalk.inverse(`\nFix(es) ${dryRun ? 'suggested' : 'applied'}:`) + fixresults.map(result => 
-        SymbolFormatter.formatResult(result.fixResult, result.ruleInfo.name, SymbolFormatter.getSymbol(result.ruleInfo.level)))
+        SymbolFormatter.formatResult(result.fixResult, result.ruleInfo.name, SymbolFormatter.getSymbol(result.ruleInfo.level), logSymbols.info))
     }
     return ret
   }

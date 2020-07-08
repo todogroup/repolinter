@@ -83,8 +83,11 @@ module.exports = function (fs, options, targets, dryRun = false) {
                 fs.setFileContents(file, content + fs.getFileContents(file))
         }
         // return the target information
+        const message = typeof options.text === 'object'
+            ? `${options.write_mode} text from ${options.text.file || options.text.url} to file`
+            : `${options.write_mode} "${content}" to file`
         return {
-            message: `${options.write_mode} "${content}" ${typeof options.text === 'object' ? `from ${options.text.file || options.text.url}` : ''}`,
+            message,
             passed: true,
             path: file,
         }
