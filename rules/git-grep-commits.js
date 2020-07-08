@@ -6,7 +6,7 @@ const Result = require('../lib/result')
 const FileSystem = require ('../lib/file_system')
 
 function listCommitsWithLines (fileSystem, options) {
-  const pattern = '(' + options.blacklist.join('|') + ')'
+  const pattern = '(' + options.denylist.join('|') + ')'
   const commits = gitAllCommits(fileSystem.targetDir)
   return commits.map((commit) => {
     return {
@@ -75,8 +75,8 @@ function gitGrepCommits(fs, options) {
     const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
     const message = [
-      `(${file.path}) contains blacklisted words in commit ${firstCommit.hash.substr(0, 7)}${restMessage}.`,
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      `(${file.path}) contains denylisted words in commit ${firstCommit.hash.substr(0, 7)}${restMessage}.`,
+      `\tdenylist: ${options.denylist.join(', ')}`
     ].join('\n')
 
     return {
@@ -88,8 +88,8 @@ function gitGrepCommits(fs, options) {
 
   if (targets.length === 0) {
     const message = [
-      'No blacklisted words found in any commits.',
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      'No denylisted words found in any commits.',
+      `\tdenylist: ${options.denylist.join(', ')}`
     ].join('\n')
     return new Result(message, [], true)
   }

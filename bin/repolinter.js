@@ -2,8 +2,7 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-/** @type {any} */
-const argv = require('yargs')
+require('yargs')
   .command('lint <directory>', 'run repolinter on the specified directory, outputting results to STDOUT.', yargs => {
     yargs
       .positional('directory', {
@@ -34,24 +33,30 @@ const argv = require('yargs')
         default: false,
         type: 'boolean'
       })
-  }).argv
-const path = require('path')
-const repolinter = require('..')
+  }, (argv) => {
+    const path = require('path')
+    const repolinter = require('..')
+    
+    if (argv.git) {
+      const git = require('simple-git')()
+      const uuidv4 = require('uuid/v4')
+      const rimraf = require('rimraf')
+      const tmpDir = path.resolve(process.cwd(), 'tmp', uuidv4())
 
-if (argv.git) {
-  const git = require('simple-git')()
-  const uuidv4 = require('uuid/v4')
-  const rimraf = require('rimraf')
-  const tmpDir = path.resolve(process.cwd(), 'tmp', uuidv4())
-
-  git.clone(argv.directory, tmpDir, (error) => {
-    if (!error) {
-      const output = repolinter.lint(tmpDir, argv.allowPaths, argv.dryRun, argv.ruleset)
+      git.clone(argv.directory, tmpDir, (error) => {
+        if (!error) {
+          const output = repolinter.lint(tmpDir, argv.allowPaths, argv.dryRun, argv.ruleset)
+          console.log(repolinter.defaultFormatter.formatOutput(output, argv.dryRun))
+          process.exitCode = output.passed ? 0 : 1
+        }
+        rimraf(tmpDir, function () {})
+      })
+    } else {
+      const output = repolinter.lint(path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, argv.ruleset)
       console.log(repolinter.defaultFormatter.formatOutput(output, argv.dryRun))
+      process.exitCode = output.passed ? 0 : 1
     }
-    rimraf(tmpDir, function () {})
   })
-} else {
-  const output = repolinter.lint(path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, argv.ruleset)
-  console.log(repolinter.defaultFormatter.formatOutput(output, argv.dryRun))
-}
+  .demandCommand()
+  .help()
+  .argv

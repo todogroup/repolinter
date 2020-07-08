@@ -17,7 +17,7 @@
                     "default": false
                 }
             },
-            "required": ["blacklist"]
+            "required": ["denylist"]
         }
     },
     "required": ["type", "options"],

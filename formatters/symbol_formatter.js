@@ -4,47 +4,46 @@
 const logSymbols = require('log-symbols')
 const chalk = require('chalk')
 const FormatResult = require('../lib/formatresult')
+const Result = require('../lib/result')
 
 class SymbolFormatter {
   /**
    * Format a FormatResult object into a line of human-readable text.
    * 
-   * @param {FormatResult} result The result to format
-   * @param {boolean} dryRun Whether or not to generate in "report" format
+   * @param {Result} result The result to format, must be valid
+   * @param {string} ruleName The name of the rule this result is from
+   * @param {string} errorSymbol The symbol to use if the result did not pass
    * @returns {string} The formatted string
    */
-  static formatResult (result, dryRun) {
-    // log errors
-    if (result.status == FormatResult.ERROR)
-      return `\n${logSymbols.error} ${chalk.bgRed(`${result.ruleInfo.name} failed to run:`)} ${result.runMessage}`
-    // log ignored rules
-    else if (result.status == FormatResult.IGNORED)
-      return `\n${logSymbols.info} ${result.ruleInfo.name}: ${result.runMessage}`
-    // log all other rule outputs
-    else {
-      // format lint output
-      const formatbase = `\n${result.lintResult.passed ? logSymbols.success : logSymbols.error} ${result.ruleInfo.name}: ${result.lintResult.message}`
-      if (!result.fixResult) {
-        // condensed one-line version for rules with no fix and no targets
-        if (!result.lintResult.targets.length)
-          return formatbase
-        // same but with only one target
-        if (result.lintResult.targets.length === 1) {
-          const target = result.lintResult.targets[0]
-          return formatbase + ` ${target.path} ${target.message || ''}`
-        }
-      }
-      // expanded version for more complicated rules
-      let ret = formatbase + result.lintResult.targets
-        .map(t => `\n\t${t.passed ? logSymbols.success : logSymbols.error} ${t.path}: ${t.message}`)
-        .join('')
-      if (result.fixResult) {
-        ret += `\n\t${logSymbols.info} Fix(es) ${dryRun ? 'suggested' : 'applied'}: ${result.fixResult.message}`
-        ret += result.fixResult.targets
-          .map(t => `\n\t\t${t.passed ? logSymbols.success : logSymbols.error} ${t.path}: ${t.message}`)
-          .join('')
-      }
-      return ret
+  static formatResult(result, ruleName, errorSymbol) {
+    // format lint output
+    const formatbase = `\n${result.passed ? logSymbols.success : errorSymbol} ${ruleName}: ${result.message}`
+    // condensed one-line version for rules with no fix and no targets
+    if (!result.targets.length)
+      return formatbase
+    // same but with only one target
+    if (result.targets.length === 1) {
+      const target = result.targets[0]
+      return formatbase + ` ${target.path} ${target.message || ''}`
+    }
+    // expanded version for more complicated rules
+    return formatbase + result.targets
+      .map(t => `\n\t${t.passed ? logSymbols.success : errorSymbol} ${t.path}: ${t.message}`)
+      .join('')
+  }
+
+  /**
+   * Get the logsymbol associated with a log level (specified in the JSON configuration schema)
+   * 
+   * @param {string} level The log level string ("info", "warning", or "error"
+   * @returns {string} A corresponding logsymbol
+   */
+  static getSymbol(level) {
+    switch(level) {
+      case "info": return logSymbols.info
+      case "warning": return logSymbols.warning
+      case "error": return logSymbols.error
+      default: return logSymbols.error
     }
   }
 
@@ -58,7 +57,27 @@ class SymbolFormatter {
     let ret = `Target directory: ${output.params.targetDir}`
     if (output.params.filterPaths.length)
       ret += `\nPaths to include in checks:\n\t${output.params.filterPaths.join('\n\t')}`
-    return ret + output.results.map(res => SymbolFormatter.formatResult(res, dryRun)).join('')
+    if (output.errored)
+      return ret + `\n${chalk.bgRed(output.errMsg)}`
+    
+    // lint section
+    ret += chalk.inverse(`\nLint:`) + output.results.map(result => {
+      // log errors
+      if (result.status == FormatResult.ERROR)
+        return `\n${logSymbols.error} ${chalk.bgRed(`${result.ruleInfo.name} failed to run:`)} ${result.runMessage}`
+      // log ignored rules
+      if (result.status == FormatResult.IGNORED)
+        return `\n${logSymbols.info} ${result.ruleInfo.name}: ${result.runMessage}`
+      // log all others
+      return SymbolFormatter.formatResult(result.lintResult, result.ruleInfo.name, SymbolFormatter.getSymbol(result.ruleInfo.level))
+    }).join('')
+    // fix section
+    const fixresults = output.results.filter(r => r.fixResult)
+    if (fixresults.length > 0) {
+      ret += chalk.inverse(`\nFix(es) ${dryRun ? 'suggested' : 'applied'}:`) + fixresults.map(result => 
+        SymbolFormatter.formatResult(result.fixResult, result.ruleInfo.name, SymbolFormatter.getSymbol(result.ruleInfo.level)))
+    }
+    return ret
   }
 }
 

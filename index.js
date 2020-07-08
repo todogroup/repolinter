@@ -14,7 +14,6 @@ const FileSystem = require('./lib/file_system')
 /**
  * @typedef {object} Formatter
  * 
- * @property {(result: FormatResult, dryRun: boolean) => string} [formatResult] A function to format a single FormatResult into a line of text
  * @property {(output: LintResult, dryRun: boolean) => string} formatOutput A function to format the entire linter output
  */
 
@@ -52,11 +51,11 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @returns {LintResult} An object representing the output of the linter
  */
 function lint(targetDir, filterPaths = [], dryRun = false, ruleset = null) {
-  // TODO: Rework cli interface to use new API (fix incorrect command?)
   // TODO: Rework format to have a "fix" section
   // TODO: Fix rule level with exit code and formatting
   // TODO: Dry run? Report generation?
   // TODO: Fix fixes
+  // TODO: Fix code formatting
   // TODO: Fix tests to work with new rule format
   // TODO: More tests
   // TODO: rewrite formatters (1 of 2)
@@ -105,11 +104,12 @@ function lint(targetDir, filterPaths = [], dryRun = false, ruleset = null) {
     targets = determineTargets(ruleset.axioms, fileSystem)
   
   // execute ruleset
-  const result = runRuleset(ruleset, targets, fileSystem)
+  const result = runRuleset(ruleset, targets, fileSystem, dryRun)
 
   const passed = result.filter(r => 
-    r.status === FormatResult.ERROR || 
-    (r.status !== FormatResult.IGNORED && !r.lintResult.passed)).length === 0
+      r.status === FormatResult.ERROR || 
+      (r.status !== FormatResult.IGNORED && r.ruleInfo.level === "error" && !r.lintResult.passed)
+    ).length === 0
 
   // render all the results
   const all_format_info = {
@@ -135,10 +135,11 @@ function lint(targetDir, filterPaths = [], dryRun = false, ruleset = null) {
  * @param {{ axioms: string[], rules: object }} ruleset A ruleset configuration conforming to {@link ../rulesets/schema.json}
  * @param {string[]|true} targets The axiom targets to enable for this run of the ruleset (ex. "language=javascript"). or true for all
  * @param {FileSystem} fileSystem A filesystem object configured with filter paths and a target directory.
+ * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @param {string} self_dir The path containing the source files for the currently running linter instance
  * @returns {FormatResult[]} Objects indicating the result of the linter rules
  */
-function runRuleset(ruleset, targets, fileSystem, self_dir = __dirname) {
+function runRuleset(ruleset, targets, fileSystem, dryRun, self_dir = __dirname) {
   return Object.entries(ruleset.rules)
     // compile the ruleset into RuleInfo objects
     .map(([name, cfg]) => 
@@ -188,9 +189,9 @@ function runRuleset(ruleset, targets, fileSystem, self_dir = __dirname) {
       let fixresult
       try {
         // TODO: dry run?
-        /** @type {(fs: FileSystem, options: object, targets: string[]) => Result} */
+        /** @type {(fs: FileSystem, options: object, targets: string[], dryRun: boolean) => Result} */
         const fixFunc = require(fixFile)
-        fixresult = fixFunc(fileSystem, r.fixConfig, fixTargets)
+        fixresult = fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
       }
       catch (e) {
         return FormatResult.CreateError(r, `${ r.fixType } threw an error: ${ e.message }`)

@@ -18,7 +18,7 @@ function gitFilesAtCommit (targetDir, commit) {
 function listFiles (fileSystem, options) {
   const files = []
 
-  const pattern = new RegExp('(' + options.blacklist.join('|') + ')', options.ignoreCase ? 'i' : '')
+  const pattern = new RegExp('(' + options.denylist.join('|') + ')', options.ignoreCase ? 'i' : '')
   const commits = gitAllCommits(fileSystem.targetDir)
   commits.forEach((commit) => {
     const includedFiles = gitFilesAtCommit(fileSystem.targetDir, commit)
@@ -51,8 +51,8 @@ function gitListTree(fs, options) {
     const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
     const message = [
-      `Blacklisted path (${file.path}) found in commit ${firstCommit.substr(0, 7)}${restMessage}.`,
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      `denylisted path (${file.path}) found in commit ${firstCommit.substr(0, 7)}${restMessage}.`,
+      `\tdenylist: ${options.denylist.join(', ')}`
     ].join('\n')
 
     return {
@@ -63,7 +63,7 @@ function gitListTree(fs, options) {
   })
 
   if (targets.length === 0) {
-    const message = `No blacklisted paths found in any commits.\n\tBlacklist: ${options.blacklist.join(', ')}`
+    const message = `No denylisted paths found in any commits.\n\tdenylist: ${options.denylist.join(', ')}`
     return new Result(message, [], true)
   }
 

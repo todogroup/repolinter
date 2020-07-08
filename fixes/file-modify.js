@@ -1,13 +1,6 @@
 const Result = require('../lib/result')
+const FileSystem = require ('../lib/file_system')
 const request = require('sync-request')
-
-const WRITE_MODES = ["prepend", "append"]
-
-const DEFAULT_CONFIG = {
-    write_mode: "append",
-    nocase: false,
-    "skip-paths-matching": null,   
-}
 
 function errorResult(msg, fix, target = null) {
     return [new Result(fix, msg, target, false)]
@@ -16,16 +9,22 @@ function errorResult(msg, fix, target = null) {
 // TODO: Dry run?
 // TODO: only run on rule failed targets
 
-module.exports = function (fileSystem, fix, ruleResult, dryRun = false) {
-    const options = fix.options
-    const fs = options.fs || fileSystem;
-    const targets = options.files || ruleResult.target;
-
-    if (!targets)
-        return errorResult(`A target file was not specified for file-modify! Did you configure the ruleset correctly?`, fix)
+/**
+ * Prepend or append text to a file
+ * 
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @param {string[]} targets The files to modify (will be overridden by options if present)
+ * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
+ * @returns {Result} The lint rule result
+ */
+module.exports = function (fs, options, targets, dryRun = false) {
+    const realTargets = options.files || targets
+    if (realTargets.length === 0)
+        return new Result(`No files to modify, did you configure this fix correctly?`, [], false)
 
     // find all files matching the regular expressions specified
-    let files = fs.findAllFiles(targets, options.nocase === true)
+    let files = fs.findAllFiles(realTargets, options.nocase === true)
 
     // skip files if necessary
     if (options['skip-paths-matching']) {
@@ -57,7 +56,7 @@ module.exports = function (fileSystem, fix, ruleResult, dryRun = false) {
         if (options.text.url) {
             let req = request('GET', options.text.url).getBody()
             if (req.statusCode >= 300)
-                return errorResult(`Request to ${ options.text.url } for file-modify failed with status code ${ req.statusCode }.`, fix, targets)
+                return new Result(`Request to ${ options.text.url } for file-modify failed with status code ${ req.statusCode }.`, [], false)
             content = req.body;
 
             // TODO: print info?
@@ -65,23 +64,31 @@ module.exports = function (fileSystem, fix, ruleResult, dryRun = false) {
         else if (options.text.file) {
             let file = fs.findFirstFile([options.text.file], options.text.nocase === true)
             if (!file)
-                return errorResult(`Could not find file matching pattern ${ options.text.file } for file-modify.`, fix, targets)
+                return new Result(`Could not find file matching pattern ${ options.text.file } for file-modify.`, [], false)
             content = fs.getFileContents(file)
 
             // TODO: print info?
         }
     }
     if (!content)
-        return errorResult(`Text was not specified for file-modify! Did you configure the ruleset correctly?`, fix, targets)
+        return new Result(`Text was not specified for file-modify! Did you configure the ruleset correctly?`, [], false)
 
     // write it to the file
-    // TODO: Print that we are doing X during dry run
-    for (const file of files) {
-        if (options.write_mode === 'append')
-            fs.setFileContents(file, fs.getFileContents(file) + content)
-        else
-            fs.setFileContents(file, content + fs.getFileContents(file))
-    }
-
-    return files.map((f) => new Result(fix, `Successfully completed ${ options.write_mode } on ${ f }`, f, true));
+    let resTargets = files.map(file => {
+        // do file operation
+        if (!dryRun) {
+            if (options.write_mode === 'append')
+                fs.setFileContents(file, fs.getFileContents(file) + content)
+            else
+                fs.setFileContents(file, content + fs.getFileContents(file))
+        }
+        // return the target information
+        return {
+            message: `${options.write_mode} "${content}" ${typeof options.text === 'object' ? `from ${options.text.file || options.text.url}` : ''}`,
+            passed: true,
+            path: file,
+        }
+    })
+    
+    return new Result('', resTargets, true)
 }
