@@ -24,7 +24,9 @@
       "program": "${workspaceRoot}/bin/repolinter.js",
       "args":[
         "lint",
-        "."
+        ".",
+        "--dryRun",
+        "--ruleset-url https://raw.githubusercontent.com/aperture-science-incorporated/.github/master/repolinter.json"
       ]
     }
   ]
