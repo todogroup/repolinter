@@ -1,10 +1,10 @@
+// Copyright 2017 TODO Group. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 const Result = require('../lib/result')
 const FileSystem = require ('../lib/file_system')
 /** @type {any} */
 const fetch = require('node-fetch')
-
-// TODO: Dry run?
-// TODO: only run on rule failed targets
 
 /**
  * Prepend or append text to a file
@@ -18,7 +18,7 @@ const fetch = require('node-fetch')
 async function fileModify(fs, options, targets, dryRun = false) {
   const realTargets = options.files || targets
   if (realTargets.length === 0)
-    return new Result(`No files to modify, did you configure this fix correctly?`, [], false)
+    return new Result('No files to modify, did you configure this fix correctly?', [], false)
 
   // find all files matching the regular expressions specified
   let files = fs.findAllFiles(realTargets, options.nocase === true)

@@ -57,7 +57,8 @@
                     "fix": {
                         "default": {},
                         "allOf": [
-                            { "if": { "properties": { "type": { "const": "file-modify" } } }, "then": { "$ref": "../fixes/file-modify-config.json" } }
+                            { "if": { "properties": { "type": { "const": "file-modify" } } }, "then": { "$ref": "../fixes/file-modify-config.json" } },
+                            { "if": { "properties": { "type": { "const": "file-create" } } }, "then": { "$ref": "../fixes/file-create-config.json" } }
                         ]
                     }
                 },

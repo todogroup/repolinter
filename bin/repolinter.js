@@ -5,6 +5,8 @@ const path = require('path')
 const repolinter = require('..')
 const rimraf = require('rimraf')
 const git = require('simple-git/promise')()
+/** @type {any} */
+const fetch = require('node-fetch')
 const fs = require('fs')
 const os = require('os')
 
@@ -28,9 +30,14 @@ require('yargs')
         default: [],
         type: 'array'
       })
-      .option('ruleset', {
+      .option('ruleset-file', {
         alias: 'r',
         describe: 'Specify an alternate location for the repolinter.json configuration to use (This will default to repolinter.json at the root of the project, or the internal default ruleset if none is found).',
+        type: 'string'
+      })
+      .option('ruleset-url', {
+        alias: 'u',
+        describe: 'Specify an alternate URL repolinter.json configuration to use (This will default to repolinter.json at the root of the project, or the internal default ruleset if none is found).',
         type: 'string'
       })
       .option('git', {
@@ -40,6 +47,17 @@ require('yargs')
         type: 'boolean'
       })
   }, async (/** @type {any} */ argv) => {
+    let rulesetParsed = null
+    // resolve the ruleset if a url is specified
+    if (argv['ruleset-url']) {
+      let res = await fetch(argv['ruleset-url'])
+      if (!res.ok) {
+        console.error(`Failed to fetch config from ${argv['ruleset-url']} with status code ${res.status}`)
+        process.exitCode = 1
+        return
+      }
+      rulesetParsed = await res.json()
+    }
     let tmpDir = null
     // temporarily clone a git repo to lint
     if (argv.git) {
@@ -53,7 +71,7 @@ require('yargs')
       }
     }
     // run the linter
-    const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, argv.ruleset)
+    const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, rulesetParsed || argv['ruleset-file'])
     console.log(repolinter.defaultFormatter.formatOutput(output, argv.dryRun))
     process.exitCode = output.passed ? 0 : 1
     // delete the tmpdir if it exists
@@ -62,4 +80,5 @@ require('yargs')
   })
   .demandCommand()
   .help()
+  .strict()
   .argv

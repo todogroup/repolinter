@@ -36,12 +36,6 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @property {string[]} targets The array of axiom targets which the target repository satisfied.
  */
 
-async function checkFileExists(file) {
-  return fs.promises.access(file, fs.constants.F_OK)
-    .then(() => true)
-    .catch(() => false)
-}
-
 /**
  * An exposed function for the repolinter engine. Use this function
  * to run repolinter on a specified directory targetDir. You can
@@ -109,7 +103,7 @@ async function lint(targetDir, filterPaths = [], dryRun = false, ruleset = null)
 
   const passed = result.filter(r => 
     r.status === FormatResult.ERROR || 
-      (r.status !== FormatResult.IGNORED && r.ruleInfo.level === "error" && !r.lintResult.passed)
+      (r.status !== FormatResult.IGNORED && r.ruleInfo.level === 'error' && !r.lintResult.passed)
   ).length === 0
 
   // render all the results
@@ -156,8 +150,8 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun, self_dir = __dir
     // Execute all rule targets
     .map(async r => {
       // check axioms and enable appropriately
-      if (r.level === "off")
-        return FormatResult.CreateIgnored(r, `ignored because level is "off"`)
+      if (r.level === 'off')
+        return FormatResult.CreateIgnored(r, 'ignored because level is "off"')
       // filter to only targets with no matches
       if (typeof targets !== 'boolean') {
         const ignoreReasons = r.where.filter(check => !targets.find(tar => check === tar))
@@ -166,7 +160,7 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun, self_dir = __dir
       }
       // check if the rule file exists
       const ruleFile = path.join(self_dir, 'rules', r.ruleType)
-      if (!(await checkFileExists(ruleFile + '.js')))
+      if (!(await FileSystem.fileExists(ruleFile + '.js')))
         return FormatResult.CreateError(r, `${ ruleFile } does not exist`)
       let result
       try {
@@ -233,12 +227,12 @@ async function determineTargets(axiomconfig, fs, self_dir = __dirname) {
  */
 async function validateConfig(config, self_dir = __dirname) {
   // compile the json schema
-  const ajv_props = new ajv()
+  const ajvProps = new ajv()
   const fs = new FileSystem(self_dir)
   // FIXME: cannot use fileSystem here because the target directory is wrong
-  for (const schema of fs.findAllFiles(["rules/*-config.json", "fixes/*-config.json"], true))
-    ajv_props.addSchema(await jsonfile.readFile(schema))
-  const validator = ajv_props.compile(await jsonfile.readFile('./rulesets/schema.json'))
+  for (const schema of fs.findAllFiles(['rules/*-config.json', 'fixes/*-config.json'], true))
+    ajvProps.addSchema(await jsonfile.readFile(schema))
+  const validator = ajvProps.compile(await jsonfile.readFile('./rulesets/schema.json'))
 
   // validate it against the supplied ruleset
   if (!validator(config))

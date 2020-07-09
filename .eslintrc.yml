@@ -16,6 +16,7 @@ rules:
   jsdoc/require-jsdoc: 0
   jsdoc/check-tag-names: 0
   semi: [warn, never]
+  quotes: [warn, single]
 settings:
   jsdoc:
     mode: 'typescript'

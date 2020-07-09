@@ -158,13 +158,6 @@
                     "patterns": ["Copyright", "License"],
                     "flags": "i"
                 }
-            },
-            "fix": {
-                "type": "file-modify",
-                "options": {
-                    "text": { "file": "./header.js" },
-                    "write_mode": "prepend"
-                }
             }
         },
         "github-issue-template-exists": {
