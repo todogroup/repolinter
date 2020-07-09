@@ -3,7 +3,7 @@
 
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 function gitAllCommits (targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']

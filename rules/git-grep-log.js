@@ -3,7 +3,7 @@
 
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 function grepLog (fileSystem, options) {
   const args = ['-C', fileSystem.targetDir, 'log', '--all', '--format=full', '-E']

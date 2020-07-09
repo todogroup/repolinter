@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 function getContent (options) {
   return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content
@@ -18,9 +18,9 @@ function getContent (options) {
 function fileContents (fs, options) {
   const files = fs.findAll(options.files)
 
-  if (files.length === 0 && options['fail-on-non-existent']) {
+  if (files.length === 0) {
     const message = `not found: (${options.files.join(', ')})`
-    return new Result(message, [], false)
+    return new Result(message, [], !options['fail-on-non-existent'])
   }
 
   const results = files.map(file => {

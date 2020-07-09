@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 function getContent (options) {
   return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content
