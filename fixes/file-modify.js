@@ -46,7 +46,7 @@ async function fileModify(fs, options, targets, dryRun = false) {
   }
 
   // read the text from the source, if necessary
-  let content;        
+  let content
   if (typeof options.text === 'string')
     content = options.text
   else if (typeof options.text === 'object') {

@@ -11,9 +11,14 @@ globals:
   SharedArrayBuffer: 'readonly'
 parserOptions:
   ecmaVersion: 2018
-rules: {}
+rules: 
+  editorconfig/editorconfig: "error"
+  jsdoc/require-jsdoc: 0
+  jsdoc/check-tag-names: 0
+  semi: [warn, never]
 settings:
   jsdoc:
     mode: 'typescript'
 plugins:
   - 'jsdoc'
+  - 'editorconfig'
