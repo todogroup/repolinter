@@ -3,6 +3,7 @@
 
 const Result = require('../lib/result')
 const crypto = require('crypto')
+// eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 
 /**

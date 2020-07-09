@@ -3,6 +3,7 @@
 
 const licensee = require('../lib/licensee')
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 
 /**

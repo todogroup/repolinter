@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 /** @type {any} */
 const fetch = require('node-fetch')

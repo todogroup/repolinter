@@ -4,6 +4,7 @@
 const logSymbols = require('log-symbols')
 const chalk = require('chalk')
 const FormatResult = require('../lib/formatresult')
+// eslint-disable-next-line no-unused-vars
 const Result = require('../lib/result')
 
 class SymbolFormatter {

@@ -6,6 +6,7 @@ const Ajv = require('ajv')
 const path = require('path')
 const fs = require('fs')
 const findConfig = require('find-config')
+// eslint-disable-next-line no-unused-vars
 const Result = require('./lib/result')
 const RuleInfo = require('./lib/ruleinfo')
 const FormatResult = require('./lib/formatresult')

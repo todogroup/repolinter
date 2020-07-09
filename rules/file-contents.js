@@ -1,7 +1,9 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// eslint-disable-next-line no-unused-vars
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 
 function getContent (options) {
