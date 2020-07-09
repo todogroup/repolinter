@@ -231,8 +231,8 @@ async function validateConfig(config, self_dir = __dirname) {
   const fs = new FileSystem(self_dir)
   // FIXME: cannot use fileSystem here because the target directory is wrong
   for (const schema of fs.findAllFiles(['rules/*-config.json', 'fixes/*-config.json'], true))
-    ajvProps.addSchema(await jsonfile.readFile(schema))
-  const validator = ajvProps.compile(await jsonfile.readFile('./rulesets/schema.json'))
+    ajvProps.addSchema(await jsonfile.readFile(path.resolve(self_dir, schema)))
+  const validator = ajvProps.compile(await jsonfile.readFile(path.resolve(self_dir, './rulesets/schema.json')))
 
   // validate it against the supplied ruleset
   if (!validator(config))
