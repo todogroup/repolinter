@@ -63,12 +63,12 @@ function listFiles (fileSystem, options) {
 }
 
 /**
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function gitGrepCommits(fs, options) {
+function gitGrepCommits (fs, options) {
   const files = listFiles(fs, options)
   const targets = files.map(file => {
     const [firstCommit, ...rest] = file.commits
@@ -82,7 +82,7 @@ function gitGrepCommits(fs, options) {
     return {
       passed: false,
       path: file.path,
-      message,
+      message
     }
   })
 

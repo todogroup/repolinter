@@ -10,12 +10,12 @@ function getContent (options) {
 
 /**
  * Check that a list of files does not contain a regular expression.
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileNotContents(fs, options) {
+function fileNotContents (fs, options) {
   const files = fs.findAll(options.files)
 
   if (files.length === 0 && options['fail-on-non-existent']) {

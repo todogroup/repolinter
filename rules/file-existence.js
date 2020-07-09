@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 /**
  * Check if a file is present in the repository
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileExistence(fs, options) {
+function fileExistence (fs, options) {
   const file = fs.findFirstFile(options.files, options.nocase)
 
   const passed = !!file

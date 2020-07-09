@@ -3,15 +3,15 @@
 
 const licensee = require('../lib/licensee')
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 /**
  * Check if the repository licence can be detected by the licensee tool
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @returns {Result} The lint rule result
  */
-function licenceDetect(fs) {
+function licenceDetect (fs) {
   const result = new Result('', [], false)
 
   let licenses = []

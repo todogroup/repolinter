@@ -3,16 +3,16 @@
 
 const Result = require('../lib/result')
 const crypto = require('crypto')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 /**
  * Check if a file matches a certain cryptographic hash.
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileHash(fs, options) {
+function fileHash (fs, options) {
   const file = fs.findFirstFile(options.file)
 
   if (file === undefined) {

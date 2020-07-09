@@ -30,12 +30,12 @@ function extractInfo (commit) {
 }
 
 /**
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function gitGrepLog(fs, options) {
+function gitGrepLog (fs, options) {
   const commits = grepLog(fs, options)
 
   const targets = commits.map(commit => {

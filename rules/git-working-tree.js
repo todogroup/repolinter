@@ -3,15 +3,15 @@
 
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 /**
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function gitWorkingTree(fs, options) {
+function gitWorkingTree (fs, options) {
   const args = ['-C', fs.targetDir, 'rev-parse', '--show-prefix']
   const gitResult = spawnSync('git', args)
   const result = new Result('', [], true)

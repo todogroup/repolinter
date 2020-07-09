@@ -50,7 +50,7 @@ require('yargs')
     let rulesetParsed = null
     // resolve the ruleset if a url is specified
     if (argv['ruleset-url']) {
-      let res = await fetch(argv['ruleset-url'])
+      const res = await fetch(argv['ruleset-url'])
       if (!res.ok) {
         console.error(`Failed to fetch config from ${argv['ruleset-url']} with status code ${res.status}`)
         process.exitCode = 1
@@ -75,8 +75,7 @@ require('yargs')
     console.log(repolinter.defaultFormatter.formatOutput(output, argv.dryRun))
     process.exitCode = output.passed ? 0 : 1
     // delete the tmpdir if it exists
-    if (tmpDir)
-      rimraf(tmpDir, function () {})
+    if (tmpDir) { rimraf(tmpDir, function () {}) }
   })
   .demandCommand()
   .help()

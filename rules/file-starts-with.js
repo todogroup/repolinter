@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 /**
  * Check that a list of files does not contain a regular expression.
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileStartsWith(fs, options) {
+function fileStartsWith (fs, options) {
   const files = fs.findAllFiles(options.files, options.nocase === true)
 
   let filteredFiles = files

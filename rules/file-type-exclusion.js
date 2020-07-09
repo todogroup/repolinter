@@ -2,21 +2,21 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
-const FileSystem = require ('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 /**
  * Check if a filetype extension is not present in a repository
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileTypeExclusion(fs, options) {
+function fileTypeExclusion (fs, options) {
   const files = fs.findAll(options.type)
 
   const targets = files.map(file => {
     const message = `Excluded file type exists (${file})`
-    return { passed: false, path: file, message, }
+    return { passed: false, path: file, message }
   })
 
   if (targets.length === 0) {

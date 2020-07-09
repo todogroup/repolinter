@@ -38,12 +38,12 @@ function listFiles (fileSystem, options) {
 }
 
 /**
- * 
+ *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function gitListTree(fs, options) {
+function gitListTree (fs, options) {
   const files = listFiles(fs, options)
 
   const targets = files.map(file => {
