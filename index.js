@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const jsonfile = require('jsonfile')
-const ajv = require('ajv')
+const Ajv = require('ajv')
 const path = require('path')
 const fs = require('fs')
 const findConfig = require('find-config')
@@ -104,7 +104,7 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
   ).length === 0
 
   // render all the results
-  const all_format_info = {
+  const allFormatInfo = {
     params: {
       targetDir,
       filterPaths,
@@ -117,7 +117,7 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
     targets
   }
 
-  return all_format_info
+  return allFormatInfo
 }
 
 /**
@@ -217,7 +217,7 @@ async function determineTargets (axiomconfig, fs, self_dir = __dirname) {
  */
 async function validateConfig (config, self_dir = __dirname) {
   // compile the json schema
-  const ajvProps = new ajv()
+  const ajvProps = new Ajv()
   const fs = new FileSystem(self_dir)
   // FIXME: cannot use fileSystem here because the target directory is wrong
   for (const schema of fs.findAllFiles(['rules/*-config.json', 'fixes/*-config.json'], true)) { ajvProps.addSchema(await jsonfile.readFile(path.resolve(self_dir, schema))) }

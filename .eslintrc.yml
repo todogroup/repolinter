@@ -6,20 +6,17 @@ env:
 extends: 
   - 'eslint:recommended'
   - 'plugin:jsdoc/recommended'
+  - 'standard'
 globals:
   Atomics: 'readonly'
   SharedArrayBuffer: 'readonly'
 parserOptions:
   ecmaVersion: 2018
 rules: 
-  editorconfig/editorconfig: "error"
   jsdoc/require-jsdoc: 0
   jsdoc/check-tag-names: 0
-  semi: [warn, never]
-  quotes: [warn, single]
 settings:
   jsdoc:
     mode: 'typescript'
 plugins:
   - 'jsdoc'
-  - 'editorconfig'

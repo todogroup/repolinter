@@ -10,6 +10,7 @@ const fetch = require('node-fetch')
 const fs = require('fs')
 const os = require('os')
 
+// eslint-disable-next-line no-unused-expressions
 require('yargs')
   .command('lint <directory>', 'run repolinter on the specified directory, outputting results to STDOUT.', yargs => {
     yargs
@@ -80,4 +81,4 @@ require('yargs')
   .demandCommand()
   .help()
   .strict()
-  .argv
+  .argv // eslint-disable-line

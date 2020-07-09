@@ -38,6 +38,7 @@
   "dependencies": {
     "ajv": "^6.12.2",
     "chalk": "^4.1.0",
+    "eslint-config-standard": "^14.1.1",
     "find-config": "^1.0.0",
     "is-windows": "^1.0.2",
     "isbinaryfile": "^4.0.6",
@@ -55,7 +56,6 @@
     "chai": "^4.2.0",
     "chai-string": "^1.5.0",
     "eslint": "^7.3.1",
-    "eslint-plugin-editorconfig": "^2.1.3",
     "eslint-plugin-jsdoc": "^28.5.1",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",

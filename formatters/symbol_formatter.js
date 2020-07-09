@@ -56,9 +56,9 @@ class SymbolFormatter {
     // lint section
     ret += chalk.inverse('\nLint:') + output.results.map(result => {
       // log errors
-      if (result.status == FormatResult.ERROR) { return `\n${logSymbols.error} ${chalk.bgRed(`${result.ruleInfo.name} failed to run:`)} ${result.runMessage}` }
+      if (result.status === FormatResult.ERROR) { return `\n${logSymbols.error} ${chalk.bgRed(`${result.ruleInfo.name} failed to run:`)} ${result.runMessage}` }
       // log ignored rules
-      if (result.status == FormatResult.IGNORED) { return `\n${logSymbols.info} ${result.ruleInfo.name}: ${result.runMessage}` }
+      if (result.status === FormatResult.IGNORED) { return `\n${logSymbols.info} ${result.ruleInfo.name}: ${result.runMessage}` }
       // log all others
       return SymbolFormatter.formatResult(result.lintResult, result.ruleInfo.name, SymbolFormatter.getSymbol(result.ruleInfo.level))
     }).join('')
