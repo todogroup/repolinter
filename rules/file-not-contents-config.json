@@ -12,18 +12,19 @@
                     "type": "boolean",
                     "default": false
                 },
-                "files": {
+                "globsAll": {
                     "type": "array",
                     "items": { "type": "string" }
                 },
                 "content": { "type": "string" },
+                "flags": { "type": "string" },
                 "human-readable-content": { "type": "string" },
-                "succeed-on-non-existent": { 
+                "fail-on-non-exist": { 
                     "type": "boolean",
                     "default": false
                 }
             },
-            "required": ["files", "content"]
+            "required": ["globsAll", "content"]
         }
     },
     "required": ["type", "options"],

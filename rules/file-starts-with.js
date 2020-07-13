@@ -13,7 +13,7 @@ const FileSystem = require('../lib/file_system')
  * @returns {Result} The lint rule result
  */
 function fileStartsWith (fs, options) {
-  const files = fs.findAllFiles(options.files, options.nocase === true)
+  const files = fs.findAllFiles(options.globsAll, options.nocase === true)
 
   let filteredFiles = files
   if (options['skip-binary-files']) {
@@ -68,7 +68,7 @@ function fileStartsWith (fs, options) {
   })
 
   if (targets.length === 0 && options['succeed-on-non-existent']) {
-    const message = `not found: (${options.files.join(', ')})`
+    const message = `not found: (${options.globsAll.join(', ')})`
     return new Result(message, [], true)
   }
 

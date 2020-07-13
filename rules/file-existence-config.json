@@ -11,13 +11,13 @@
                     "type": "boolean",
                     "default": false
                 },
-                "files": {
+                "globsAny": {
                     "type": "array",
                     "items": { "type": "string" }
                 },
                 "fail-message": { "type": "string" }
             },
-            "required": ["files"]
+            "required": ["globsAny"]
         }
     },
     "required": ["type", "options"],

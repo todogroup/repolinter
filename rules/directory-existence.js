@@ -3,6 +3,5 @@
 
 const fileExistence = require('./file-existence')
 module.exports = function (fileSystem, opts) {
-  opts.files = opts.directories
   return fileExistence(fileSystem, opts)
 }

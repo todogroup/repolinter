@@ -22,6 +22,8 @@ class SymbolFormatter {
     const formatbase = `\n${result.passed ? okSymbol : errorSymbol} ${ruleName}: ${result.message}`
     // condensed one-line version for rules with no targets
     if (!result.targets.length) { return formatbase }
+    // condensed one-line version for rules with one target
+    if (result.targets.length === 1) { return formatbase + `${result.targets[0].message} (${result.targets[0].path})` }
     // expanded version for more complicated rules
     return formatbase + result.targets
       .map(t => `\n\t${t.passed ? okSymbol : errorSymbol} ${t.path}: ${t.message}`)

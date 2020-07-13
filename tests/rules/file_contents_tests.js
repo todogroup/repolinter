@@ -12,7 +12,7 @@ describe('rule', () => {
     it('returns passes if requested file contents exists', () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAllFiles () {
           return ['README.md']
         },
         getFileContents () {
@@ -22,7 +22,7 @@ describe('rule', () => {
       }
 
       const ruleopts = {
-        files: ['README*'],
+        globsAll: ['README*'],
         content: 'foo'
       }
 
@@ -35,7 +35,7 @@ describe('rule', () => {
     it('returns passes if requested file contents exists with human-readable contents', () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAllFiles () {
           return ['README.md']
         },
         getFileContents () {
@@ -44,7 +44,7 @@ describe('rule', () => {
         targetDir: '.'
       }
       const ruleopts = {
-        files: ['README*'],
+        globsAll: ['README*'],
         content: '[abcdef][oO0][^q]',
         'human-readable-content': 'actually foo'
       }
@@ -59,7 +59,7 @@ describe('rule', () => {
     it('returns fails if requested file contents does not exist', () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAllFiles () {
           return ['README.md']
         },
         getFileContents () {
@@ -69,7 +69,7 @@ describe('rule', () => {
       }
 
       const ruleopts = {
-        files: ['README*'],
+        globsAll: ['README*'],
         content: 'bar'
       }
 
@@ -84,7 +84,7 @@ describe('rule', () => {
     it('returns nothing if requested file does not exist', () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAllFiles () {
           return []
         },
         getFileContents () {
@@ -93,7 +93,7 @@ describe('rule', () => {
         targetDir: '.'
       }
       const ruleopts = {
-        files: ['README.md'],
+        globsAll: ['README.md'],
         content: 'foo'
       }
 
@@ -105,7 +105,7 @@ describe('rule', () => {
     it('returns failure if file does not exist with failure flag', () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAllFiles () {
           return []
         },
         getFileContents () {
@@ -114,7 +114,7 @@ describe('rule', () => {
         targetDir: '.'
       }
       const ruleopts = {
-        files: ['README.md', 'READMOI.md'],
+        globsAll: ['README.md', 'READMOI.md'],
         content: 'foo',
         'fail-on-non-existent': true
       }
@@ -132,7 +132,7 @@ describe('rule', () => {
       const fs = new FileSystem(require('path').resolve('.'))
 
       const rule = {
-        files: [brokenSymlink],
+        globsAll: [brokenSymlink],
         lineCount: 1,
         patterns: ['something']
       }

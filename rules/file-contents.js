@@ -15,13 +15,14 @@ function getContent (options) {
  *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
+ * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
  * @returns {Result} The lint rule result
  */
-function fileContents (fs, options) {
-  const files = fs.findAll(options.files)
+function fileContents (fs, options, not = false) {
+  const files = fs.findAllFiles(options.globsAll)
 
   if (files.length === 0) {
-    const message = `not found: (${options.files.join(', ')})`
+    const message = `not found: (${options.globsAll.join(', ')})`
     return new Result(message, [], !options['fail-on-non-existent'])
   }
 
@@ -36,7 +37,7 @@ function fileContents (fs, options) {
     const message = `${passed ? 'Contains' : 'Doesn\'t contain'} ${getContent(options)}`
 
     return {
-      passed,
+      passed: not ? !passed : passed,
       path: file,
       message
     }

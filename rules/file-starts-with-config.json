@@ -9,7 +9,7 @@
             "additionalProperties": false,
             "properties": {
                 "nocase": { "type": "boolean" },
-                "files": {
+                "globsAll": {
                     "type": "array",
                     "items": { "type": "string" }
                 },
@@ -45,7 +45,7 @@
                     }
                 }
             },
-            "required": ["files", "lineCount", "patterns"]
+            "required": ["globsAll", "lineCount", "patterns"]
         }
     },
     "required": ["type", "options"],

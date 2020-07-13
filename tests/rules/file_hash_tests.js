@@ -3,162 +3,125 @@
 
 const chai = require('chai')
 const expect = chai.expect
-const Result = require('../../lib/result')
 
 describe('rule', () => {
   describe('files_hash', () => {
     const fileContents = require('../../rules/file-hash')
 
     it('returns passes if requested file matches the hash', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-              return 'README.md'
-            },
-            getFileContents () {
-              return 'foo'
-            },
-            targetDir: '.'
-          },
-          file: 'README.md',
-          hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
-        }
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return 'README.md'
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'File README.md matches hash',
-          'README.md',
-          true
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['README.md'],
+        hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
+      }
 
-      const actual = fileContents(null, rule)
-      expect(actual).to.deep.equal(expected)
+      const actual = fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
     it('returns passes if requested file contents exists different algorithm', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-              return 'README.md'
-            },
-            getFileContents () {
-              return 'foo'
-            },
-            targetDir: '.'
-          },
-          file: 'README.md',
-          algorithm: 'sha512',
-          hash: 'f7fbba6e0636f890e56fbbf3283e524c6fa3204ae298382d624741d0dc6638326e282c41be5e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7'
-        }
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return 'README.md'
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'File README.md matches hash',
-          'README.md',
-          true
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['README.md'],
+        algorithm: 'sha512',
+        hash: 'f7fbba6e0636f890e56fbbf3283e524c6fa3204ae298382d624741d0dc6638326e282c41be5e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7'
+      }
 
-      const actual = fileContents(null, rule)
-      expect(actual).to.deep.equal(expected)
+      const actual = fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
     it('returns fails if requested file does not match', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-              return 'README.md'
-            },
-            getFileContents () {
-              return 'foo'
-            },
-            targetDir: '.'
-          },
-          file: ['README.md'],
-          hash: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-        }
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return 'README.md'
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'File README.md doesn\'t match hash',
-          'README.md',
-          false
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['README.md'],
+        hash: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+      }
 
-      const actual = fileContents(null, rule)
-
-      expect(actual).to.deep.equal(expected)
+      const actual = fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: false, path: 'README.md' })
     })
 
     it('returns failure if requested file does not exist', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-              return undefined
-            },
-            getFileContents () {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return undefined
+        },
+        getFileContents () {
 
-            },
-            targetDir: '.'
-          },
-          file: 'README.md',
-          content: 'foo'
-        }
+        },
+        targetDir: '.'
       }
 
-      const actual = fileContents(null, rule)
-      const expected = [
-        new Result(
-          rule,
-          'not found: README.md',
-          null,
-          false
-        )
-      ]
-      expect(actual).to.deep.equal(expected)
+      const ruleopts = {
+        globsAny: ['README.md'],
+        content: 'foo'
+      }
+
+      const actual = fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(0)
     })
 
     it('returns success if file does not exist with success flag', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-              return undefined
-            },
-            getFileContents () {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return undefined
+        },
+        getFileContents () {
 
-            },
-            targetDir: '.'
-          },
-          file: 'README.md',
-          content: 'foo',
-          'succeed-on-non-existent': true
-        }
+        },
+        targetDir: '.'
       }
 
-      const actual = fileContents(null, rule)
-      const expected = [
-        new Result(
-          rule,
-          'not found: README.md',
-          null,
-          true
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['README.md'],
+        content: 'foo',
+        'succeed-on-non-existent': true
+      }
 
-      expect(actual).to.deep.equal(expected)
+      const actual = fileContents(mockfs, ruleopts)
+
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(0)
     })
   })
 })

@@ -13,13 +13,13 @@
                     "type": "boolean",
                     "default": false
                 },
-                "directories": {
+                "globsAny": {
                     "type": "array",
                     "items": { "type": "string" }
                 },
                 "fail-message": { "type": "string" }
             },
-            "required": [ "directories" ]
+            "required": [ "globsAny" ]
         }
     },
     "required": ["type", "options"]

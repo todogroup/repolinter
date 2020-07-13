@@ -12,7 +12,7 @@
                     "type": "boolean",
                     "default": false
                 },
-                "files": {
+                "globsAll": {
                     "type": "array",
                     "items": { "type": "string" }
                 },
@@ -24,7 +24,7 @@
                     "default": false
                 }
             },
-            "required": ["files", "content"]
+            "required": ["globsAll", "content"]
         }
     },
     "required": ["type", "options"],
