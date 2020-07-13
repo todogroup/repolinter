@@ -12,6 +12,10 @@
                     "type": "array",
                     "items": { "type": "string" }
                 },
+                "nocase": {
+                    "type": "boolean",
+                    "default": false
+                },
                 "algorithm": { 
                     "type": "string",
                     "default": "sha256"

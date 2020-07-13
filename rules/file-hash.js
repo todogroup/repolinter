@@ -14,7 +14,7 @@ const FileSystem = require('../lib/file_system')
  * @returns {Result} The lint rule result
  */
 function fileHash (fs, options) {
-  const file = fs.findFirstFile(options.globsAny)
+  const file = fs.findFirstFile(options.globsAny, options.nocase)
 
   if (file === undefined) {
     const message = `not found: (${options.globsAny.join(', ')})`
