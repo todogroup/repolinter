@@ -20,7 +20,7 @@ const nodeFs = require('fs')
 async function fileCreate (fs, options, targets, dryRun = false) {
   // check if the file exists and error if necessary
   const exists = targets.length > 0 || (await fs.relativeFileExists(options.file))
-  if (options.replace && exists) {
+  if (!options.replace && exists) {
     if (targets.length > 0) {
       return new Result('', targets.map(t => { return { passed: false, path: t, message: `${t} already exists (options.replace is set to false)` } }), false)
     }

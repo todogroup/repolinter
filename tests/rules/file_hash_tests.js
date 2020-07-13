@@ -31,6 +31,30 @@ describe('rule', () => {
       expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
+    it('returns passes if requested file matches the hash with nocase', () => {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return 'README.md'
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
+      }
+
+      const ruleopts = {
+        globsAny: ['ReAdMe.md'],
+        hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae',
+        nocase: true
+      }
+
+      const actual = fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
+    })
+
     it('returns passes if requested file contents exists different algorithm', () => {
       /** @type {any} */
       const mockfs = {
