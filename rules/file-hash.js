@@ -13,8 +13,8 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileHash (fs, options) {
-  const file = fs.findFirstFile(options.globsAny, options.nocase)
+async function fileHash (fs, options) {
+  const file = await fs.findFirstFile(options.globsAny, options.nocase)
 
   if (file === undefined) {
     const message = `not found: (${options.globsAny.join(', ')})`
@@ -31,7 +31,7 @@ function fileHash (fs, options) {
   }
   const digester = crypto.createHash(algorithm)
 
-  let fileContents = fs.getFileContents(file)
+  let fileContents = await fs.getFileContents(file)
   if (fileContents === undefined) {
     fileContents = ''
   }

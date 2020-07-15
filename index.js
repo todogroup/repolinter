@@ -4,7 +4,6 @@
 const jsonfile = require('jsonfile')
 const Ajv = require('ajv')
 const path = require('path')
-const fs = require('fs')
 const findConfig = require('find-config')
 // eslint-disable-next-line no-unused-vars
 const Result = require('./lib/result')
@@ -52,7 +51,6 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @returns {Promise<LintResult>} An object representing the output of the linter
  */
 async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null) {
-  // TODO: Fix tests to work with new rule format
   // TODO: More tests
   // TODO: rewrite formatters (1 of 2)
   // TODO: write markdown formatter
@@ -122,6 +120,25 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
 }
 
 /**
+ * Index all javascript files in a certain subdirectory of repolinter,
+ * returning an object which can later be used to load the modules. This
+ * allows modules such as the linter and fixer rules to be dynamically
+ * loaded at runtime, but still protects against an injection attack.
+ *
+ * @param {string} type The directory to load JS files from (e.x. fix)
+ * @param {string} self_dir The directory repolinter is installed in
+ * @returns {Promise<Object.<string, () => any>>}
+ * An object containing JS file names associated with their appropriate require function
+ */
+async function loadModules (type, self_dir = __dirname) {
+  // determine which rules are installed using a filesystem search
+  const selfFs = new FileSystem(self_dir)
+  return (await selfFs.findAllFiles(`${type}/*.js`, false))
+    .map(f => [path.basename(f, '.js'), () => require(path.resolve(self_dir, f))])
+    .reduce((p, [name, require]) => { p[name] = require; return p }, {})
+}
+
+/**
  * Run all operations in a ruleset, including linting and fixing. Returns
  * a list of objects with the output of the linter rules
  *
@@ -133,6 +150,10 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
  * @returns {Promise<FormatResult[]>} Objects indicating the result of the linter rules
  */
 async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __dirname) {
+  // load the rules
+  const allRules = await loadModules('rules', self_dir)
+  // do the same with fixes
+  // run the ruleset
   const results = Object.entries(ruleset.rules)
     // compile the ruleset into RuleInfo objects
     .map(([name, cfg]) =>
@@ -155,12 +176,12 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
         if (ignoreReasons.length > 0) { return FormatResult.CreateIgnored(r, `ignored due to unsatisfied condition(s): "${ignoreReasons.join('", "')}"`) }
       }
       // check if the rule file exists
-      const ruleFile = path.join(self_dir, 'rules', r.ruleType)
-      if (!(await FileSystem.fileExists(ruleFile + '.js'))) { return FormatResult.CreateError(r, `${ruleFile} does not exist`) }
+      if (!Object.prototype.hasOwnProperty.call(allRules, r.ruleType)) { return FormatResult.CreateError(r, `${r.ruleType} is not a valid rule`) }
       let result
       try {
+        // load the rule
         /** @type {(fs: FileSystem, options: object) => Promise<Result> | Result} */
-        const ruleFunc = require(ruleFile)
+        const ruleFunc = allRules[r.ruleType]()
         // run the rule!
         result = await ruleFunc(fileSystem, r.ruleConfig)
       } catch (e) {
@@ -171,12 +192,14 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
       // if there's no fix or the rule passed, we're done
       if (!r.fixType || result.passed) { return FormatResult.CreateLintOnly(r, result) }
       // else run the fix
-      const fixFile = path.join(self_dir, 'fixes', r.fixType)
-      if (!fs.existsSync(ruleFile + '.js')) { return FormatResult.CreateError(r, `${fixFile} does not exist`) }
+      // load the fixes
+      const allFixes = await loadModules('fixes', self_dir)
+      // check if the rule file exists
+      if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
       let fixresult
       try {
         /** @type {(fs: FileSystem, options: object, targets: string[], dryRun: boolean) => Promise<Result> | Result} */
-        const fixFunc = require(fixFile)
+        const fixFunc = allFixes[r.fixType]()
         fixresult = await fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
       } catch (e) {
         return FormatResult.CreateError(r, `${r.fixType} threw an error: ${e.message}`)
@@ -198,12 +221,16 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
  * @returns {Promise<string[]>} A list of targets to run against
  */
 async function determineTargets (axiomconfig, fs, self_dir = __dirname) {
+  // load axioms
+  const allAxioms = await loadModules('axioms', self_dir)
   const ruleresults = await Promise.all(Object.entries(axiomconfig)
     .map(async ([axiomId, axiomName]) => {
       // TODO: Do something more secure
-      // Execute axiom
-      const axiomFunction = require(path.join(self_dir, 'axioms', axiomId))
-      return [`${axiomName}=*`].concat(axiomFunction(fs).map(axiomOutput => `${axiomName}=${axiomOutput}`))
+      // Execute axiom if it exists
+      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return null }
+      const axiomFunction = allAxioms[axiomId]()
+      const axiomResult = await axiomFunction(fs)
+      return [`${axiomName}=*`].concat(axiomResult.map(axiomOutput => `${axiomName}=${axiomOutput}`))
     }))
   // flatten result
   return ruleresults.reduce((a, v) => a.concat(v), [])
@@ -220,8 +247,10 @@ async function validateConfig (config, self_dir = __dirname) {
   // compile the json schema
   const ajvProps = new Ajv()
   const fs = new FileSystem(self_dir)
-  // FIXME: cannot use fileSystem here because the target directory is wrong
-  for (const schema of fs.findAllFiles(['rules/*-config.json', 'fixes/*-config.json'], true)) { ajvProps.addSchema(await jsonfile.readFile(path.resolve(self_dir, schema))) }
+  const schemas = await fs.findAllFiles(['rules/*-config.json', 'fixes/*-config.json'], true)
+  for (const schema of schemas) {
+    ajvProps.addSchema(await jsonfile.readFile(path.resolve(self_dir, schema)))
+  }
   const validator = ajvProps.compile(await jsonfile.readFile(path.resolve(self_dir, './rulesets/schema.json')))
 
   // validate it against the supplied ruleset

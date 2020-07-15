@@ -9,7 +9,7 @@ describe('rule', () => {
   describe('files_contents', () => {
     const fileContents = require('../../rules/file-contents')
 
-    it('returns passes if requested file contents exists', () => {
+    it('returns passes if requested file contents exists', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -26,13 +26,13 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
-    it('returns passes if requested file contents exists with human-readable contents', () => {
+    it('returns passes if requested file contents exists with human-readable contents', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -49,14 +49,14 @@ describe('rule', () => {
         'human-readable-content': 'actually foo'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
       expect(actual.targets[0].message).to.contain(ruleopts['human-readable-content'])
     })
 
-    it('returns fails if requested file contents does not exist', () => {
+    it('returns fails if requested file contents does not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -73,7 +73,7 @@ describe('rule', () => {
         content: 'bar'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
@@ -81,7 +81,7 @@ describe('rule', () => {
       expect(actual.targets[0].message).to.contain(ruleopts.content)
     })
 
-    it('returns nothing if requested file does not exist', () => {
+    it('returns nothing if requested file does not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -97,12 +97,12 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(0)
     })
 
-    it('returns failure if file does not exist with failure flag', () => {
+    it('returns failure if file does not exist with failure flag', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -119,13 +119,13 @@ describe('rule', () => {
         'fail-on-non-existent': true
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(0)
     })
 
-    it('should handle broken symlinks', () => {
+    it('should handle broken symlinks', async () => {
       const brokenSymlink = './tests/rules/broken_symlink_for_test'
       const stat = require('fs').lstatSync(brokenSymlink)
       expect(stat.isSymbolicLink()).to.equal(true)
@@ -136,7 +136,7 @@ describe('rule', () => {
         lineCount: 1,
         patterns: ['something']
       }
-      const actual = fileContents(fs, rule)
+      const actual = await fileContents(fs, rule)
       expect(actual.targets).to.have.length(0)
       expect(actual.passed).to.equal(true)
     })

@@ -12,8 +12,8 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileTypeExclusion (fs, options) {
-  const files = fs.findAll(options.type)
+async function fileTypeExclusion (fs, options) {
+  const files = await fs.findAll(options.type)
 
   const targets = files.map(file => {
     const message = `Excluded file type exists (${file})`

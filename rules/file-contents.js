@@ -18,16 +18,16 @@ function getContent (options) {
  * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
  * @returns {Result} The lint rule result
  */
-function fileContents (fs, options, not = false) {
-  const files = fs.findAllFiles(options.globsAll)
+async function fileContents (fs, options, not = false) {
+  const files = await fs.findAllFiles(options.globsAll)
 
   if (files.length === 0) {
     const message = `not found: (${options.globsAll.join(', ')})`
     return new Result(message, [], !options['fail-on-non-existent'])
   }
 
-  const results = files.map(file => {
-    let fileContents = fs.getFileContents(file)
+  const results = await Promise.all(files.map(async file => {
+    let fileContents = await fs.getFileContents(file)
     if (fileContents === undefined) {
       fileContents = ''
     }
@@ -41,7 +41,7 @@ function fileContents (fs, options, not = false) {
       path: file,
       message
     }
-  })
+  }))
 
   const passed = !results.find(r => !r.passed)
 

@@ -9,7 +9,7 @@ describe('rule', () => {
   describe('files_not_contents', () => {
     const fileNotContents = require('../../rules/file-not-contents')
 
-    it('returns passes if requested file contents do not exist', () => {
+    it('returns passes if requested file contents do not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -26,14 +26,14 @@ describe('rule', () => {
         content: 'bar'
       }
 
-      const actual = fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
       expect(actual.targets[0].message).to.contain(ruleopts.content)
     })
 
-    it('returns fails if requested file contents exists', () => {
+    it('returns fails if requested file contents exists', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -50,14 +50,14 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: false, path: 'README.md' })
       expect(actual.targets[0].message).to.contain(ruleopts.content)
     })
 
-    it('returns success if success flag enabled but file does not exist', () => {
+    it('returns success if success flag enabled but file does not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -75,14 +75,14 @@ describe('rule', () => {
         'succeed-on-non-existent': true
       }
 
-      const actual = fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(0)
       expect(actual.message).to.contain(ruleopts.globsAll[0])
     })
 
-    it('returns success if requested file does not exist', () => {
+    it('returns success if requested file does not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -99,13 +99,13 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(0)
       expect(actual.message).to.contain(ruleopts.globsAll[0])
     })
 
-    it('should handle broken symlinks', () => {
+    it('should handle broken symlinks', async () => {
       const brokenSymlink = './tests/rules/broken_symlink_for_test'
       const stat = require('fs').lstatSync(brokenSymlink)
       expect(stat.isSymbolicLink()).to.equal(true)
@@ -116,7 +116,7 @@ describe('rule', () => {
         lineCount: 1,
         patterns: ['something']
       }
-      const actual = fileNotContents(fs, ruleopts)
+      const actual = await fileNotContents(fs, ruleopts)
       expect(actual.targets).to.have.length(0)
       expect(actual.passed).to.equal(true)
     })

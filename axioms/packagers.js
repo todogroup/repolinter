@@ -1,9 +1,7 @@
 // Copyright 2018 TODO Group. All rights reserved.
 // Licensed under the Apache License, Version 2.0.
 
-module.exports = function (fileSystem) {
-  const packageManagers = []
-
+module.exports = async function (fileSystem) {
   const packageManagerPatterns = {
     'pom.xml': 'maven',
     'project.xml': 'maven1',
@@ -21,11 +19,7 @@ module.exports = function (fileSystem) {
     'build.gradle': 'gradle'
   }
 
-  for (const [pattern, packager] of Object.entries(packageManagerPatterns)) {
-    if (fileSystem.findFirst(pattern) != null) {
-      packageManagers.push(packager)
-    }
-  }
-
-  return packageManagers
+  return (await Promise.all(Object.entries(packageManagerPatterns)
+    .map(async ([pattern, packager]) => (await fileSystem.findFirst(pattern)) ? packager : null)))
+    .filter(p => p !== null)
 }

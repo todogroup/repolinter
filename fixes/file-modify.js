@@ -21,7 +21,7 @@ async function fileModify (fs, options, targets, dryRun = false) {
   if (realTargets.length === 0) { return new Result('No files to modify, did you configure this fix correctly?', [], false) }
 
   // find all files matching the regular expressions specified
-  let files = fs.findAllFiles(realTargets, options.nocase)
+  let files = await fs.findAllFiles(realTargets, options.nocase)
 
   // skip files if necessary
   if (options['skip-paths-matching']) {
@@ -53,18 +53,18 @@ async function fileModify (fs, options, targets, dryRun = false) {
       if (!req.ok) { return new Result(`Could not fetch from ${options.text.url}, received status code ${req.status}`, [], false) }
       content = await req.text()
     } else if (options.text.file) {
-      const file = fs.findFirstFile([options.text.file], options.text.nocase === true)
+      const file = await fs.findFirstFile([options.text.file], options.text.nocase === true)
       if (!file) { return new Result(`Could not find file matching pattern ${options.text.file} for file-modify.`, [], false) }
-      content = fs.getFileContents(file)
+      content = await fs.getFileContents(file)
     }
   }
   if (!content) { return new Result('Text was not specified for file-modify! Did you configure the ruleset correctly?', [], false) }
 
   // write it to the file
-  const resTargets = files.map(file => {
+  const resTargets = await Promise.all(files.map(async file => {
     // do file operation
     if (!dryRun) {
-      if (options.write_mode === 'append') { fs.setFileContents(file, fs.getFileContents(file) + content) } else { fs.setFileContents(file, content + fs.getFileContents(file)) }
+      if (options.write_mode === 'append') { await fs.setFileContents(file, await fs.getFileContents(file) + content) } else { await fs.setFileContents(file, content + await fs.getFileContents(file)) }
     }
     // return the target information
     const message = typeof options.text === 'object'
@@ -75,7 +75,7 @@ async function fileModify (fs, options, targets, dryRun = false) {
       passed: true,
       path: file
     }
-  })
+  }))
 
   return new Result('', resTargets, true)
 }

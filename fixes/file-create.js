@@ -35,9 +35,9 @@ async function fileCreate (fs, options, targets, dryRun = false) {
       if (!req.ok) { return new Result(`Could not fetch from ${options.text.url}, received status code ${req.status}`, [], false) }
       content = await req.text()
     } else if (options.text.file) {
-      const file = fs.findFirstFile([options.text.file], options.text.nocase === true)
+      const file = await fs.findFirstFile([options.text.file], options.text.nocase === true)
       if (!file) { return new Result(`Could not find file matching pattern ${options.text.file} for file-create.`, [], false) }
-      content = fs.getFileContents(file)
+      content = await fs.getFileContents(file)
     }
   }
   if (!content) { return new Result('Text was not specified for file-create! Did you configure the ruleset correctly?', [], false) }
@@ -49,7 +49,7 @@ async function fileCreate (fs, options, targets, dryRun = false) {
       await Promise.all(targets.map(t => nodeFs.promises.unlink(t)))
     }
     // write it to the file
-    fs.setFileContents(options.file, content)
+    await fs.setFileContents(options.file, content)
   }
 
   const what = typeof options.text === 'object'

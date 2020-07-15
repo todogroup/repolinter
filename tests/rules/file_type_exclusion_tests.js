@@ -8,7 +8,7 @@ describe('rule', () => {
   describe('file_type_exclusion', () => {
     const fileTypeExclusion = require('../../rules/file-type-exclusion')
 
-    it('returns passed result if requested file type doesn\'t exist', () => {
+    it('returns passed result if requested file type doesn\'t exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAll () {
@@ -21,14 +21,14 @@ describe('rule', () => {
         type: ['*.dll']
       }
 
-      const actual = fileTypeExclusion(mockfs, ruleopts)
+      const actual = await fileTypeExclusion(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(true)
       expect(actual.message).to.contain(ruleopts.type[0])
       expect(actual.targets).to.have.length(0)
     })
 
-    it('returns failed result if requested file type exists', () => {
+    it('returns failed result if requested file type exists', async () => {
       /** @type {any} */
       const mockfs = {
         findAll () {
@@ -41,7 +41,7 @@ describe('rule', () => {
         type: ['*.dll']
       }
 
-      const actual = fileTypeExclusion(mockfs, ruleopts)
+      const actual = await fileTypeExclusion(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)

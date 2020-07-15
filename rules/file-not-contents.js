@@ -12,7 +12,7 @@ const fileContents = require('./file-contents')
  *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
- * @returns {Result} The lint rule result
+ * @returns {Promise<Result>} The lint rule result
  */
 function fileNotContents (fs, options) {
   return fileContents(fs, options, true)

@@ -8,7 +8,7 @@ describe('rule', () => {
   describe('files_hash', () => {
     const fileContents = require('../../rules/file-hash')
 
-    it('returns passes if requested file matches the hash', () => {
+    it('returns passes if requested file matches the hash', async () => {
       /** @type {any} */
       const mockfs = {
         findFirstFile () {
@@ -25,13 +25,13 @@ describe('rule', () => {
         hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
-    it('returns passes if requested file matches the hash with nocase', () => {
+    it('returns passes if requested file matches the hash with nocase', async () => {
       /** @type {any} */
       const mockfs = {
         findFirstFile () {
@@ -49,13 +49,13 @@ describe('rule', () => {
         nocase: true
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
-    it('returns passes if requested file contents exists different algorithm', () => {
+    it('returns passes if requested file contents exists different algorithm', async () => {
       /** @type {any} */
       const mockfs = {
         findFirstFile () {
@@ -73,13 +73,13 @@ describe('rule', () => {
         hash: 'f7fbba6e0636f890e56fbbf3283e524c6fa3204ae298382d624741d0dc6638326e282c41be5e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
-    it('returns fails if requested file does not match', () => {
+    it('returns fails if requested file does not match', async () => {
       /** @type {any} */
       const mockfs = {
         findFirstFile () {
@@ -96,13 +96,13 @@ describe('rule', () => {
         hash: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({ passed: false, path: 'README.md' })
     })
 
-    it('returns failure if requested file does not exist', () => {
+    it('returns failure if requested file does not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findFirstFile () {
@@ -119,12 +119,12 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(0)
     })
 
-    it('returns success if file does not exist with success flag', () => {
+    it('returns success if file does not exist with success flag', async () => {
       /** @type {any} */
       const mockfs = {
         findFirstFile () {
@@ -142,7 +142,7 @@ describe('rule', () => {
         'succeed-on-non-existent': true
       }
 
-      const actual = fileContents(mockfs, ruleopts)
+      const actual = await fileContents(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(0)

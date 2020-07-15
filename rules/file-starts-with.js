@@ -12,8 +12,8 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileStartsWith (fs, options) {
-  const files = fs.findAllFiles(options.globsAll, options.nocase)
+async function fileStartsWith (fs, options) {
+  const files = await fs.findAllFiles(options.globsAll, options.nocase)
 
   let filteredFiles = files
   if (options['skip-binary-files']) {
@@ -41,9 +41,9 @@ function fileStartsWith (fs, options) {
     )
   }
 
-  const targets = filteredFiles
-    .map(file => {
-      const lines = fs.getFileLines(file, options.lineCount)
+  const targetsUnfiltered = await Promise.all(filteredFiles
+    .map(async file => {
+      const lines = await fs.getFileLines(file, options.lineCount)
       if (!lines) {
         return null
       }
@@ -65,8 +65,8 @@ function fileStartsWith (fs, options) {
         path: file,
         message
       }
-    })
-    .filter(t => t)
+    }))
+  const targets = targetsUnfiltered.filter(t => t)
 
   if (targets.length === 0) {
     const message = `file not found (${options.globsAll.join(', ')})`

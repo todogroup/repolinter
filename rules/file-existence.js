@@ -14,8 +14,8 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function fileExistence (fs, options) {
-  const file = fs.findFirstFile(options.globsAny, options.nocase)
+async function fileExistence (fs, options) {
+  const file = await fs.findFirstFile(options.globsAny, options.nocase)
 
   const passed = !!file
 

@@ -9,12 +9,12 @@ describe('packagers', () => {
   const packagers = require('../../axioms/packagers')
   const FileSystem = require('../../lib/file_system')
 
-  it('repolinter is only npm', () => {
+  it('repolinter is only npm', async () => {
     const fileSystem = new FileSystem(path.resolve('.'))
 
     const expected = ['npm']
 
-    const actual = packagers(fileSystem)
+    const actual = await packagers(fileSystem)
     expect(actual).to.deep.equal(expected)
   })
 })
