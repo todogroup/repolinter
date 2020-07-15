@@ -5,27 +5,54 @@ const chai = require('chai')
 const expect = chai.expect
 const logSymbols = require('log-symbols')
 const Result = require('../../lib/result')
+const FormatResult = require('../../lib/formatresult')
+const RuleInfo = require('../../lib/ruleinfo')
 
 describe('formatters', () => {
   describe('symbol_formatter', () => {
     it('returns a simple string with the correct log symbol', () => {
       const symbolFormatter = require('../../formatters/symbol_formatter')
 
-      const result = new Result(
-        { id: 'some-rule', level: 'success' },
-        'a message',
-        'target',
-        true
-      )
-      const successResult = symbolFormatter.format(result)
-      const successSymbol = logSymbols.success
-      expect(successResult).to.deep.equal(`${successSymbol} some-rule: a message`)
+      const result = new Result('a message', [], true)
+      const successResult = symbolFormatter.formatResult(result, 'myrule', logSymbols.error)
+      expect(successResult).to.contain(logSymbols.success)
+      expect(successResult).to.contain(result.message)
+      expect(successResult).to.contain('myrule')
 
-      result.rule.level = 'error'
       result.passed = false
-      const errorResult = symbolFormatter.format(result)
-      const errorSymbol = logSymbols.error
-      expect(errorResult).to.deep.equal(`${errorSymbol} some-rule: a message`)
+      const errorResult = symbolFormatter.formatResult(result, 'myrule', logSymbols.error)
+      expect(errorResult).to.contain(logSymbols.error)
+      expect(successResult).to.contain(result.message)
+      expect(successResult).to.contain('myrule')
+    })
+
+    it('contains all results in output', () => {
+      const symbolFormatter = require('../../formatters/symbol_formatter')
+
+      const output = {
+        params: {
+          targetDir: 'dir',
+          filterPaths: [],
+          ruleset: {}
+        },
+        passed: true,
+        errored: false,
+        targets: [],
+        results: [
+          FormatResult.CreateLintOnly(new RuleInfo('rule1', 'error', [], 'file-existence', {}), new Result('did it', [], true)),
+          FormatResult.CreateIgnored(new RuleInfo('rule2', 'error', [], 'file-existence', {}), 'ignored'),
+          FormatResult.CreateError(new RuleInfo('rule3', 'error', [], 'file-existence', {}), 'errored')
+        ]
+      }
+
+      const formatResult = symbolFormatter.formatOutput(output, false)
+      expect(formatResult).to.contain('rule1')
+      expect(formatResult).to.contain('rule2')
+      expect(formatResult).to.contain('rule3')
+      expect(formatResult).to.contain('did it')
+      expect(formatResult).to.contain('ignored')
+      expect(formatResult).to.contain('errored')
+      expect(formatResult).to.contain('dir')
     })
   })
 })

@@ -52,11 +52,12 @@ async function fileCreate (fs, options, targets, dryRun = false) {
     fs.setFileContents(options.file, content)
   }
 
-  const message = typeof options.text === 'object'
-    ? `${exists ? 'replace' : 'create'} file with text from ${options.text.file || options.text.url}`
-    : `${exists ? 'replace' : 'create'} file with contents "${content}"`
+  const what = typeof options.text === 'object'
+    ? `text from ${options.text.file || options.text.url}`
+    : `contents "${content}"`
 
-  return new Result(shouldRemove ? `Remove file(s) (${targets.join(', ')})` : '', [{ message, passed: true, path: options.file }], true)
+  const removeMessage = shouldRemove ? `Remove file(s) (${targets.join(', ')}).` : ''
+  return new Result(removeMessage, [{ message: `Create file with ${what}`, passed: true, path: options.file }], true)
 }
 
 module.exports = fileCreate

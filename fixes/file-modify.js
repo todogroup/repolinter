@@ -21,7 +21,7 @@ async function fileModify (fs, options, targets, dryRun = false) {
   if (realTargets.length === 0) { return new Result('No files to modify, did you configure this fix correctly?', [], false) }
 
   // find all files matching the regular expressions specified
-  let files = fs.findAllFiles(realTargets, options.nocase === true)
+  let files = fs.findAllFiles(realTargets, options.nocase)
 
   // skip files if necessary
   if (options['skip-paths-matching']) {

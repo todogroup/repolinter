@@ -3,7 +3,6 @@
 
 const chai = require('chai')
 const expect = chai.expect
-const Result = require('../../lib/result')
 const FileSystem = require('../../lib/file_system')
 
 describe('rule', () => {
@@ -11,150 +10,137 @@ describe('rule', () => {
     const fileStartsWith = require('../../rules/file-starts-with')
 
     it('returns a passed result if requested file matches the patterns', () => {
-      const rule = {
-        options: {
-          files: ['rules/file-starts-with.js'],
-          lineCount: 2,
-          patterns: ['Copyright', 'License']
-        }
+      const ruleopts = {
+        globsAll: ['rules/file-starts-with.js'],
+        lineCount: 2,
+        patterns: ['Copyright', 'License']
       }
 
-      const expected = [new Result(
-        rule,
-        'The first 2 lines of \'rules/file-starts-with.js\' contain all of the requested patterns.',
-        'rules/file-starts-with.js',
-        true
-      )]
+      const actual = fileStartsWith(new FileSystem(), ruleopts)
 
-      const actual = fileStartsWith(new FileSystem(), rule)
-
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].passed).to.equal(true)
+      expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
     })
 
     it('returns a failure result if requested file doesn\'t match all the patterns', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAllFiles () {
-              return ['somefile.js']
-            },
-            getFileLines () {
-              return 'some javascript code'
-            },
-            targetDir: '.'
-          },
-          files: ['*.js'],
-          lineCount: 5,
-          patterns: ['javascript', 'Copyright', 'Rights']
-        }
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return ['somefile.js']
+        },
+        getFileLines () {
+          return 'some javascript code'
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'The first 5 lines of \'somefile.js\' do not contain the patterns:\n\tCopyright\n\tRights',
-          'somefile.js',
-          false
-        )
-      ]
+      const ruleopts = {
+        globsAll: ['*.js'],
+        lineCount: 5,
+        patterns: ['javascript', 'Copyright', 'Rights']
+      }
 
-      const actual = fileStartsWith(null, rule)
+      const actual = fileStartsWith(mockfs, ruleopts)
 
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].path).to.equal('somefile.js')
+      expect(actual.targets[0].passed).to.equal(false)
+      expect(actual.targets[0].message).to.contain('Copyright')
+      expect(actual.targets[0].message).to.contain('Rights')
+      expect(actual.targets[0].message).to.not.contain('javascript')
     })
 
-    it('returns empty list if file is image skip binary files is enabled', () => {
-      const rule = {
-        options: {
-          'skip-binary-files': true,
-          files: ['docs/images/P_RepoLinter01_logo_only.png'],
-          lineCount: 5,
-          patterns: ['javascript', 'Copyright', 'Rights']
-        }
+    it('returns failure if skip binary files is enabled and only file is binary file', () => {
+      const ruleopts = {
+        'skip-binary-files': true,
+        globsAll: ['tests/rules/image_for_test.png'],
+        lineCount: 5,
+        patterns: ['javascript', 'Copyright', 'Rights']
       }
 
-      const actual = fileStartsWith(new FileSystem(), rule)
-      expect(actual.length).to.equal(0)
+      const actual = fileStartsWith(new FileSystem(), ruleopts)
+      expect(actual.passed).to.equal(false)
+      expect(actual.message).to.contain(ruleopts.globsAll[0])
+      expect(actual.targets).to.have.length(0)
     })
 
     it('returns a single result when glob has no matches and has succeed-on-non-existent option', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAllFiles () {
-              return []
-            },
-            targetDir: '.'
-          },
-          files: ['*'],
-          lineCount: 1,
-          patterns: ['something-unmatchable'],
-          'succeed-on-non-existent': true
-        }
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return []
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'not found: (*)',
-          null,
-          true
-        )
-      ]
+      const ruleopts = {
+        globsAll: ['*'],
+        lineCount: 1,
+        patterns: ['something-unmatchable'],
+        'succeed-on-non-existent': true
+      }
 
-      const actual = fileStartsWith(null, rule)
+      const actual = fileStartsWith(mockfs, ruleopts)
 
-      expect(actual.length).to.equal(1)
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(true)
+      expect(actual.message).to.contain(ruleopts.globsAll[0])
+      expect(actual.targets).to.have.length(0)
     })
 
     it('skips files with the `skip-paths-matching` option', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAllFiles () {
-              return ['Skip/paBle-path.js', 'afile.js', 'badextension.sVg']
-            },
-            getFileLines () {
-              return 'some javascript code'
-            },
-            targetDir: '.'
-          },
-          files: ['*'],
-          lineCount: 1,
-          patterns: ['some'],
-          'skip-paths-matching': {
-            extensions: ['bmp', 'svg'],
-            patterns: ['skip/pable', 'another-pattern-to-skip'],
-            flags: 'i'
-          }
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return ['Skip/paBle-path.js', 'afile.js', 'badextension.sVg']
+        },
+        getFileLines () {
+          return 'some javascript code'
+        },
+        targetDir: '.'
+      }
+
+      const ruleopts = {
+        globsAll: ['*'],
+        lineCount: 1,
+        patterns: ['some'],
+        'skip-paths-matching': {
+          extensions: ['bmp', 'svg'],
+          patterns: ['skip/pable', 'another-pattern-to-skip'],
+          flags: 'i'
         }
       }
 
-      const actual = fileStartsWith(null, rule)
+      const actual = fileStartsWith(mockfs, ruleopts)
 
-      expect(actual.length).to.equal(1)
-      expect(actual[0].target).to.equal('afile.js')
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].passed).to.equal(true)
+      expect(actual.targets[0].path).to.equal('afile.js')
     })
 
-    it('returns an empty list if the request files don\'t exist', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAllFiles () {
-              return []
-            },
-            targetDir: '.'
-          },
-          files: ['*'],
-          lineCount: 1,
-          patterns: ['something']
-        }
+    it('returns failure if the requested files don\'t exist', () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return []
+        },
+        targetDir: '.'
       }
 
-      const actual = fileStartsWith(null, rule)
+      const ruleopts = {
+        globsAll: ['*'],
+        lineCount: 1,
+        patterns: ['something']
+      }
 
-      expect(actual.length).to.equal(0)
+      const actual = fileStartsWith(mockfs, ruleopts)
+
+      expect(actual.passed).to.equal(false)
+      expect(actual.message).to.contain(ruleopts.globsAll[0])
+      expect(actual.targets).to.have.length(0)
     })
 
     it('should handle broken symlinks', () => {
@@ -163,15 +149,16 @@ describe('rule', () => {
       expect(stat.isSymbolicLink()).to.equal(true)
       const fs = new FileSystem(require('path').resolve('.'))
 
-      const rule = {
-        options: {
-          files: [brokenSymlink],
-          lineCount: 1,
-          patterns: ['something']
-        }
+      const ruleopts = {
+        globsAll: [brokenSymlink],
+        lineCount: 1,
+        patterns: ['something']
       }
-      const actual = fileStartsWith(fs, rule)
-      expect(actual.length).to.equal(0)
+
+      const actual = fileStartsWith(fs, ruleopts)
+      expect(actual.passed).to.equal(false)
+      expect(actual.message).to.contain(ruleopts.globsAll[0])
+      expect(actual.targets).to.have.length(0)
     })
   })
 })

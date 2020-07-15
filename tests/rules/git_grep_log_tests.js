@@ -3,7 +3,6 @@
 
 const chai = require('chai')
 const expect = chai.expect
-const Result = require('../../lib/result')
 const FileSystem = require('../../lib/file_system')
 
 chai.use(require('chai-string'))
@@ -13,44 +12,33 @@ describe('rule', () => {
     this.timeout(5000) // Calling external Git might take some time.
 
     const gitGrepLog = require('../../rules/git-grep-log')
-    const LOG_CORRECT_CASE = 'The git ruleset contains two new rules that search the commit messages'
     const LOG_WRONG_CASE = 'THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES'
 
-    it('passes if the blacklist pattern does not match any commit message', () => {
-      const rule = {
-        options: {
-          blacklist: [LOG_WRONG_CASE],
-          ignoreCase: false
-        }
+    it('passes if the denylist pattern does not match any commit message', () => {
+      const ruleopts = {
+        denylist: [LOG_WRONG_CASE],
+        ignoreCase: false
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'No blacklisted words found in any commit messages.\n\tBlacklist: THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES',
-          null,
-          true
-        )
-      ]
-      const actual = gitGrepLog(new FileSystem(), rule)
+      const actual = gitGrepLog(new FileSystem(), ruleopts)
 
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(0)
+      expect(actual.message).to.contain(ruleopts.denylist[0])
     })
 
-    it('fails if the blacklist pattern matches a commit message', () => {
-      const rule = {
-        options: {
-          blacklist: [LOG_WRONG_CASE],
-          ignoreCase: true
-        }
+    it('fails if the denylist pattern matches a commit message', () => {
+      const ruleopts = {
+        denylist: [LOG_WRONG_CASE],
+        ignoreCase: true
       }
 
-      const actual = gitGrepLog(new FileSystem(), rule)
+      const actual = gitGrepLog(new FileSystem(), ruleopts)
 
-      expect(actual.length).to.equal(1)
-      expect(actual[0].message).to.match(new RegExp(/The commit message for commit \w{7} contains blacklisted words\.\n/))
-      expect(actual[0].data.commit.message).to.match(new RegExp(LOG_CORRECT_CASE))
-      expect(actual[0].passed).to.equal(false)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].passed).to.equal(false)
+      expect(actual.targets[0].message).to.contain(ruleopts.denylist[0])
     })
   })
 })

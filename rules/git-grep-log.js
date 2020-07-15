@@ -8,7 +8,7 @@ const FileSystem = require('../lib/file_system')
 
 function grepLog (fileSystem, options) {
   const args = ['-C', fileSystem.targetDir, 'log', '--all', '--format=full', '-E']
-    .concat(options.blacklist.map(pattern => `--grep=${pattern}`))
+    .concat(options.denylist.map(pattern => `--grep=${pattern}`))
   if (options.ignoreCase) {
     args.push('-i')
   }
@@ -41,8 +41,8 @@ function gitGrepLog (fs, options) {
 
   const targets = commits.map(commit => {
     const message = [
-      `The commit message for commit ${commit.hash.substr(0, 7)} contains blacklisted words.\n`,
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      `The commit message for commit ${commit.hash.substr(0, 7)} contains denylisted words.\n`,
+      `\tDenylist: ${options.denylist.join(', ')}`
     ].join('\n')
 
     return {
@@ -53,7 +53,7 @@ function gitGrepLog (fs, options) {
   })
 
   if (targets.length === 0) {
-    const message = `No blacklisted words found in any commit messages.\n\tBlacklist: ${options.blacklist.join(', ')}`
+    const message = `No denylisted words found in any commit messages.\n\tDenylist: ${options.denylist.join(', ')}`
     return new Result(message, [], true)
   }
 

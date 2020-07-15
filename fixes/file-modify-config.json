@@ -27,8 +27,10 @@
                         "patterns": {
                             "type": "array",
                             "items": { "type": "string" }
-                        }
-                    }
+                        },
+                        "flags": { "type": "string" }
+                    },
+                    "required": ["patterns"]
                 },
                 "text": { 
                     "oneOf": [

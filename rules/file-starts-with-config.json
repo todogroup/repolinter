@@ -17,6 +17,7 @@
                     "type": "array",
                     "items": { "type": "string" }
                 },
+                "human-readable-pattern": { "type": "string" },
                 "flags": { "type": "string" },
                 "lineCount": {
                     "type": "integer",
@@ -41,8 +42,10 @@
                         "patterns": {
                             "type": "array",
                             "items": { "type": "string" }
-                        }
-                    }
+                        },
+                        "flags": { "type": "string" }
+                    },
+                    "required": ["patterns"]
                 }
             },
             "required": ["globsAll", "lineCount", "patterns"]

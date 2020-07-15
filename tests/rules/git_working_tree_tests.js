@@ -13,34 +13,34 @@ describe('rule', () => {
 
     it('passes if the specified directory is managed with Git', () => {
       const result = gitWorkingTree(new FileSystem(), {
-        options: { allowSubDir: false }
+        allowSubDir: false
       })
 
-      expect(result[result.length - 1].message).to.equal('The directory is managed with Git, and it is the root directory.')
+      expect(result.passed).to.equal(true)
     })
 
     it('passes if the specified sub-directory is managed in Git and sub-directories are allowed', () => {
       const result = gitWorkingTree(new FileSystem('tests'), {
-        options: { allowSubDir: true }
+        allowSubDir: true
       })
 
-      expect(result[result.length - 1].message).to.equal('The sub-directory is managed with Git.')
+      expect(result.passed).to.equal(true)
     })
 
     it('fails if the specified sub-directory is managed in Git but sub-directories are not allowed', () => {
       const result = gitWorkingTree(new FileSystem('tests'), {
-        options: { allowSubDir: false }
+        allowSubDir: false
       })
 
-      expect(result[result.length - 1].message).to.equal('The sub-directory is managed with Git, but need to check the root directory.')
+      expect(result.passed).to.equal(false)
     })
 
     it('fails if the specified directory is not managed in Git', () => {
       const result = gitWorkingTree(new FileSystem('/'), {
-        options: { allowSubDir: false }
+        allowSubDir: false
       })
 
-      expect(result[result.length - 1].message).to.equal('The directory is not managed with Git.')
+      expect(result.passed).to.equal(false)
     })
   })
 })

@@ -3,29 +3,37 @@
 
 const path = require('path')
 const chai = require('chai')
-const sinon = require('sinon')
 const expect = chai.expect
 const repolinter = require(path.resolve('.'))
 
 describe('package', () => {
   describe('repolinter', () => {
-    it('allows a custom formatter', () => {
-      const customFormatter = {}
-      customFormatter.format = sinon.spy()
-      repolinter.resultFormatter = customFormatter
+    it('does not pass', async () => {
+      const res = await repolinter.lint(path.resolve('tests/package'))
 
-      const log = console.log
-      console.log = function () { return null }
-
-      repolinter.lint(path.resolve('tests/package'))
-      expect(customFormatter.format.called).to.equal(true)
-
-      console.log = log
+      expect(res.passed).to.equal(false)
+      expect(res.errored).to.equal(false)
     })
 
-    it('returns error code', () => {
-      repolinter.lint(path.resolve('tests/package'))
-      expect(process.exitCode).to.equal(1)
+    it('returns the correct results', async () => {
+      const res = await repolinter.lint(path.resolve('tests/package'))
+
+      expect(res.results).to.have.length(2)
+      // readme-file-exists rule
+      expect(res.results[0].ruleInfo.name).to.equal('readme-file-exists')
+      expect(res.results[0].ruleInfo.ruleType).to.equal('file-existence')
+      expect(res.results[0].ruleInfo.fixType).to.equal(null)
+      expect(res.results[0].lintResult.passed).to.equal(false)
+      expect(res.results[0].lintResult.message).to.contain('README*')
+      expect(res.results[0].lintResult.targets).to.have.length(0)
+      // test-file-exists rule
+      expect(res.results[1].ruleInfo.name).to.equal('test-file-exists')
+      expect(res.results[1].ruleInfo.ruleType).to.equal('file-existence')
+      expect(res.results[1].ruleInfo.fixType).to.equal(null)
+      expect(res.results[1].lintResult.passed).to.equal(true)
+      expect(res.results[1].lintResult.targets).to.have.length(1)
+      expect(res.results[1].lintResult.targets[0].passed).to.equal(true)
+      expect(res.results[1].lintResult.targets[0].path).to.equal('repolinter_tests.js')
     })
   })
 })

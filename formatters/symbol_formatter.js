@@ -7,6 +7,17 @@ const FormatResult = require('../lib/formatresult')
 // eslint-disable-next-line no-unused-vars
 const Result = require('../lib/result')
 
+/**
+ * Pads a string with a space if the string exists,
+ * returns the falsey input value otherwise.
+ *
+ * @param {string?} string The string or null input
+ * @returns {string} A padded string or empty string
+ */
+function frontSpace (string) {
+  return string ? (' ' + string) : ''
+}
+
 class SymbolFormatter {
   /**
    * Format a FormatResult object into a line of human-readable text.
@@ -19,14 +30,14 @@ class SymbolFormatter {
    */
   static formatResult (result, ruleName, errorSymbol, okSymbol = logSymbols.success) {
     // format lint output
-    const formatbase = `\n${result.passed ? okSymbol : errorSymbol} ${ruleName}: ${result.message}`
+    const formatbase = `\n${result.passed ? okSymbol : errorSymbol} ${ruleName}:${frontSpace(result.message)}`
     // condensed one-line version for rules with no targets
     if (!result.targets.length) { return formatbase }
     // condensed one-line version for rules with one target
-    if (result.targets.length === 1) { return formatbase + `${result.targets[0].message} (${result.targets[0].path})` }
+    if (result.targets.length === 1) { return formatbase + `${frontSpace(result.targets[0].message)} (${result.targets[0].path})` }
     // expanded version for more complicated rules
     return formatbase + result.targets
-      .map(t => `\n\t${t.passed ? okSymbol : errorSymbol} ${t.path}: ${t.message}`)
+      .map(t => `\n\t${t.passed ? okSymbol : errorSymbol} ${t.path}:${frontSpace(t.message)}`)
       .join('')
   }
 

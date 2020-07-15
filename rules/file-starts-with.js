@@ -13,7 +13,7 @@ const FileSystem = require('../lib/file_system')
  * @returns {Result} The lint rule result
  */
 function fileStartsWith (fs, options) {
-  const files = fs.findAllFiles(options.globsAll, options.nocase === true)
+  const files = fs.findAllFiles(options.globsAll, options.nocase)
 
   let filteredFiles = files
   if (options['skip-binary-files']) {
@@ -41,35 +41,36 @@ function fileStartsWith (fs, options) {
     )
   }
 
-  const targets = []
-  filteredFiles.forEach(file => {
-    const lines = fs.getFileLines(file, options.lineCount)
-    if (!lines) {
-      return
-    }
-    const misses = options.patterns.filter((pattern) => {
-      const regexp = new RegExp(pattern, options.flags)
-      return !lines.match(regexp)
+  const targets = filteredFiles
+    .map(file => {
+      const lines = fs.getFileLines(file, options.lineCount)
+      if (!lines) {
+        return null
+      }
+      const misses = options.patterns.filter((pattern) => {
+        const regexp = new RegExp(pattern, options.flags)
+        return !lines.match(regexp)
+      })
+
+      let message = `The first ${options.lineCount} lines`
+      const passed = misses.length === 0
+      if (passed) {
+        message += ' contain all of the requested patterns.'
+      } else {
+        message += ` do not contain the pattern(s): ${options['human-readable-pattern'] || misses.join('\n\t')}`
+      }
+
+      return {
+        passed,
+        path: file,
+        message
+      }
     })
+    .filter(t => t)
 
-    let message = `The first ${options.lineCount} lines of '${file}'`
-    const passed = misses.length === 0
-    if (passed) {
-      message += ' contain all of the requested patterns.'
-    } else {
-      message += ` do not contain the patterns:\n\t${misses.join('\n\t')}`
-    }
-
-    targets.push({
-      passed,
-      path: file,
-      message
-    })
-  })
-
-  if (targets.length === 0 && options['succeed-on-non-existent']) {
-    const message = `not found: (${options.globsAll.join(', ')})`
-    return new Result(message, [], true)
+  if (targets.length === 0) {
+    const message = `file not found (${options.globsAll.join(', ')})`
+    return new Result(message, [], options['succeed-on-non-existent'] === true)
   }
 
   const passed = !targets.find(t => !t.passed)
