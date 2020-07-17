@@ -33,7 +33,7 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @property {boolean} errored Whether or not an error occurred during the linting process (ex. the configuration failed validation).
  * @property {string} [errMsg] A string indication error information, will be present if errored is true.
  * @property {FormatResult[]} results The output of all the linter rules.
- * @property {string[]} targets The array of axiom targets which the target repository satisfied.
+ * @property {Object.<string, Result>} targets An object representing axiom type: axiom targets.
  */
 
 /**
@@ -85,18 +85,17 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
       /** @ts-ignore */
       errMsg: val.error,
       results: [],
-      targets: []
+      targets: {}
     }
   }
 
   // determine axiom targets
-  let targets = []
+  /** @type {Object.<string, Result>} */
+  let targetObj = {}
   // Identify axioms and execute them
-  if (ruleset.axioms) { targets = await determineTargets(ruleset.axioms, fileSystem) }
-
+  if (ruleset.axioms) { targetObj = await determineTargets(ruleset.axioms, fileSystem) }
   // execute ruleset
-  const result = await runRuleset(ruleset, targets, fileSystem, dryRun)
-
+  const result = await runRuleset(ruleset, targetObj, fileSystem, dryRun)
   const passed = result.filter(r =>
     r.status === FormatResult.ERROR ||
       (r.status !== FormatResult.IGNORED && r.ruleInfo.level === 'error' && !r.lintResult.passed)
@@ -113,7 +112,7 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
     passed,
     errored: false,
     results: result,
-    targets
+    targets: targetObj
   }
 
   return allFormatInfo
@@ -143,13 +142,21 @@ async function loadModules (type, self_dir = __dirname) {
  * a list of objects with the output of the linter rules
  *
  * @param {{ axioms: string[], rules: object }} ruleset A ruleset configuration conforming to {@link ../rulesets/schema.json}
- * @param {string[]|boolean} targets The axiom targets to enable for this run of the ruleset (ex. "language=javascript"). or true for all
+ * @param {Object.<string, Result>|boolean} targets The axiom targets to enable for this run of the ruleset. Structure is from the output of determineTargets. Use true for all targets.
  * @param {FileSystem} fileSystem A filesystem object configured with filter paths and a target directory.
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @param {string} self_dir The path containing the source files for the currently running linter instance
  * @returns {Promise<FormatResult[]>} Objects indicating the result of the linter rules
  */
 async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __dirname) {
+  // generate a flat array of axiom string identifiers
+  let targetArray = []
+  if (typeof targets !== 'boolean') {
+    targetArray = Object.entries(targets)
+      .map(([axiomId, res]) => [axiomId, res.targets.map(t => t.path)])
+      .map(([axiomId, paths]) => [`${axiomId}=*`].concat(paths.map(p => `${axiomId}=${p}`)))
+      .reduce((a, c) => a.concat(c), [])
+  }
   // load the rules
   const allRules = await loadModules('rules', self_dir)
   // do the same with fixes
@@ -172,7 +179,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
       if (r.level === 'off') { return FormatResult.CreateIgnored(r, 'ignored because level is "off"') }
       // filter to only targets with no matches
       if (typeof targets !== 'boolean') {
-        const ignoreReasons = r.where.filter(check => !targets.find(tar => check === tar))
+        const ignoreReasons = r.where.filter(check => !targetArray.find(tar => check === tar))
         if (ignoreReasons.length > 0) { return FormatResult.CreateIgnored(r, `ignored due to unsatisfied condition(s): "${ignoreReasons.join('", "')}"`) }
       }
       // check if the rule file exists
@@ -218,22 +225,20 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
  * @param {object} axiomconfig A configuration conforming to the "axioms" section in schema.json
  * @param {FileSystem} fs The filesystem to run axioms against
  * @param {string} self_dir The path containing the source files for the currently running linter instance
- * @returns {Promise<string[]>} A list of targets to run against
+ * @returns {Promise<Object.<string, Result>>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
  */
 async function determineTargets (axiomconfig, fs, self_dir = __dirname) {
   // load axioms
   const allAxioms = await loadModules('axioms', self_dir)
   const ruleresults = await Promise.all(Object.entries(axiomconfig)
     .map(async ([axiomId, axiomName]) => {
-      // TODO: Do something more secure
       // Execute axiom if it exists
-      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return null }
+      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return [axiomId, null] }
       const axiomFunction = allAxioms[axiomId]()
-      const axiomResult = await axiomFunction(fs)
-      return [`${axiomName}=*`].concat(axiomResult.map(axiomOutput => `${axiomName}=${axiomOutput}`))
+      return [axiomName, await axiomFunction(fs)]
     }))
   // flatten result
-  return ruleresults.reduce((a, v) => a.concat(v), [])
+  return ruleresults.reduce((a, [k, v]) => { a[k] = v; return a }, {})
 }
 
 /**

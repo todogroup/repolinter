@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0.
 
 const linguist = require('../lib/linguist')
+const Result = require('../lib/result')
+
 module.exports = function (fileSystem) {
   const languages = []
   try {
@@ -11,10 +13,10 @@ module.exports = function (fileSystem) {
     }
   } catch (error) {
     if (error.message === 'Linguist not installed') {
-      console.log('Linguist Axiom: Linguist not found in path, only running language-independent rules')
+      return new Result('Linguist not found in path, only running language-independent rules', [], false)
     } else {
-      console.log(error)
+      return new Result(error.message, [], false)
     }
   }
-  return languages
+  return new Result('', languages.map(l => { return { passed: true, path: l } }), true)
 }

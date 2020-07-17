@@ -47,6 +47,12 @@ require('yargs')
         default: false,
         type: 'boolean'
       })
+      .option('format', {
+        alias: 'f',
+        describe: 'Specify the formatter to use for the output ("json" or "console")',
+        default: 'console',
+        type: 'string'
+      })
   }, async (/** @type {any} */ argv) => {
     let rulesetParsed = null
     // resolve the ruleset if a url is specified
@@ -73,7 +79,11 @@ require('yargs')
     }
     // run the linter
     const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, rulesetParsed || argv['ruleset-file'])
-    console.log(repolinter.defaultFormatter.formatOutput(output, argv.dryRun))
+    // create the output
+    const formatter = argv.format === 'json' ? repolinter.jsonFormatter : repolinter.resultFormatter
+    const formattedOutput = formatter.formatOutput(output, argv.dryRun)
+    // log it!
+    console.log(formattedOutput)
     process.exitCode = output.passed ? 0 : 1
     // delete the tmpdir if it exists
     if (tmpDir) { rimraf(tmpDir, function () {}) }

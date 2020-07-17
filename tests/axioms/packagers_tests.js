@@ -12,9 +12,10 @@ describe('packagers', () => {
   it('repolinter is only npm', async () => {
     const fileSystem = new FileSystem(path.resolve('.'))
 
-    const expected = ['npm']
-
     const actual = await packagers(fileSystem)
-    expect(actual).to.deep.equal(expected)
+    expect(actual.passed).to.equal(true)
+    expect(actual.targets).to.have.length(1)
+    expect(actual.targets[0].passed).to.equal(true)
+    expect(actual.targets[0].path).to.equal('npm')
   })
 })

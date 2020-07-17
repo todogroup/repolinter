@@ -2,9 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 class JsonFormatter {
-  format (result) {
-    return JSON.stringify(result)
+  /**
+   *
+   * @param {import('..').LintResult} output The linter output to format
+   * @returns {string} The formatted output
+   */
+  static formatOutput (output) {
+    return JSON.stringify(output)
   }
 }
 
-module.exports = new JsonFormatter()
+module.exports = JsonFormatter
