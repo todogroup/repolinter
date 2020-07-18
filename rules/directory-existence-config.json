@@ -7,7 +7,6 @@
         "type": { "const": "directory-existence" },
         "options": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "nocase": { 
                     "type": "boolean",
@@ -19,7 +18,11 @@
                 },
                 "fail-message": { "type": "string" }
             },
-            "required": [ "globsAny" ]
+            "oneOf": [
+                { "required": [ "globsAny" ] },
+                { "required": [ "files" ] },
+                { "required": [ "directories" ] }
+            ]
         }
     },
     "required": ["type", "options"]

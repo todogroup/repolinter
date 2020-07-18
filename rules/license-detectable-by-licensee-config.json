@@ -4,10 +4,7 @@
     "type": "object",
     "properties": {
         "type": { "const": "license-detectable-by-licensee" },
-        "options": {
-            "type": "object",
-            "additionalProperties": false
-        }
+        "options": { "type": "object" }
     },
     "required": ["type"],
     "additionalProperties": false

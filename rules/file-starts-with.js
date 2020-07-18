@@ -13,7 +13,8 @@ const FileSystem = require('../lib/file_system')
  * @returns {Result} The lint rule result
  */
 async function fileStartsWith (fs, options) {
-  const files = await fs.findAllFiles(options.globsAll, options.nocase)
+  const fileList = options.globsAll || options.files
+  const files = await fs.findAllFiles(fileList, options.nocase)
 
   let filteredFiles = files
   if (options['skip-binary-files']) {
@@ -69,7 +70,7 @@ async function fileStartsWith (fs, options) {
   const targets = targetsUnfiltered.filter(t => t)
 
   if (targets.length === 0) {
-    const message = `file not found (${options.globsAll.join(', ')})`
+    const message = `file not found (${fileList.join(', ')})`
     return new Result(message, [], options['succeed-on-non-existent'] === true)
   }
 

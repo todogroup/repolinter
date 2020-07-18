@@ -88,14 +88,15 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
       targets: {}
     }
   }
-
+  // parse it
+  const configParsed = parseConfig(ruleset)
   // determine axiom targets
   /** @type {Object.<string, Result>} */
   let targetObj = {}
   // Identify axioms and execute them
   if (ruleset.axioms) { targetObj = await determineTargets(ruleset.axioms, fileSystem) }
   // execute ruleset
-  const result = await runRuleset(ruleset, targetObj, fileSystem, dryRun)
+  const result = await runRuleset(configParsed, targetObj, fileSystem, dryRun)
   const passed = result.filter(r =>
     r.status === FormatResult.ERROR ||
       (r.status !== FormatResult.IGNORED && r.ruleInfo.level === 'error' && !r.lintResult.passed)
@@ -141,7 +142,7 @@ async function loadModules (type, self_dir = __dirname) {
  * Run all operations in a ruleset, including linting and fixing. Returns
  * a list of objects with the output of the linter rules
  *
- * @param {{ axioms: string[], rules: object }} ruleset A ruleset configuration conforming to {@link ../rulesets/schema.json}
+ * @param {RuleInfo[]} ruleset A ruleset (list of rules with information about each). This parameter can be generated from a config using parseConfig.
  * @param {Object.<string, Result>|boolean} targets The axiom targets to enable for this run of the ruleset. Structure is from the output of determineTargets. Use true for all targets.
  * @param {FileSystem} fileSystem A filesystem object configured with filter paths and a target directory.
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
@@ -161,59 +162,46 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
   const allRules = await loadModules('rules', self_dir)
   // do the same with fixes
   // run the ruleset
-  const results = Object.entries(ruleset.rules)
-    // compile the ruleset into RuleInfo objects
-    .map(([name, cfg]) =>
-      new RuleInfo(
-        name,
-        cfg.level,
-        cfg.where,
-        cfg.rule.type,
-        cfg.rule.options,
-        cfg.fix && cfg.fix.type,
-        cfg.fix && cfg.fix.options
-      ))
-    // Execute all rule targets
-    .map(async r => {
-      // check axioms and enable appropriately
-      if (r.level === 'off') { return FormatResult.CreateIgnored(r, 'ignored because level is "off"') }
-      // filter to only targets with no matches
-      if (typeof targets !== 'boolean') {
-        const ignoreReasons = r.where.filter(check => !targetArray.find(tar => check === tar))
-        if (ignoreReasons.length > 0) { return FormatResult.CreateIgnored(r, `ignored due to unsatisfied condition(s): "${ignoreReasons.join('", "')}"`) }
-      }
-      // check if the rule file exists
-      if (!Object.prototype.hasOwnProperty.call(allRules, r.ruleType)) { return FormatResult.CreateError(r, `${r.ruleType} is not a valid rule`) }
-      let result
-      try {
-        // load the rule
-        /** @type {(fs: FileSystem, options: object) => Promise<Result> | Result} */
-        const ruleFunc = allRules[r.ruleType]()
-        // run the rule!
-        result = await ruleFunc(fileSystem, r.ruleConfig)
-      } catch (e) {
-        return FormatResult.CreateError(r, `${r.ruleType} threw an error: ${e.message}`)
-      }
-      // generate fix targets
-      const fixTargets = result.targets.filter(t => !t.passed).map(t => t.path)
-      // if there's no fix or the rule passed, we're done
-      if (!r.fixType || result.passed) { return FormatResult.CreateLintOnly(r, result) }
-      // else run the fix
-      // load the fixes
-      const allFixes = await loadModules('fixes', self_dir)
-      // check if the rule file exists
-      if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
-      let fixresult
-      try {
-        /** @type {(fs: FileSystem, options: object, targets: string[], dryRun: boolean) => Promise<Result> | Result} */
-        const fixFunc = allFixes[r.fixType]()
-        fixresult = await fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
-      } catch (e) {
-        return FormatResult.CreateError(r, `${r.fixType} threw an error: ${e.message}`)
-      }
-      // all done! return the final format object
-      return FormatResult.CreateLintAndFix(r, result, fixresult)
-    })
+  const results = ruleset.map(async r => {
+    // check axioms and enable appropriately
+    if (r.level === 'off') { return FormatResult.CreateIgnored(r, 'ignored because level is "off"') }
+    // filter to only targets with no matches
+    if (typeof targets !== 'boolean') {
+      const ignoreReasons = r.where.filter(check => !targetArray.find(tar => check === tar))
+      if (ignoreReasons.length > 0) { return FormatResult.CreateIgnored(r, `ignored due to unsatisfied condition(s): "${ignoreReasons.join('", "')}"`) }
+    }
+    // check if the rule file exists
+    if (!Object.prototype.hasOwnProperty.call(allRules, r.ruleType)) { return FormatResult.CreateError(r, `${r.ruleType} is not a valid rule`) }
+    let result
+    try {
+      // load the rule
+      /** @type {(fs: FileSystem, options: object) => Promise<Result> | Result} */
+      const ruleFunc = allRules[r.ruleType]()
+      // run the rule!
+      result = await ruleFunc(fileSystem, r.ruleConfig)
+    } catch (e) {
+      return FormatResult.CreateError(r, `${r.ruleType} threw an error: ${e.message}`)
+    }
+    // generate fix targets
+    const fixTargets = result.targets.filter(t => !t.passed).map(t => t.path)
+    // if there's no fix or the rule passed, we're done
+    if (!r.fixType || result.passed) { return FormatResult.CreateLintOnly(r, result) }
+    // else run the fix
+    // load the fixes
+    const allFixes = await loadModules('fixes', self_dir)
+    // check if the rule file exists
+    if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
+    let fixresult
+    try {
+      /** @type {(fs: FileSystem, options: object, targets: string[], dryRun: boolean) => Promise<Result> | Result} */
+      const fixFunc = allFixes[r.fixType]()
+      fixresult = await fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
+    } catch (e) {
+      return FormatResult.CreateError(r, `${r.fixType} threw an error: ${e.message}`)
+    }
+    // all done! return the final format object
+    return FormatResult.CreateLintAndFix(r, result, fixresult)
+  })
 
   return Promise.all(results)
 }
@@ -267,7 +255,52 @@ async function validateConfig (config, self_dir = __dirname) {
   } else { return { passed: true } }
 }
 
+/**
+ * Parse a JSON object config (with repolinter.json structure) and return a list
+ * of RuleInfo objects which will then be used to determine how to run the linter.
+ *
+ * @param {object} config The repolinter.json config
+ * @returns {RuleInfo[]} The parsed rule data
+ */
+function parseConfig (config) {
+  // check to see if the config has a version marker
+  // parse modern config
+  if (config.version === 2) {
+    return Object.entries(config.rules)
+      .map(([name, cfg]) =>
+        new RuleInfo(
+          name,
+          cfg.level,
+          cfg.where,
+          cfg.rule.type,
+          cfg.rule.options,
+          cfg.fix && cfg.fix.type,
+          cfg.fix && cfg.fix.options
+        ))
+  }
+  // parse legacy config
+  // old format of "axiom": { "rule-name:rule-type": ["level", { "configvalue": false }]}
+  return Object.entries(config.rules)
+    // get axioms
+    .map(([where, rules]) => {
+      // get the rules in each axiom
+      return Object.entries(rules)
+        .map(([rulename, configray]) => {
+          const [name, type] = rulename.split(':')
+          return new RuleInfo(
+            name,
+            configray[0],
+            where === 'all' ? [] : [where],
+            type || name,
+            configray[1] || {}
+          )
+        })
+    })
+    .reduce((a, c) => a.concat(c))
+}
+
 exports.runRuleset = runRuleset
 exports.determineTargets = determineTargets
 exports.validateConfig = validateConfig
+exports.parseConfig = parseConfig
 exports.lint = lint

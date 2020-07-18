@@ -1,5 +1,6 @@
 {
   "$schema": "../../rulesets/schema.json",
+  "version": 2,
   "axioms": {},
   "rules": {
     "readme-file-exists": {

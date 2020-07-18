@@ -15,13 +15,14 @@ const FileSystem = require('../lib/file_system')
  * @returns {Result} The lint rule result
  */
 async function fileExistence (fs, options) {
-  const file = await fs.findFirstFile(options.globsAny, options.nocase)
+  const fileList = options.globsAny || options.files || options.directories
+  const file = await fs.findFirstFile(fileList, options.nocase)
 
   const passed = !!file
 
   return passed
     ? new Result('', [{ passed: true, path: file, message: 'found file' }], true)
-    : new Result(`not found: (${options.globsAny.join(', ')})${options['fail-message'] !== undefined ? ' ' + options['fail-message'] : ''}`, [], false)
+    : new Result(`not found: (${fileList.join(', ')})${options['fail-message'] !== undefined ? ' ' + options['fail-message'] : ''}`, [], false)
 }
 
 module.exports = fileExistence

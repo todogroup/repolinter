@@ -6,7 +6,6 @@
         "type": { "const": "file-starts-with" },
         "options": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "nocase": { "type": "boolean" },
                 "globsAll": {
@@ -48,7 +47,11 @@
                     "required": ["patterns"]
                 }
             },
-            "required": ["globsAll", "lineCount", "patterns"]
+            "required": ["lineCount", "patterns"],
+            "oneOf": [
+                { "required": [ "globsAll" ] },
+                { "required": [ "files" ] }
+            ]
         }
     },
     "required": ["type", "options"],

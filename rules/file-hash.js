@@ -14,10 +14,11 @@ const FileSystem = require('../lib/file_system')
  * @returns {Result} The lint rule result
  */
 async function fileHash (fs, options) {
+  const fileList = options.globsAny || options.files
   const file = await fs.findFirstFile(options.globsAny, options.nocase)
 
   if (file === undefined) {
-    const message = `not found: (${options.globsAny.join(', ')})`
+    const message = `not found: (${fileList.join(', ')})`
     let status = options['succeed-on-non-existent']
     if (status === undefined) {
       status = false

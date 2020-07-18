@@ -6,7 +6,6 @@
         "type": { "const": "git-grep-log" },
         "options": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "blacklist": {
                     "type": "array",

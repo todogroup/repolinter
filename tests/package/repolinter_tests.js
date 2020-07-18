@@ -35,5 +35,13 @@ describe('package', () => {
       expect(res.results[1].lintResult.targets[0].passed).to.equal(true)
       expect(res.results[1].lintResult.targets[0].path).to.equal('repolinter_tests.js')
     })
+
+    it('outputs the same results for new and old-style config', async () => {
+      const expected = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default.json'))
+      const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default-legacy.json'))
+
+      expect(actual.passed).to.equal(expected.passed)
+      expect(actual.results).to.deep.equal(expected.results)
+    })
   })
 })

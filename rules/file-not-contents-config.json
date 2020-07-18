@@ -6,7 +6,6 @@
         "type": { "const": "file-not-contents" },
         "options": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "nocase": { 
                     "type": "boolean",
@@ -24,7 +23,11 @@
                     "default": false
                 }
             },
-            "required": ["globsAll", "content"]
+            "required": ["content"],
+            "oneOf": [
+                { "required": [ "globsAll" ] },
+                { "required": [ "files" ] }
+            ]
         }
     },
     "required": ["type", "options"],

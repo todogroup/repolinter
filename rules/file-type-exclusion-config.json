@@ -6,7 +6,6 @@
         "type": { "const": "file-type-exclusion" },
         "options": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "type": { 
                     "type": "array",

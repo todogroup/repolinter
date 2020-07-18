@@ -19,10 +19,12 @@ function getContent (options) {
  * @returns {Result} The lint rule result
  */
 async function fileContents (fs, options, not = false) {
-  const files = await fs.findAllFiles(options.globsAll)
+  // support legacy configuration keys
+  const fileList = options.globsAll || options.files
+  const files = await fs.findAllFiles(fileList)
 
   if (files.length === 0) {
-    const message = `not found: (${options.globsAll.join(', ')})`
+    const message = `not found: (${fileList.join(', ')})`
     return new Result(message, [], !options['fail-on-non-existent'])
   }
 

@@ -5,7 +5,6 @@
     "properties": {
         "type": { "const": "file-existence" },
         "options": {
-            "additionalProperties": false,
             "properties": {
                 "nocase": { 
                     "type": "boolean",
@@ -17,7 +16,10 @@
                 },
                 "fail-message": { "type": "string" }
             },
-            "required": ["globsAny"]
+            "oneOf": [
+                { "required": [ "globsAny" ] },
+                { "required": [ "files" ] }
+            ]
         }
     },
     "required": ["type", "options"],

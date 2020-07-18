@@ -1,5 +1,5 @@
 {
-    "$schema": "./schema.json",
+    "$schema": "../../rulesets/schema.json",
     "version": 2,
     "axioms": {
         "linguist":"language",
@@ -12,7 +12,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["LICENSE*", "COPYING*"], 
+                    "files": ["LICENSE*", "COPYING*"], 
                     "nocase": true
                 }
             }
@@ -22,7 +22,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["README*"],
+                    "files": ["README*"],
                     "nocase": true
                 }
             }
@@ -32,8 +32,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["{docs/,.github/,}CONTRIB*"],
-                    "nocase": true
+                    "files": ["{docs/,.github/,}CONTRIB*"]
                 }
             }
         },
@@ -42,12 +41,11 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": [
+                    "files": [
                         "{docs/,.github/,}CODEOFCONDUCT*", 
                         "{docs/,.github/,}CODE-OF-CONDUCT*", 
                         "{docs/,.github/,}CODE_OF_CONDUCT*"
-                    ],
-                    "nocase": true
+                    ]
                 }
             }
         },
@@ -56,7 +54,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["CHANGELOG*"],
+                    "files": ["CHANGELOG*"],
                     "nocase": true
                 }
             }
@@ -66,7 +64,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["{docs/,.github/,}SECURITY.md"]
+                    "files": ["{docs/,.github/,}SECURITY.md"]
                 }
             }
         },
@@ -75,7 +73,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["{docs/,.github/,}SUPPORT*"],
+                    "files": ["{docs/,.github/,}SUPPORT*"],
                     "nocase": true
                 }
             }
@@ -85,7 +83,7 @@
             "rule": {
                 "type": "file-contents",
                 "options": {
-                    "globsAll": ["README*"],
+                    "files": ["README*"],
                     "content": "license",
                     "flags": "i"
                 }
@@ -105,7 +103,7 @@
             "rule": {
                 "type": "directory-existence",
                 "options": {
-                    "globsAny": ["**/test*", "**/specs"],
+                    "directories": ["**/test*", "**/specs"],
                     "nocase": true
                 }
             }
@@ -115,7 +113,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": [
+                    "files": [
                         ".gitlab-ci.yml", 
                         ".travis.yml", 
                         "appveyor.yml", 
@@ -135,7 +133,7 @@
             "rule": {
                 "type": "file-contents",
                 "options": {
-                    "globsAll": [
+                    "files": [
                         "CODEOFCONDUCT*", 
                         "CODE-OF-CONDUCT*", 
                         "CODE_OF_CONDUCT*",
@@ -154,7 +152,7 @@
             "rule": {
                 "type": "file-starts-with",
                 "options": {
-                    "globsAll": ["**/*.js", "!node_modules/**"],
+                    "files": ["**/*.js", "!node_modules/**"],
                     "lineCount": 5,
                     "patterns": ["Copyright", "License"],
                     "flags": "i"
@@ -166,7 +164,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*"]
+                    "files": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*"]
                 }
             }
         },
@@ -175,7 +173,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["PULL_REQUEST_TEMPLATE*", ".github/PULL_REQUEST_TEMPLATE*"]
+                    "files": ["PULL_REQUEST_TEMPLATE*", ".github/PULL_REQUEST_TEMPLATE*"]
                 }
             }
         },
@@ -185,7 +183,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["package.json"]
+                    "files": ["package.json"]
                 }
             }
         },
@@ -195,7 +193,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["Gemfile"]
+                    "files": ["Gemfile"]
                 }
             }
         },
@@ -205,62 +203,12 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["pom.xml", "build.xml", "build.gradle"]
-                }
-            }
-        },
-        "python-package-metadata-exists": {
-            "level": "error",
-            "where": ["language=python"],
-            "rule": {
-                "type": "file-existence",
-                "options": {
-                    "globsAny": ["setup.py", "requirements.txt"]
-                }
-            }
-        },
-        "objective-c-package-metadata-exists": {
-            "level": "error",
-            "where": ["language=objective-c"],
-            "rule": {
-                "type": "file-existence",
-                "options": {
-                    "globsAny": ["Cartfile", "Podfile", "*.podspec"]
-                }
-            }
-        },
-        "swift-package-metadata-exists": {
-            "level": "error",
-            "where": ["language=swift"],
-            "rule": {
-                "type": "file-existence",
-                "options": {
-                    "globsAny": ["Package.swift"]
-                }
-            }
-        },
-        "erlang-package-metadata-exists": {
-            "level": "error",
-            "where": ["language=erlang"],
-            "rule": {
-                "type": "file-existence",
-                "options": {
-                    "globsAny": ["rebar.config"]
-                }
-            }
-        },
-        "elixir-package-metadata-exists": {
-            "level": "error",
-            "where": ["language=elixir"],
-            "rule": {
-                "type": "file-existence",
-                "options": {
-                    "globsAny": ["mix.exs"]
+                    "files": ["pom.xml", "build.xml", "build.gradle"]
                 }
             }
         },
         "license-detectable-by-licensee": {
-            "level": "off",
+            "level": "error",
             "where": ["license=*"],
             "rule": {
                 "type": "license-detectable-by-licensee",
@@ -271,10 +219,57 @@
             "level": "error",
             "where": ["license=Apache-2.0"],
             "rule": {
+                "type": "apache-notice",
+                "options": {}
+            }
+        },
+        "python-package-metadata-exists": {
+            "level": "error",
+            "where": ["language=python"],
+            "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["NOTICE*"],
-                    "fail-message": "The NOTICE file is described in section 4.4 of the Apache License version 2.0. Its presence is not mandated by the license itself, but by ASF policy."
+                    "files": ["setup.py", "requirements.txt"]
+                }
+            }
+        },
+        "objective-c-package-metadata-exists": {
+            "level": "error",
+            "where": ["language=objective-c"],
+            "rule": {
+                "type": "file-existence",
+                "options": {
+                    "files": ["Cartfile", "Podfile", "*.podspec"]
+                }
+            }
+        },
+        "swift-package-metadata-exists": {
+            "level": "error",
+            "where": ["language=swift"],
+            "rule": {
+                "type": "file-existence",
+                "options": {
+                    "files": ["Package.swift"]
+                }
+            }
+        },
+        "erlang-package-metadata-exists": {
+            "level": "error",
+            "where": ["language=erlang"],
+            "rule": {
+                "type": "file-existence",
+                "options": {
+                    "files": ["rebar.config"]
+                }
+            }
+        },
+        "elixir-package-metadata-exists": {
+            "level": "error",
+            "where": ["language=elixir"],
+            "rule": {
+                "type": "file-existence",
+                "options": {
+                    "files": ["mix.exs"]
                 }
             }
         }

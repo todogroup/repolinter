@@ -6,7 +6,6 @@
         "type": { "const": "file-hash" },
         "options": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "globsAny": {
                     "type": "array",
@@ -26,7 +25,11 @@
                 },
                 "hash": { "type": "string" }
             },
-            "required": ["globsAny", "hash"]
+            "required": ["hash"],
+            "oneOf": [
+                { "required": [ "globsAny" ] },
+                { "required": [ "files" ] }
+            ]
         }
     },
     "required": ["type", "options"],

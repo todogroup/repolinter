@@ -6,7 +6,6 @@
         "type": { "const": "git-working-tree" },
         "options": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "allowSubDir": {
                     "type": "boolean",
