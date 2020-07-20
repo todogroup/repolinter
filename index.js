@@ -11,7 +11,7 @@ const RuleInfo = require('./lib/ruleinfo')
 const FormatResult = require('./lib/formatresult')
 const FileSystem = require('./lib/file_system')
 const RuleSchemas = require('./rules/schemas')
-const FixSchemas = require('./fixes/schemas')
+const Fixes = require('./fixes/fixes')
 
 /**
  * @typedef {object} Formatter
@@ -99,10 +99,9 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
   if (ruleset.axioms) { targetObj = await determineTargets(ruleset.axioms, fileSystem) }
   // execute ruleset
   const result = await runRuleset(configParsed, targetObj, fileSystem, dryRun)
-  const passed = result.filter(r =>
+  const passed = !result.find(r =>
     r.status === FormatResult.ERROR ||
-      (r.status !== FormatResult.IGNORED && r.ruleInfo.level === 'error' && !r.lintResult.passed)
-  ).length === 0
+      (r.status !== FormatResult.IGNORED && r.ruleInfo.level === 'error' && !r.lintResult.passed))
 
   // render all the results
   const allFormatInfo = {
@@ -241,8 +240,8 @@ async function validateConfig (config) {
   // find all json schemas
   const parsedRuleSchemas = Promise.all(RuleSchemas
     .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', rs))))
-  const parsedFixSchemas = Promise.all(FixSchemas
-    .map(fs => jsonfile.readFile(path.resolve(__dirname, 'fixes', fs))))
+  const parsedFixSchemas = Promise.all(Fixes
+    .map(fs => jsonfile.readFile(path.resolve(__dirname, 'fixes', fs + '-config.json'))))
   const allSchemas = (await Promise.all([parsedFixSchemas, parsedRuleSchemas]))
     .reduce((a, c) => a.concat(c), [])
   // load them into the validator

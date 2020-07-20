@@ -2,6 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 module.exports = [
-  'file-create-config.json',
-  'file-modify-config.json'
+  'file-create',
+  'file-modify'
 ]
