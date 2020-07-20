@@ -10,6 +10,8 @@ const Result = require('./lib/result')
 const RuleInfo = require('./lib/ruleinfo')
 const FormatResult = require('./lib/formatresult')
 const FileSystem = require('./lib/file_system')
+const RuleSchemas = require('./rules/schemas')
+const FixSchemas = require('./fixes/schemas')
 
 /**
  * @typedef {object} Formatter
@@ -126,15 +128,14 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
  * loaded at runtime, but still protects against an injection attack.
  *
  * @param {string} type The directory to load JS files from (e.x. fix)
- * @param {string} self_dir The directory repolinter is installed in
  * @returns {Promise<Object.<string, () => any>>}
  * An object containing JS file names associated with their appropriate require function
  */
-async function loadModules (type, self_dir = __dirname) {
+async function loadModules (type) {
   // determine which rules are installed using a filesystem search
-  const selfFs = new FileSystem(self_dir)
+  const selfFs = new FileSystem(__dirname)
   return (await selfFs.findAllFiles(`${type}/*.js`, false))
-    .map(f => [path.basename(f, '.js'), () => require(path.resolve(self_dir, f))])
+    .map(f => [path.basename(f, '.js'), () => require(path.resolve(__dirname, f))])
     .reduce((p, [name, require]) => { p[name] = require; return p }, {})
 }
 
@@ -146,10 +147,9 @@ async function loadModules (type, self_dir = __dirname) {
  * @param {Object.<string, Result>|boolean} targets The axiom targets to enable for this run of the ruleset. Structure is from the output of determineTargets. Use true for all targets.
  * @param {FileSystem} fileSystem A filesystem object configured with filter paths and a target directory.
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
- * @param {string} self_dir The path containing the source files for the currently running linter instance
  * @returns {Promise<FormatResult[]>} Objects indicating the result of the linter rules
  */
-async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __dirname) {
+async function runRuleset (ruleset, targets, fileSystem, dryRun) {
   // generate a flat array of axiom string identifiers
   let targetArray = []
   if (typeof targets !== 'boolean') {
@@ -159,7 +159,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
       .reduce((a, c) => a.concat(c), [])
   }
   // load the rules
-  const allRules = await loadModules('rules', self_dir)
+  const allRules = await loadModules('rules')
   // do the same with fixes
   // run the ruleset
   const results = ruleset.map(async r => {
@@ -188,7 +188,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
     if (!r.fixType || result.passed) { return FormatResult.CreateLintOnly(r, result) }
     // else run the fix
     // load the fixes
-    const allFixes = await loadModules('fixes', self_dir)
+    const allFixes = await loadModules('fixes')
     // check if the rule file exists
     if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
     let fixresult
@@ -212,12 +212,11 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun, self_dir = __di
  *
  * @param {object} axiomconfig A configuration conforming to the "axioms" section in schema.json
  * @param {FileSystem} fs The filesystem to run axioms against
- * @param {string} self_dir The path containing the source files for the currently running linter instance
  * @returns {Promise<Object.<string, Result>>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
  */
-async function determineTargets (axiomconfig, fs, self_dir = __dirname) {
+async function determineTargets (axiomconfig, fs) {
   // load axioms
-  const allAxioms = await loadModules('axioms', self_dir)
+  const allAxioms = await loadModules('axioms')
   const ruleresults = await Promise.all(Object.entries(axiomconfig)
     .map(async ([axiomId, axiomName]) => {
       // Execute axiom if it exists
@@ -233,18 +232,23 @@ async function determineTargets (axiomconfig, fs, self_dir = __dirname) {
  * Validate a repolint configuration against a known JSON schema
  *
  * @param {object} config The configuration to validate
- * @param {string} self_dir The path containing the source files for the currently running linter instance
  * @returns {Promise<{ passed: boolean, error?: string }>} Whether or not the config validation succeeded
  */
-async function validateConfig (config, self_dir = __dirname) {
+async function validateConfig (config) {
   // compile the json schema
   const ajvProps = new Ajv()
-  const fs = new FileSystem(self_dir)
-  const schemas = await fs.findAllFiles(['rules/*-config.json', 'fixes/*-config.json'], true)
-  for (const schema of schemas) {
-    ajvProps.addSchema(await jsonfile.readFile(path.resolve(self_dir, schema)))
+  // find all json schemas
+  const parsedRuleSchemas = Promise.all(RuleSchemas
+    .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', rs))))
+  const parsedFixSchemas = Promise.all(FixSchemas
+    .map(fs => jsonfile.readFile(path.resolve(__dirname, 'fixes', fs))))
+  const allSchemas = (await Promise.all([parsedFixSchemas, parsedRuleSchemas]))
+    .reduce((a, c) => a.concat(c), [])
+  // load them into the validator
+  for (const schema of allSchemas) {
+    ajvProps.addSchema(schema)
   }
-  const validator = ajvProps.compile(await jsonfile.readFile(path.resolve(self_dir, './rulesets/schema.json')))
+  const validator = ajvProps.compile(await jsonfile.readFile(require.resolve('./rulesets/schema.json')))
 
   // validate it against the supplied ruleset
   if (!validator(config)) {
