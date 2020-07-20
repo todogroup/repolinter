@@ -5,9 +5,10 @@ class JsonFormatter {
   /**
    *
    * @param {import('..').LintResult} output The linter output to format
+   * @param {boolean} dryRun (ignored)
    * @returns {string} The formatted output
    */
-  static formatOutput (output) {
+  static formatOutput (output, dryRun) {
     return JSON.stringify(output)
   }
 }

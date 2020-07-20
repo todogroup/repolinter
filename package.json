@@ -3,6 +3,7 @@
   "version": "0.8.2",
   "description": "Lint open source repositories",
   "main": "index.js",
+  "types": "index.d.ts",
   "bin": {
     "repolinter": "bin/repolinter.js"
   },
