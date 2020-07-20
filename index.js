@@ -10,8 +10,9 @@ const Result = require('./lib/result')
 const RuleInfo = require('./lib/ruleinfo')
 const FormatResult = require('./lib/formatresult')
 const FileSystem = require('./lib/file_system')
-const RuleSchemas = require('./rules/schemas')
+const Rules = require('./rules/rules')
 const Fixes = require('./fixes/fixes')
+const Axioms = require('./axioms/axioms')
 
 /**
  * @typedef {object} Formatter
@@ -131,10 +132,22 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadModules (type) {
-  // determine which rules are installed using a filesystem search
-  const selfFs = new FileSystem(__dirname)
-  return (await selfFs.findAllFiles(`${type}/*.js`, false))
-    .map(f => [path.basename(f, '.js'), () => require(path.resolve(__dirname, f))])
+  // determine which rules to use via the three lists required earlier
+  let prefix
+  let list
+  if (type === 'rules') {
+    list = Rules
+    prefix = './rules/'
+  } else if (type === 'fixes') {
+    list = Fixes
+    prefix = './fixes/'
+  } else if (type === 'axioms') {
+    list = Axioms
+    prefix = './axioms/'
+  } else { return {} }
+  // convert the lists into a easily-loadable object
+  return list
+    .map(f => [f, () => require(path.resolve(__dirname, prefix, f))])
     .reduce((p, [name, require]) => { p[name] = require; return p }, {})
 }
 
@@ -238,8 +251,8 @@ async function validateConfig (config) {
   // compile the json schema
   const ajvProps = new Ajv()
   // find all json schemas
-  const parsedRuleSchemas = Promise.all(RuleSchemas
-    .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', rs))))
+  const parsedRuleSchemas = Promise.all(Rules
+    .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', rs + '-config.json'))))
   const parsedFixSchemas = Promise.all(Fixes
     .map(fs => jsonfile.readFile(path.resolve(__dirname, 'fixes', fs + '-config.json'))))
   const allSchemas = (await Promise.all([parsedFixSchemas, parsedRuleSchemas]))
