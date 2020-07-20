@@ -127,27 +127,54 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
  * allows modules such as the linter and fixer rules to be dynamically
  * loaded at runtime, but still protects against an injection attack.
  *
- * @param {string} type The directory to load JS files from (e.x. fix)
+ * This function is similar to loadFixes and loadAxioms, this variant
+ * is for rules.
+ *
  * @returns {Promise<Object.<string, () => any>>}
  * An object containing JS file names associated with their appropriate require function
  */
-async function loadModules (type) {
-  // determine which rules to use via the three lists required earlier
-  let prefix
-  let list
-  if (type === 'rules') {
-    list = Rules
-    prefix = './rules/'
-  } else if (type === 'fixes') {
-    list = Fixes
-    prefix = './fixes/'
-  } else if (type === 'axioms') {
-    list = Axioms
-    prefix = './axioms/'
-  } else { return {} }
+async function loadRules () {
   // convert the lists into a easily-loadable object
-  return list
-    .map(f => [f, () => require(path.resolve(__dirname, prefix, f))])
+  return Rules
+    .map(f => [f, () => require(path.resolve(__dirname, './rules/', f))])
+    .reduce((p, [name, require]) => { p[name] = require; return p }, {})
+}
+
+/**
+ * Index all javascript files in a certain subdirectory of repolinter,
+ * returning an object which can later be used to load the modules. This
+ * allows modules such as the linter and fixer rules to be dynamically
+ * loaded at runtime, but still protects against an injection attack.
+ *
+ * This function is similar to loadRules and loadAxioms, this variant
+ * is for fixes.
+ *
+ * @returns {Promise<Object.<string, () => any>>}
+ * An object containing JS file names associated with their appropriate require function
+ */
+async function loadFixes () {
+  // convert the lists into a easily-loadable object
+  return Fixes
+    .map(f => [f, () => require(path.resolve(__dirname, './fixes/', f))])
+    .reduce((p, [name, require]) => { p[name] = require; return p }, {})
+}
+
+/**
+ * Index all javascript files in a certain subdirectory of repolinter,
+ * returning an object which can later be used to load the modules. This
+ * allows modules such as the linter and fixer rules to be dynamically
+ * loaded at runtime, but still protects against an injection attack.
+ *
+ * This function is similar to loadRules and loadFixes, this variant
+ * is for Axioms.
+ *
+ * @returns {Promise<Object.<string, () => any>>}
+ * An object containing JS file names associated with their appropriate require function
+ */
+async function loadAxioms () {
+  // convert the lists into a easily-loadable object
+  return Axioms
+    .map(f => [f, () => require(path.resolve(__dirname, './axioms/', f))])
     .reduce((p, [name, require]) => { p[name] = require; return p }, {})
 }
 
@@ -172,7 +199,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
       .reduce((a, c) => a.concat(c), [])
   }
   // load the rules
-  const allRules = await loadModules('rules')
+  const allRules = await loadRules()
   // do the same with fixes
   // run the ruleset
   const results = ruleset.map(async r => {
@@ -201,7 +228,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
     if (!r.fixType || result.passed) { return FormatResult.CreateLintOnly(r, result) }
     // else run the fix
     // load the fixes
-    const allFixes = await loadModules('fixes')
+    const allFixes = await loadFixes()
     // check if the rule file exists
     if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
     let fixresult
@@ -229,7 +256,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
  */
 async function determineTargets (axiomconfig, fs) {
   // load axioms
-  const allAxioms = await loadModules('axioms')
+  const allAxioms = await loadAxioms()
   const ruleresults = await Promise.all(Object.entries(axiomconfig)
     .map(async ([axiomId, axiomName]) => {
       // Execute axiom if it exists
