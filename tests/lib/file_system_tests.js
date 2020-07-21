@@ -4,7 +4,7 @@
 const path = require('path')
 const chai = require('chai')
 const expect = chai.expect
-const realFs = require('fs/promises')
+const realFs = require('fs')
 
 describe('lib', () => {
   describe('file_system', () => {
@@ -177,7 +177,7 @@ describe('lib', () => {
     describe('setFileContents', async () => {
       const fs = new FileSystem(__dirname)
       const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
-      const contents = await realFs.readFile(filePath)
+      const contents = await realFs.promises.readFile(filePath)
 
       it('should throw an error if the file does not exist', async () => {
         expect(() => fs.getFileContents('notAFile')).to.throw()
@@ -186,13 +186,13 @@ describe('lib', () => {
       it('should change the contents of a file', async () => {
         const expected = 'somefilecontents\nmorecontents\n'
         fs.setFileContents('text_file_for_test.txt', expected)
-        const fileContents = await realFs.readFile(filePath)
+        const fileContents = await realFs.promises.readFile(filePath)
         expect(fileContents).to.equal(expected)
       })
 
       after(async () => {
         // reset the file contents
-        await realFs.writeFile(filePath, contents)
+        await realFs.promises.writeFile(filePath, contents)
       })
     })
 
