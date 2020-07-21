@@ -128,7 +128,8 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
  * loaded at runtime, but still protects against an injection attack.
  *
  * This function is similar to loadFixes and loadAxioms, this variant
- * is for rules.
+ * is for rules. This function is split in three to allow NCC to
+ * statically determine the modules to resolve.
  *
  * @returns {Promise<Object.<string, () => any>>}
  * An object containing JS file names associated with their appropriate require function
@@ -147,7 +148,8 @@ async function loadRules () {
  * loaded at runtime, but still protects against an injection attack.
  *
  * This function is similar to loadRules and loadAxioms, this variant
- * is for fixes.
+ * is for fixes. This function is split in three to allow NCC to
+ * statically determine the modules to resolve.
  *
  * @returns {Promise<Object.<string, () => any>>}
  * An object containing JS file names associated with their appropriate require function
@@ -166,7 +168,8 @@ async function loadFixes () {
  * loaded at runtime, but still protects against an injection attack.
  *
  * This function is similar to loadRules and loadFixes, this variant
- * is for Axioms.
+ * is for Axioms. This function is split in three to allow NCC to
+ * statically determine the modules to resolve.
  *
  * @returns {Promise<Object.<string, () => any>>}
  * An object containing JS file names associated with their appropriate require function
