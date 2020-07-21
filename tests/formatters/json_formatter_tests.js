@@ -33,7 +33,7 @@ describe('formatters', () => {
       }
       const expected = '{"passed":true,"errored":false,"errMsg":"this is an error message","results":[{"ruleInfo":{"name":"myrule","level":"error","where":[],"ruleType":"file-existence","ruleConfig":{},"fixType":null,"fixConfig":null},"runMessage":null,"status":"OK","lintResult":{"message":"Did it!","targets":[],"passed":true},"fixResult":null},{"ruleInfo":{"name":"myrule","level":"error","where":[],"ruleType":"file-existence","ruleConfig":{},"fixType":null,"fixConfig":null},"runMessage":"whoops","status":"IGNORED","lintResult":null,"fixResult":null}],"targets":{"language":{"message":"No language?","targets":[],"passed":false}},"params":{"targetDir":".","filterPaths":[],"ruleset":{}}}'
 
-      const successResult = jsonFormatter.formatOutput(result)
+      const successResult = jsonFormatter.formatOutput(result, false)
       expect(successResult).to.equal(expected)
     })
   })

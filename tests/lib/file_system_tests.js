@@ -4,10 +4,69 @@
 const path = require('path')
 const chai = require('chai')
 const expect = chai.expect
+const realFs = require('fs/promises')
 
 describe('lib', () => {
   describe('file_system', () => {
     const FileSystem = require('../../lib/file_system')
+
+    describe('fileExists', () => {
+      it('should return pass if the file exists', async () => {
+        const index = 'text_file_for_test.txt'
+        expect(await FileSystem.fileExists(path.resolve(__dirname, index))).to.equals(true)
+      })
+
+      it('should return pass if the directory exists', async () => {
+        const dir = '../lib'
+        expect(await FileSystem.fileExists(path.resolve(__dirname, dir))).to.equals(true)
+      })
+
+      it('should return fail if the file does not exist', async () => {
+        const file = 'notAFile'
+        expect(await FileSystem.fileExists(path.resolve(__dirname, file))).to.equals(false)
+      })
+    })
+
+    describe('relativeFileExists', () => {
+      const fs = new FileSystem(__dirname)
+
+      it('should return pass if the file exists', async () => {
+        const index = 'text_file_for_test.txt'
+        expect(await fs.relativeFileExists(path.resolve(__dirname, index))).to.equals(true)
+      })
+
+      it('should return pass if the directory exists', async () => {
+        const dir = '../lib'
+        expect(await fs.relativeFileExists(path.resolve(__dirname, dir))).to.equals(true)
+      })
+
+      it('should return fail if the file does not exist', async () => {
+        const file = 'notAFile'
+        expect(await fs.relativeFileExists(path.resolve(__dirname, file))).to.equals(false)
+      })
+    })
+
+    describe('findFirstFile', () => {
+      it('should return the first element of findAllFiles', async () => {
+        const includedDirectories = ['lib/', 'rules/']
+        const fs = new FileSystem(path.resolve('./tests'), includedDirectories)
+        const files = await fs.findAllFiles('**/*', false)
+        const file = await fs.findFirstFile('**/*', false)
+        expect(files).to.have.length.greaterThan(0)
+        expect(file).to.deep.equal(files[0])
+      })
+    })
+
+    describe('findFirst', () => {
+      it('should return the first element of findAll', async () => {
+        const includedDirectories = ['lib/', 'rules/']
+        const fs = new FileSystem(path.resolve('./tests'), includedDirectories)
+        const files = await fs.findAll('**/*', false)
+        const file = await fs.findFirst('**/*', false)
+        expect(files).to.have.length.greaterThan(0)
+        expect(file).to.deep.equal(files[0])
+      })
+    })
 
     describe('findAllFiles', () => {
       it('should ignore symlinks for ** globs', async () => {
@@ -83,6 +142,62 @@ describe('lib', () => {
         })
         expect(files).to.deep.equal([])
       })
+    })
+
+    describe('isBinaryFile', () => {
+      const fs = new FileSystem(__dirname)
+
+      it('should return true for a non-text file', async () => {
+        const actual = await fs.isBinaryFile('image_for_test.png')
+        expect(actual).to.equal(true)
+      })
+
+      it('should return false for a text file', async () => {
+        const actual = await fs.isBinaryFile('file_system_tests.js')
+        expect(actual).to.equal(false)
+      })
+    })
+
+    describe('getFileContents', () => {
+      const fs = new FileSystem(__dirname)
+
+      it('should return undefined if the file does not exist', async () => {
+        const actual = await fs.getFileContents('notAFile')
+        expect(actual).to.equal(undefined)
+      })
+
+      it('should return the contents of a file', async () => {
+        const raw = await fs.getFileContents('text_file_for_test.txt')
+        // replace newlines to prevent compatibility issues
+        const actual = raw.replace('\r', '')
+        expect(actual).to.equal('The contents of this file\nwill be monitored for quality assurance purposes\n')
+      })
+    })
+
+    describe('setFileContents', async () => {
+      const fs = new FileSystem(__dirname)
+      const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
+      const contents = await realFs.readFile(filePath)
+
+      it('should throw an error if the file does not exist', async () => {
+        expect(() => fs.getFileContents('notAFile')).to.throw()
+      })
+
+      it('should change the contents of a file', async () => {
+        const expected = 'somefilecontents\nmorecontents\n'
+        fs.setFileContents('text_file_for_test.txt', expected)
+        const fileContents = await realFs.readFile(filePath)
+        expect(fileContents).to.equal(expected)
+      })
+
+      after(async () => {
+        // reset the file contents
+        await realFs.writeFile(filePath, contents)
+      })
+    })
+
+    describe('getFileLines', () => {
+
     })
   })
 })
