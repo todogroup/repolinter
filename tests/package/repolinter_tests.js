@@ -4,6 +4,7 @@
 const path = require('path')
 const chai = require('chai')
 const RuleInfo = require('../../lib/ruleinfo')
+const Result = require('../../lib/result')
 const expect = chai.expect
 const repolinter = require(path.resolve('.'))
 
@@ -45,10 +46,10 @@ describe('package', () => {
       expect(actual.results).to.deep.equal(expected.results)
     })
 
-    it('ignores null axioms', async () => {
+    it('ignores failed axioms', async () => {
       const actual = await repolinter.runRuleset([
         new RuleInfo('myrule', 'error', ['myAxiom=true'], 'fix-dohicky', {})
-      ], { myAxiom: null }, false)
+      ], { myAxiom: new Result('', [], false) }, false)
       expect(actual).to.have.length(1)
       expect(actual[0].status).to.equal('IGNORED')
     })

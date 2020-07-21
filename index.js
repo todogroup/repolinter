@@ -186,7 +186,7 @@ async function loadAxioms () {
  * a list of objects with the output of the linter rules
  *
  * @param {RuleInfo[]} ruleset A ruleset (list of rules with information about each). This parameter can be generated from a config using parseConfig.
- * @param {Object.<string, Result|null>|boolean} targets The axiom targets to enable for this run of the ruleset. Structure is from the output of determineTargets. Use true for all targets.
+ * @param {Object.<string, Result>|boolean} targets The axiom targets to enable for this run of the ruleset. Structure is from the output of determineTargets. Use true for all targets.
  * @param {FileSystem} fileSystem A filesystem object configured with filter paths and a target directory.
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<FormatResult[]>} Objects indicating the result of the linter rules
@@ -196,7 +196,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
   let targetArray = []
   if (typeof targets !== 'boolean') {
     targetArray = Object.entries(targets)
-      .filter(([axiomId, res]) => res)
+      .filter(([axiomId, res]) => res.passed)
       .map(([axiomId, res]) => [axiomId, res.targets.map(t => t.path)])
       .map(([axiomId, paths]) => [`${axiomId}=*`].concat(paths.map(p => `${axiomId}=${p}`)))
       .reduce((a, c) => a.concat(c), [])
@@ -255,7 +255,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
  *
  * @param {object} axiomconfig A configuration conforming to the "axioms" section in schema.json
  * @param {FileSystem} fs The filesystem to run axioms against
- * @returns {Promise<Object.<string, Result|null>>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
+ * @returns {Promise<Object.<string, Result>>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
  */
 async function determineTargets (axiomconfig, fs) {
   // load axioms
@@ -263,7 +263,7 @@ async function determineTargets (axiomconfig, fs) {
   const ruleresults = await Promise.all(Object.entries(axiomconfig)
     .map(async ([axiomId, axiomName]) => {
       // Execute axiom if it exists
-      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return [axiomId, null] }
+      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return [axiomId, new Result(`invalid axiom name ${axiomId}`, [], false)] }
       const axiomFunction = allAxioms[axiomId]()
       return [axiomName, await axiomFunction(fs)]
     }))
