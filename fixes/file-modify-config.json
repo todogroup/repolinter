@@ -2,59 +2,51 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/fixes/file-modify-config.json",
     "type": "object",
+    "additionalProperties": false,
     "properties": {
-        "type": { "const": "file-modify" },
-        "options": {
+        "nocase": {
+            "type": "boolean",
+            "default": false
+        },
+        "files": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "skip-paths-matching": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "nocase": { 
-                    "type": "boolean",
-                    "default": false
-                },
-                "files": {
+                "extensions": {
                     "type": "array",
                     "items": { "type": "string" }
                 },
-                "skip-paths-matching": {
+                "patterns": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "flags": { "type": "string" }
+            },
+            "required": ["patterns"]
+        },
+        "text": {
+            "oneOf": [
+                { "type": "string" },
+                {
                     "type": "object",
                     "additionalProperties": false,
-                    "properties": {
-                        "extensions": {
-                            "type": "array",
-                            "items": { "type": "string" }
-                        },
-                        "patterns": {
-                            "type": "array",
-                            "items": { "type": "string" }
-                        },
-                        "flags": { "type": "string" }
-                    },
-                    "required": ["patterns"]
+                    "properties": { "url": { "type": "string" } }
                 },
-                "text": { 
-                    "oneOf": [
-                        { "type": "string" },
-                        { 
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": { "url": { "type": "string" } }
-                        },
-                        { 
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": { "file": { "type": "string" } }
-                        }
-                    ]
-                },
-                "write_mode": {
-                    "default": "append",
-                    "enum": ["prepend", "append"]
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": { "file": { "type": "string" } }
                 }
-            },
-            "required": ["text"]
+            ]
+        },
+        "write_mode": {
+            "default": "append",
+            "enum": ["prepend", "append"]
         }
     },
-    "required": ["type", "options"],
-    "additionalProperties": false
+    "required": ["text"]
 }

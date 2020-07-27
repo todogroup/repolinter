@@ -3,22 +3,14 @@
     "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/git-grep-log-config.json",
     "type": "object",
     "properties": {
-        "type": { "const": "git-grep-log" },
-        "options": {
-            "type": "object",
-            "properties": {
-                "blacklist": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "ignoreCase": {
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "required": ["denylist"]
+        "blacklist": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "ignoreCase": {
+            "type": "boolean",
+            "default": false
         }
     },
-    "required": ["type", "options"],
-    "additionalProperties": false
+    "required": ["denylist"]
 }

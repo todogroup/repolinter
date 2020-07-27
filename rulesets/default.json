@@ -12,7 +12,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["LICENSE*", "COPYING*"], 
+                    "globsAny": ["LICENSE*", "COPYING*"],
                     "nocase": true
                 }
             }
@@ -43,8 +43,8 @@
                 "type": "file-existence",
                 "options": {
                     "globsAny": [
-                        "{docs/,.github/,}CODEOFCONDUCT*", 
-                        "{docs/,.github/,}CODE-OF-CONDUCT*", 
+                        "{docs/,.github/,}CODEOFCONDUCT*",
+                        "{docs/,.github/,}CODE-OF-CONDUCT*",
                         "{docs/,.github/,}CODE_OF_CONDUCT*"
                     ],
                     "nocase": true
@@ -116,13 +116,13 @@
                 "type": "file-existence",
                 "options": {
                     "globsAny": [
-                        ".gitlab-ci.yml", 
-                        ".travis.yml", 
-                        "appveyor.yml", 
-                        ".appveyor.yml", 
-                        "circle.yml", 
-                        ".circleci/config.yml", 
-                        "Jenkinsfile", 
+                        ".gitlab-ci.yml",
+                        ".travis.yml",
+                        "appveyor.yml",
+                        ".appveyor.yml",
+                        "circle.yml",
+                        ".circleci/config.yml",
+                        "Jenkinsfile",
                         ".drone.yml",
                         ".github/workflows/*",
                         "azure-pipelines.yml"
@@ -136,18 +136,18 @@
                 "type": "file-contents",
                 "options": {
                     "globsAll": [
-                        "CODEOFCONDUCT*", 
-                        "CODE-OF-CONDUCT*", 
+                        "CODEOFCONDUCT*",
+                        "CODE-OF-CONDUCT*",
                         "CODE_OF_CONDUCT*",
-                        ".github/CODEOFCONDUCT*", 
-                        ".github/CODE-OF-CONDUCT*", 
+                        ".github/CODEOFCONDUCT*",
+                        ".github/CODE-OF-CONDUCT*",
                         ".github/CODE_OF_CONDUCT*"
                     ],
                     "content": ".+@.+\\..+",
                     "flags": "i",
                     "human-readable-content": "email address"
                 }
-            }   
+            }
         },
         "source-license-headers-exist": {
             "level": "warning",

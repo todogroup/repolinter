@@ -4,26 +4,19 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-        "type": { "const": "directory-existence" },
-        "options": {
-            "type": "object",
-            "properties": {
-                "nocase": { 
-                    "type": "boolean",
-                    "default": false
-                },
-                "globsAny": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "fail-message": { "type": "string" }
-            },
-            "oneOf": [
-                { "required": [ "globsAny" ] },
-                { "required": [ "files" ] },
-                { "required": [ "directories" ] }
-            ]
-        }
+        "nocase": {
+            "type": "boolean",
+            "default": false
+        },
+        "globsAny": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "fail-message": { "type": "string" }
     },
-    "required": ["type", "options"]
+    "oneOf": [
+        { "required": [ "globsAny" ] },
+        { "required": [ "files" ] },
+        { "required": [ "directories" ] }
+    ]
 }

@@ -3,22 +3,14 @@
     "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/git-list-tree-config.json",
     "type": "object",
     "properties": {
-        "type": { "const": "git-list-tree" },
-        "options": {
-            "type": "object",
-            "properties": {
-                "denylist": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "ignoreCase": {
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "required": ["denylist"]
+        "denylist": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "ignoreCase": {
+            "type": "boolean",
+            "default": false
         }
     },
-    "required": ["type", "options"],
-    "additionalProperties": false
+    "required": ["denylist"]
 }

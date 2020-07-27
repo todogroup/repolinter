@@ -3,22 +3,14 @@
     "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/git-grep-commits-config.json",
     "type": "object",
     "properties": {
-        "type": { "const": "git-grep-commits" },
-        "options": {
-            "type": "object",
-            "properties": {
-                "denylist": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "ignoreCase": {
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "required": ["denylist"]
+        "denylist": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "ignoreCase": {
+            "type": "boolean",
+            "default": false
         }
     },
-    "required": ["type", "options"],
-    "additionalProperties": false
+    "required": ["denylist"]
 }

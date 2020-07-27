@@ -3,33 +3,25 @@
     "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/file-contents-config.json",
     "type": "object",
     "properties": {
-        "type": { "const": "file-contents" },
-        "options": {
-            "type": "object",
-            "properties": {
-                "nocase": { 
-                    "type": "boolean",
-                    "default": false
-                },
-                "globsAll": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "content": { "type": "string" },
-                "flags": { "type": "string" },
-                "human-readable-content": { "type": "string" },
-                "fail-on-non-exist": { 
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "required": ["content"],
-            "oneOf": [
-                { "required": [ "globsAll" ] },
-                { "required": [ "files" ] }
-            ]
+        "nocase": {
+            "type": "boolean",
+            "default": false
+        },
+        "globsAll": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "content": { "type": "string" },
+        "flags": { "type": "string" },
+        "human-readable-content": { "type": "string" },
+        "fail-on-non-exist": {
+            "type": "boolean",
+            "default": false
         }
     },
-    "required": ["type", "options"],
-    "additionalProperties": false
+    "required": ["content"],
+    "oneOf": [
+        { "required": [ "globsAll" ] },
+        { "required": [ "files" ] }
+    ]
 }

@@ -3,25 +3,18 @@
     "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/file-existence-config.json",
     "type": "object",
     "properties": {
-        "type": { "const": "file-existence" },
-        "options": {
-            "properties": {
-                "nocase": { 
-                    "type": "boolean",
-                    "default": false
-                },
-                "globsAny": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "fail-message": { "type": "string" }
-            },
-            "oneOf": [
-                { "required": [ "globsAny" ] },
-                { "required": [ "files" ] }
-            ]
-        }
+        "nocase": {
+            "type": "boolean",
+            "default": false
+        },
+        "globsAny": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "fail-message": { "type": "string" }
     },
-    "required": ["type", "options"],
-    "additionalProperties": false
+    "oneOf": [
+        { "required": [ "globsAny" ] },
+        { "required": [ "files" ] }
+    ]
 }

@@ -3,35 +3,27 @@
     "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/file-hash-config.json",
     "type": "object",
     "properties": {
-        "type": { "const": "file-hash" },
-        "options": {
-            "type": "object",
-            "properties": {
-                "globsAny": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "nocase": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "algorithm": { 
-                    "type": "string",
-                    "default": "sha256"
-                },
-                "succeed-on-non-existent": { 
-                    "type": "boolean",
-                    "default": false
-                },
-                "hash": { "type": "string" }
-            },
-            "required": ["hash"],
-            "oneOf": [
-                { "required": [ "globsAny" ] },
-                { "required": [ "files" ] }
-            ]
-        }
+        "globsAny": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "nocase": {
+            "type": "boolean",
+            "default": false
+        },
+        "algorithm": {
+            "type": "string",
+            "default": "sha256"
+        },
+        "succeed-on-non-existent": {
+            "type": "boolean",
+            "default": false
+        },
+        "hash": { "type": "string" }
     },
-    "required": ["type", "options"],
-    "additionalProperties": false
+    "required": ["hash"],
+    "oneOf": [
+        { "required": [ "globsAny" ] },
+        { "required": [ "files" ] }
+    ]
 }
