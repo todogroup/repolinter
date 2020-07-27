@@ -24,14 +24,14 @@ describe('package', () => {
       // readme-file-exists rule
       expect(res.results[0].ruleInfo.name).to.equal('readme-file-exists')
       expect(res.results[0].ruleInfo.ruleType).to.equal('file-existence')
-      expect(res.results[0].ruleInfo.fixType).to.equal(null)
+      expect(res.results[0].ruleInfo.fixType).to.equal(undefined)
       expect(res.results[0].lintResult.passed).to.equal(false)
       expect(res.results[0].lintResult.message).to.contain('README*')
       expect(res.results[0].lintResult.targets).to.have.length(0)
       // test-file-exists rule
       expect(res.results[1].ruleInfo.name).to.equal('test-file-exists')
       expect(res.results[1].ruleInfo.ruleType).to.equal('file-existence')
-      expect(res.results[1].ruleInfo.fixType).to.equal(null)
+      expect(res.results[1].ruleInfo.fixType).to.equal(undefined)
       expect(res.results[1].lintResult.passed).to.equal(true)
       expect(res.results[1].lintResult.targets).to.have.length(1)
       expect(res.results[1].lintResult.targets[0].passed).to.equal(true)
@@ -42,6 +42,8 @@ describe('package', () => {
       const expected = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default.json'))
       const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default-legacy.json'))
 
+      expect(expected.errored).to.equal(false)
+      expect(actual.errored).to.equal(false)
       expect(actual.passed).to.equal(expected.passed)
       expect(actual.results).to.deep.equal(expected.results)
     })
