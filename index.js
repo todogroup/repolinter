@@ -322,7 +322,9 @@ function parseConfig (config) {
           cfg.rule.type,
           cfg.rule.options,
           cfg.fix && cfg.fix.type,
-          cfg.fix && cfg.fix.options
+          cfg.fix && cfg.fix.options,
+          cfg.policyInfo,
+          cfg.policyUrl
         ))
   }
   // parse legacy config
