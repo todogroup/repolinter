@@ -65,4 +65,5 @@ export declare function parseConfig(config: any): RuleInfo[]
 
 export declare const defaultFormatter: Formatter
 export declare const jsonFormatter: Formatter
+export declare const markdownFormatter: Formatter
 export declare const resultFormatter: Formatter
