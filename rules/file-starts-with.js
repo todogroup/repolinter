@@ -58,7 +58,7 @@ async function fileStartsWith (fs, options) {
       if (passed) {
         message += ' contain all of the requested patterns.'
       } else {
-        message += ` do not contain the pattern(s): ${options['human-readable-pattern'] || misses.join('\n\t')}`
+        message += ` do not contain the pattern(s): ${options['human-readable-pattern'] || misses.join(', ')}}`
       }
 
       return {

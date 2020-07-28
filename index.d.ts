@@ -27,11 +27,13 @@ declare class Result {
 declare class RuleInfo {
     name: string
     level: "off"|"error"|"warning"
-    where?: string[]
+    where: string[]
     ruleType: string
     ruleConfig: any
     fixType?: string
-    fixConfig: any
+    fixConfig?: any
+    policyInfo?: string
+    policyUrl?: string
 }
 
 declare class FormatResult {
@@ -47,7 +49,7 @@ declare class LintResult {
     passed: boolean
     errored: boolean
     errMsg?: string
-    results: FormatResult
+    results: FormatResult[]
     targets: { [key: string]: Result }
 }
 

@@ -32,7 +32,7 @@ class SymbolFormatter {
     // format lint output
     const formatbase = `\n${result.passed ? okSymbol : errorSymbol} ${ruleName}:${frontSpace(result.message)}`
     // condensed one-line version for rules with no targets
-    if (!result.targets.length) { return formatbase }
+    if (result.targets.length === 0) { return formatbase }
     // condensed one-line version for rules with one target
     if (result.targets.length === 1) { return formatbase + `${frontSpace(result.targets[0].message)} (${result.targets[0].path})` }
     // expanded version for more complicated rules

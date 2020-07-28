@@ -21,8 +21,8 @@ async function fileExistence (fs, options) {
   const passed = !!file
 
   return passed
-    ? new Result('', [{ passed: true, path: file, message: 'found file' }], true)
-    : new Result(`not found (${fileList.join(', ')})${options['fail-message'] !== undefined ? ' ' + options['fail-message'] : ''}`, [], false)
+    ? new Result('', [{ passed: true, path: file, message: 'Found file' }], true)
+    : new Result(`Not found (${fileList.join(', ')})${options['fail-message'] !== undefined ? ' ' + options['fail-message'] : ''}`, [], false)
 }
 
 module.exports = fileExistence

@@ -49,7 +49,7 @@ require('yargs')
       })
       .option('format', {
         alias: 'f',
-        describe: 'Specify the formatter to use for the output ("json" or "console")',
+        describe: 'Specify the formatter to use for the output ("json", "markdown", or "console")',
         default: 'console',
         type: 'string'
       })
@@ -80,7 +80,14 @@ require('yargs')
     // run the linter
     const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, rulesetParsed || argv['ruleset-file'])
     // create the output
-    const formatter = argv.format === 'json' ? repolinter.jsonFormatter : repolinter.resultFormatter
+    let formatter
+    if (argv.format === 'json') {
+      formatter = repolinter.jsonFormatter
+    } else if (argv.format === 'markdown') {
+      formatter = repolinter.markdownFormatter
+    } else {
+      formatter = repolinter.defaultFormatter
+    }
     const formattedOutput = formatter.formatOutput(output, argv.dryRun)
     // log it!
     console.log(formattedOutput)

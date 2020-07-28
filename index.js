@@ -25,6 +25,8 @@ module.exports.defaultFormatter = require('./formatters/symbol_formatter')
 /** @type {Formatter} */
 module.exports.jsonFormatter = require('./formatters/json_formatter')
 /** @type {Formatter} */
+module.exports.markdownFormatter = require('./formatters/markdown_formatter')
+/** @type {Formatter} */
 module.exports.resultFormatter = exports.defaultFormatter
 
 /**
