@@ -51,7 +51,7 @@ class MarkdownFormatter {
    * @returns {string} A formatted rule header (will not include ##)
    */
   static formatRuleHeading (name, symbol) {
-    return `${symbol} \`${name}\``
+    return `${opWrap(null, symbol, ' ')}\`${name}\``
   }
 
   /**
