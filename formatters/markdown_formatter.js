@@ -5,7 +5,6 @@
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FormatResult = require('../lib/formatresult')
-const toc = require('markdown-toc')
 const slugger = require('../lib/github_slugger')
 
 const ERROR_SYMBOL = '❗'
@@ -44,6 +43,18 @@ function opWrap (pre, base, suf) {
 
 class MarkdownFormatter {
   /**
+   * Creates a header for a rule-output block.
+   *
+   * @private
+   * @param {string} name The name of the rule
+   * @param {string} symbol The status symbol to use for the rule
+   * @returns {string} A formatted rule header (will not include ##)
+   */
+  static formatRuleHeading (name, symbol) {
+    return `${symbol} \`${name}\``
+  }
+
+  /**
    * Format a FormatResult object into a line of human-readable text.
    *
    * @param {FormatResult} result The result to format, must be valid
@@ -52,7 +63,7 @@ class MarkdownFormatter {
    * @returns {string} The formatted string
    */
   static formatResult (result, symbol, dryRun) {
-    const formatBase = [`### ${symbol} \`${result.ruleInfo.name}\``]
+    const formatBase = [`### ${MarkdownFormatter.formatRuleHeading(result.ruleInfo.name, symbol)}`]
     if (result.status === FormatResult.ERROR) {
       // the rule failed to run for some reason?
       const content =
@@ -156,10 +167,31 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
    */
   static formatOutput (output, dryRun) {
     const formatBase = [`# Repolinter Report\n\n${DISCLAIMER}`]
-    // leave a spot for the TOC (it will be populated later)
-    formatBase.push('\n\n<!-- toc -->\n\n<!-- tocstop -->')
     // count each type of format result in an object
     const sorted = MarkdownFormatter.sortResults(output.results)
+    // configure each section
+    const sectionConfig = [
+      { type: FormatResult.RULE_NOT_PASSED_ERROR, name: 'Fail', symbol: FAIL_SYMBOL, collapse: false },
+      { type: FormatResult.ERROR, name: 'Error', symbol: ERROR_SYMBOL, collapse: false },
+      { type: FormatResult.RULE_NOT_PASSED_WARN, name: 'Warning', symbol: WARN_SYMBOL, collapse: true },
+      { type: FormatResult.RULE_PASSED, name: 'Passed', symbol: PASS_SYMBOL, collapse: true },
+      { type: FormatResult.IGNORED, name: 'Ignored', symbol: INFO_SYMBOL, collapse: true }
+    ]
+    // filter down to sections that have items
+    const relevantSections = sectionConfig
+      .filter(cfg => sorted[cfg.type].length > 0)
+    // generate the TOC
+    formatBase.push('\n')
+    const toc = relevantSections.map(cfg => {
+      // generate rule-items
+      const subItems = sorted[cfg.type].map(r => {
+        const heading = MarkdownFormatter.formatRuleHeading(r.ruleInfo.name, cfg.symbol)
+        return `\n  - [${heading}](#${slugger.slug(heading)})`
+      })
+      // generate top level section
+      return `\n- [${cfg.name}](#${slugger.slug(cfg.name)})${subItems.join('')}`
+    })
+    formatBase.push(...toc)
     // create the summary block
     const summary =
 `\n\n## Summary
@@ -169,31 +201,22 @@ This Repolinter generated the following results:
 |---|---|---|---|---|---|
 | ${sorted[FormatResult.RULE_PASSED].length} | ${sorted[FormatResult.RULE_NOT_PASSED_ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_WARN].length} | ${sorted[FormatResult.ERROR].length} | ${sorted[FormatResult.IGNORED].length} | ${output.results.length} |`
     formatBase.push(summary)
-    // configure each section
-    const sectionConfig = [
-      { type: FormatResult.RULE_NOT_PASSED_ERROR, name: 'Fail', symbol: FAIL_SYMBOL, collapse: false },
-      { type: FormatResult.ERROR, name: 'Error', symbol: ERROR_SYMBOL, collapse: false },
-      { type: FormatResult.RULE_NOT_PASSED_WARN, name: 'Warning', symbol: WARN_SYMBOL, collapse: true },
-      { type: FormatResult.RULE_PASSED, name: 'Passed', symbol: PASS_SYMBOL, collapse: true },
-      { type: FormatResult.IGNORED, name: 'Ignored', symbol: INFO_SYMBOL, collapse: true }
-    ]
-    // generate each section based on the above config
-    const allSections = sectionConfig
-      .filter(cfg => sorted[cfg.type].length > 0)
-      .map(cfg =>
-        MarkdownFormatter.createSection(
-          cfg.name,
-          sorted[cfg.type].map(r => MarkdownFormatter.formatResult(r, cfg.symbol, dryRun)).join('\n\n'),
-          cfg.collapse
-        ))
+    // generate content sections
+    const allSections = relevantSections.map(cfg =>
+      MarkdownFormatter.createSection(
+        cfg.name,
+        sorted[cfg.type].map(r => MarkdownFormatter.formatResult(r, cfg.symbol, dryRun)).join('\n\n'),
+        cfg.collapse
+      ))
+    // generate TOC
     // add it to the overall format
     formatBase.push(...allSections)
     // add final trailing newline
     formatBase.push('\n')
-    // generate our almost-finished markdown document
-    const outputNoToc = formatBase.join('')
-    // add the table of contents
-    return toc.insert(outputNoToc, { bullets: '-', slugify: slugger.slug })
+    // generate our finished markdown document, removing all trailing whitespace
+    return formatBase
+      .join('')
+      .replace(/[^\S\r\n]+$/mg, '')
   }
 }
 

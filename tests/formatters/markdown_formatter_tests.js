@@ -38,7 +38,6 @@ describe('formatters', () => {
     const lintOpts = {
       config: {
         default: true,
-        'no-trailing-spaces': false,
         'no-inline-html': false,
         'line-length': false
       }
@@ -54,9 +53,10 @@ describe('formatters', () => {
 
     it('generates the correct sections with sample output', () => {
       const output = formatter.formatOutput(result, false)
-      const sections = toc(output, { slugify: slugger.slug }).json
-      console.debug(JSON.stringify(sections))
-      console.debug(output)
+      const sections = toc(output, { slugify: slugger.slug, firsth1: true }).json
+      const filteredSections = sections.filter(s => s.lvl !== 1)
+      // console.debug(JSON.stringify(sections))
+      // console.debug(JSON.stringify(`"${output}"`))
 
       const expected = [
         { slug: 'summary', lvl: 2 },
@@ -66,8 +66,10 @@ describe('formatters', () => {
         { slug: '-myrule-other-rule', lvl: 3 }
       ]
 
+      console.debug(JSON.stringify(sections))
+
       for (let i = 0, len = expected.length; i < len; i++) {
-        sections[i].should.include(expected[i])
+        filteredSections[i].should.include(expected[i])
       }
     })
 
