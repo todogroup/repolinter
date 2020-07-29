@@ -84,5 +84,13 @@ describe('formatters', () => {
       // console.debug(JSON.stringify(res))
       expect(res.test).to.have.length(0)
     })
+
+    it('does not contain the string "undefined"', async () => {
+      const lintres = await repolinter.lint(path.resolve('.'))
+
+      const actual = formatter.formatOutput(lintres, false)
+
+      expect(actual).to.not.contain('undefined')
+    })
   })
 })

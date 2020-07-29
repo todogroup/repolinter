@@ -7,6 +7,8 @@ const logSymbols = require('log-symbols')
 const Result = require('../../lib/result')
 const FormatResult = require('../../lib/formatresult')
 const RuleInfo = require('../../lib/ruleinfo')
+const path = require('path')
+const repolinter = require(path.resolve('.'))
 
 describe('formatters', () => {
   describe('symbol_formatter', () => {
@@ -53,6 +55,15 @@ describe('formatters', () => {
       expect(formatResult).to.contain('ignored')
       expect(formatResult).to.contain('errored')
       expect(formatResult).to.contain('dir')
+    })
+
+    it('does not contain the string undefined', async () => {
+      const symbolFormatter = require('../../formatters/symbol_formatter')
+      const lintres = await repolinter.lint(path.resolve('.'))
+
+      const actual = symbolFormatter.formatOutput(lintres, false)
+
+      expect(actual).to.not.contain('undefined')
     })
   })
 })
