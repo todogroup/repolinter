@@ -62,7 +62,7 @@ describe('formatters', () => {
         { slug: 'passed', lvl: 2 },
         { slug: '-myrule', lvl: 3 },
         { slug: 'ignored', lvl: 2 },
-        { slug: '-myrule-other-rule', lvl: 3 }
+        { slug: 'myrule-other-rule', lvl: 3 }
       ]
 
       // console.debug(JSON.stringify(sections))
