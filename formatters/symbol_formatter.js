@@ -37,7 +37,7 @@ class SymbolFormatter {
     if (result.targets.length === 1) { return formatbase + `${frontSpace(result.targets[0].message)} (${result.targets[0].path})` }
     // expanded version for more complicated rules
     return formatbase + result.targets
-      .map(t => `\n\t${t.passed ? okSymbol : errorSymbol} ${t.path}:${frontSpace(t.message)}`)
+      .map(t => `\n\t${t.passed ? okSymbol : errorSymbol} ${t.path}${t.message ? ': ' + t.message : ''}`)
       .join('')
   }
 

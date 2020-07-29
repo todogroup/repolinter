@@ -26,8 +26,6 @@ describe('package', () => {
       expect(res.results[0].ruleInfo.ruleType).to.equal('file-existence')
       expect(res.results[0].ruleInfo.fixType).to.equal(undefined)
       expect(res.results[0].lintResult.passed).to.equal(false)
-      expect(res.results[0].lintResult.message).to.contain('README*')
-      expect(res.results[0].lintResult.targets).to.have.length(0)
       // test-file-exists rule
       expect(res.results[1].ruleInfo.name).to.equal('test-file-exists')
       expect(res.results[1].ruleInfo.ruleType).to.equal('file-existence')

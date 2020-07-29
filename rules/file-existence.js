@@ -22,7 +22,10 @@ async function fileExistence (fs, options) {
 
   return passed
     ? new Result('', [{ passed: true, path: file, message: 'Found file' }], true)
-    : new Result(`Not found (${fileList.join(', ')})${options['fail-message'] !== undefined ? ' ' + options['fail-message'] : ''}`, [], false)
+    : new Result(
+      `${options['fail-message'] !== undefined ? options['fail-message'] + '. ' : ''}Did not find a file matching the specified patterns`,
+      fileList.map(f => { return { passed: false, path: f } }),
+      false)
 }
 
 module.exports = fileExistence

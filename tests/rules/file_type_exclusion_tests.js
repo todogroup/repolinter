@@ -24,8 +24,6 @@ describe('rule', () => {
       const actual = await fileTypeExclusion(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(true)
-      expect(actual.message).to.contain(ruleopts.type[0])
-      expect(actual.targets).to.have.length(0)
     })
 
     it('returns failed result if requested file type exists', async () => {

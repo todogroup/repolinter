@@ -18,12 +18,10 @@ async function fileHash (fs, options) {
   const file = await fs.findFirstFile(options.globsAny, options.nocase)
 
   if (file === undefined) {
-    const message = `not found: (${fileList.join(', ')})`
-    let status = options['succeed-on-non-existent']
-    if (status === undefined) {
-      status = false
-    }
-    return new Result(message, [], !!status)
+    return new Result(
+      'Did not find file matching the specified patterns',
+      fileList.map(f => { return { passed: false, path: f } }),
+      !!options['succeed-on-non-existent'])
   }
 
   let algorithm = options.algorithm

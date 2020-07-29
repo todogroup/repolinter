@@ -24,8 +24,10 @@ async function fileContents (fs, options, not = false) {
   const files = await fs.findAllFiles(fileList)
 
   if (files.length === 0) {
-    const message = `not found: (${fileList.join(', ')})`
-    return new Result(message, [], !options['fail-on-non-existent'])
+    return new Result(
+      'Did not find file matching the specified patterns',
+      fileList.map(f => { return { passed: false, path: f } }),
+      !options['fail-on-non-existent'])
   }
 
   const results = await Promise.all(files.map(async file => {

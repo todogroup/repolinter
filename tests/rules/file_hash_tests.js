@@ -121,7 +121,6 @@ describe('rule', () => {
 
       const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(false)
-      expect(actual.targets).to.have.length(0)
     })
 
     it('returns success if file does not exist with success flag', async () => {
@@ -145,7 +144,6 @@ describe('rule', () => {
       const actual = await fileContents(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(true)
-      expect(actual.targets).to.have.length(0)
     })
   })
 })

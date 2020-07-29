@@ -58,7 +58,7 @@ async function fileStartsWith (fs, options) {
       if (passed) {
         message += ' contain all of the requested patterns.'
       } else {
-        message += ` do not contain the pattern(s): ${options['human-readable-pattern'] || misses.join(', ')}}`
+        message += ` do not contain the pattern(s): ${options['human-readable-pattern'] || misses.join(', ')}`
       }
 
       return {
@@ -70,8 +70,10 @@ async function fileStartsWith (fs, options) {
   const targets = targetsUnfiltered.filter(t => t)
 
   if (targets.length === 0) {
-    const message = `file not found (${fileList.join(', ')})`
-    return new Result(message, [], options['succeed-on-non-existent'] === true)
+    return new Result(
+      'Did not find file matching the specified patterns',
+      fileList.map(f => { return { passed: false, path: f } }),
+      !!options['succeed-on-non-existent'])
   }
 
   const passed = !targets.find(t => !t.passed)

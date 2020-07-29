@@ -81,7 +81,7 @@ describe('rule', () => {
       expect(actual.targets[0].message).to.contain(ruleopts.content)
     })
 
-    it('returns nothing if requested file does not exist', async () => {
+    it('returns the pattern if requested file does not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles () {
@@ -99,7 +99,9 @@ describe('rule', () => {
 
       const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
-      expect(actual.targets).to.have.length(0)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].passed).to.equal(false)
+      expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
     })
 
     it('returns failure if file does not exist with failure flag', async () => {
@@ -122,7 +124,6 @@ describe('rule', () => {
       const actual = await fileContents(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(false)
-      expect(actual.targets).to.have.length(0)
     })
 
     it('should handle broken symlinks', async () => {
@@ -137,7 +138,6 @@ describe('rule', () => {
         patterns: ['something']
       }
       const actual = await fileContents(fs, rule)
-      expect(actual.targets).to.have.length(0)
       expect(actual.passed).to.equal(true)
     })
   })

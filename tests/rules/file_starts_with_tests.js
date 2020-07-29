@@ -63,8 +63,8 @@ describe('rule', () => {
 
       const actual = await fileStartsWith(new FileSystem(), ruleopts)
       expect(actual.passed).to.equal(false)
-      expect(actual.message).to.contain(ruleopts.globsAll[0])
-      expect(actual.targets).to.have.length(0)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
     })
 
     it('returns a single result when glob has no matches and has succeed-on-non-existent option', async () => {
@@ -86,8 +86,8 @@ describe('rule', () => {
       const actual = await fileStartsWith(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(true)
-      expect(actual.message).to.contain(ruleopts.globsAll[0])
-      expect(actual.targets).to.have.length(0)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
     })
 
     it('skips files with the `skip-paths-matching` option', async () => {
@@ -139,8 +139,8 @@ describe('rule', () => {
       const actual = await fileStartsWith(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(false)
-      expect(actual.message).to.contain(ruleopts.globsAll[0])
-      expect(actual.targets).to.have.length(0)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
     })
 
     it('should handle broken symlinks', async () => {
@@ -157,8 +157,8 @@ describe('rule', () => {
 
       const actual = await fileStartsWith(fs, ruleopts)
       expect(actual.passed).to.equal(false)
-      expect(actual.message).to.contain(ruleopts.globsAll[0])
-      expect(actual.targets).to.have.length(0)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
     })
   })
 })

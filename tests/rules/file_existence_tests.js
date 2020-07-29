@@ -64,8 +64,6 @@ describe('rule', () => {
       const actual = await fileExistence(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(false)
-      expect(actual.targets).to.have.length(0)
-      expect(actual.message).to.contain(ruleopts.globsAny[0])
     })
 
     it('returns a failure result if requested file doesn\'t exist with a failure message', async () => {
@@ -84,8 +82,8 @@ describe('rule', () => {
       const actual = await fileExistence(mockfs, ruleopts)
 
       expect(actual.passed).to.equal(false)
-      expect(actual.targets).to.have.length(0)
-      expect(actual.message).to.contain(ruleopts.globsAny[0])
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].path).to.equal(ruleopts.globsAny[0])
       expect(actual.message).to.contain(ruleopts['fail-message'])
     })
   })

@@ -94,7 +94,8 @@ class MarkdownFormatter {
       const start = '\n\n' +
         opWrap(null, result.ruleInfo.policyInfo, '. ') +
         opWrap('For more information please visit ', result.ruleInfo.policyUrl, '. ') +
-        'Below is a list of files that failed:\n\n'
+        opWrap(null, result.lintResult.message, '. ') +
+        'Below is a list of files or patterns that failed:\n\n'
       formatBase.push(start)
       // create bulleted list
       const list = result.lintResult.targets
@@ -169,6 +170,13 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
     const formatBase = [`# Repolinter Report\n\n${DISCLAIMER}`]
     // count each type of format result in an object
     const sorted = MarkdownFormatter.sortResults(output.results)
+    // create the summary block
+    const summary =
+`\n\nThis Repolinter run generated the following results:
+| ${PASS_SYMBOL}  Pass | ${FAIL_SYMBOL}  Fail | ${WARN_SYMBOL}  Warn | ${ERROR_SYMBOL}  Error | ${INFO_SYMBOL}  Ignored | Total |
+|---|---|---|---|---|---|
+| ${sorted[FormatResult.RULE_PASSED].length} | ${sorted[FormatResult.RULE_NOT_PASSED_ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_WARN].length} | ${sorted[FormatResult.ERROR].length} | ${sorted[FormatResult.IGNORED].length} | ${output.results.length} |`
+    formatBase.push(summary)
     // configure each section
     const sectionConfig = [
       { type: FormatResult.RULE_NOT_PASSED_ERROR, name: 'Fail', symbol: FAIL_SYMBOL, collapse: false },
@@ -192,15 +200,6 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
       return `\n- [${cfg.name}](#${slugger.slug(cfg.name)})${subItems.join('')}`
     })
     formatBase.push(...toc)
-    // create the summary block
-    const summary =
-`\n\n## Summary
-
-This Repolinter generated the following results:
-| ${PASS_SYMBOL} Pass | ${FAIL_SYMBOL} Fail | ${WARN_SYMBOL} Warn | ${ERROR_SYMBOL} Error | ${INFO_SYMBOL} Ignored | Total |
-|---|---|---|---|---|---|
-| ${sorted[FormatResult.RULE_PASSED].length} | ${sorted[FormatResult.RULE_NOT_PASSED_ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_WARN].length} | ${sorted[FormatResult.ERROR].length} | ${sorted[FormatResult.IGNORED].length} | ${output.results.length} |`
-    formatBase.push(summary)
     // generate content sections
     const allSections = relevantSections.map(cfg =>
       MarkdownFormatter.createSection(
