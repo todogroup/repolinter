@@ -83,7 +83,7 @@ describe('rule', () => {
 
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0].path).to.equal(ruleopts.globsAny[0])
+      expect(actual.targets[0].pattern).to.equal(ruleopts.globsAny[0])
       expect(actual.message).to.contain(ruleopts['fail-message'])
     })
   })

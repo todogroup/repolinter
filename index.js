@@ -205,6 +205,8 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
   }
   // load the rules
   const allRules = await loadRules()
+  // load the fixes
+  const allFixes = await loadFixes()
   // do the same with fixes
   // run the ruleset
   const results = ruleset.map(async r => {
@@ -228,12 +230,10 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
       return FormatResult.CreateError(r, `${r.ruleType} threw an error: ${e.message}`)
     }
     // generate fix targets
-    const fixTargets = result.targets.filter(t => !t.passed).map(t => t.path)
+    const fixTargets = !result.passed ? result.targets.filter(t => !t.passed && t.path).map(t => t.path) : []
     // if there's no fix or the rule passed, we're done
     if (!r.fixType || result.passed) { return FormatResult.CreateLintOnly(r, result) }
     // else run the fix
-    // load the fixes
-    const allFixes = await loadFixes()
     // check if the rule file exists
     if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
     let fixresult

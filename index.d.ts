@@ -20,7 +20,7 @@ declare class FileSystem {
 
 declare class Result {
     message?: string
-    targets: Array<{ path: string, passed: boolean, message?: string }>
+    targets: Array<{ path?: string, pattern?: string, passed: boolean, message?: string }>
     passed: boolean
 }
 

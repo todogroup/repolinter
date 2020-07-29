@@ -20,7 +20,7 @@ async function fileHash (fs, options) {
   if (file === undefined) {
     return new Result(
       'Did not find file matching the specified patterns',
-      fileList.map(f => { return { passed: false, path: f } }),
+      fileList.map(f => { return { passed: false, pattern: f } }),
       !!options['succeed-on-non-existent'])
   }
 

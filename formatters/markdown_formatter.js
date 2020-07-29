@@ -79,9 +79,9 @@ class MarkdownFormatter {
       if (result.ruleInfo.policyInfo) {
         formatBase.push(`${result.ruleInfo.policyInfo}.${opWrap(' For more information please visit: ', result.ruleInfo.policyUrl, '.')}`)
       }
-    } else if (result.lintResult.targets.length <= 1) {
+    } else if (result.lintResult.targets.length <= 1 && !result.fixResult) {
       // the rule passed!
-      // condensed version for 0-1 targets
+      // condensed version for 0-1 targets and no fix
       const body = '\n\n' +
         opWrap(null, result.lintResult.message, '. ') +
         opWrap(null, result.lintResult.targets.length && result.lintResult.targets[0].message, ' ') +
@@ -99,15 +99,15 @@ class MarkdownFormatter {
         'Below is a list of files or patterns that failed:\n\n'
       formatBase.push(start)
       // create bulleted list
+      // format the result based on these pieces of information
       const list = result.lintResult.targets
         // filter only failed targets
         .filter(t => t.passed === false)
         // match each target to it's fix result, if one exists
         .map(t =>
-          result.fixResult ? [t, result.fixResult.targets.find(f => f.path === t.path) || null] : [t, null])
-        // format the result based on these pieces of information
+          result.fixResult && t.path ? [t, result.fixResult.targets.find(f => f.path === t.path) || null] : [t, null])
         .map(([lintTarget, fixTarget]) => {
-          const base = `- \`${lintTarget.path}\`${opWrap(': ', lintTarget.message, '.')}`
+          const base = `- \`${lintTarget.path || lintTarget.pattern}\`${opWrap(': ', lintTarget.message, '.')}`
           // no fix format
           if (!fixTarget || !fixTarget.passed) { return base }
           // with fix format
@@ -117,9 +117,15 @@ class MarkdownFormatter {
       formatBase.push(list)
     }
     // suggested fix for overall rule/fix combo
-    if (result.fixResult && result.fixResult.message && result.fixResult.passed) {
-      const fixSuggest = `\n\n${dryRun ? SUGGESTED_FIX : APPLIED_FIX} ${result.fixResult.message}.`
+    if (result.fixResult && result.fixResult.passed) {
+      const fixSuggest = `\n\n${dryRun ? SUGGESTED_FIX : APPLIED_FIX}${opWrap(' ', result.fixResult.message, '.')}`
       formatBase.push(fixSuggest)
+      // find all fixes which didn't have a lint target (haven't been displayed yet)
+      const unassociatedFixList = result.fixResult.targets
+        .filter(t => !t.path || !result.lintResult.targets.find(l => l.path === t.path))
+      const fixList = unassociatedFixList.map(f => `\n- \`${f.path || f.pattern}\`${opWrap(': ', f.message, '.')}`)
+      if (fixList.length) { formatBase.push('\n') }
+      formatBase.push(...fixList)
     }
     // return the created string!
     return formatBase.join('')

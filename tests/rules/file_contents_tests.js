@@ -101,7 +101,7 @@ describe('rule', () => {
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0].passed).to.equal(false)
-      expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
+      expect(actual.targets[0].pattern).to.equal(ruleopts.globsAll[0])
     })
 
     it('returns failure if file does not exist with failure flag', async () => {

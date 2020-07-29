@@ -34,7 +34,7 @@ class SymbolFormatter {
     // condensed one-line version for rules with no targets
     if (result.targets.length === 0) { return formatbase }
     // condensed one-line version for rules with one target
-    if (result.targets.length === 1) { return formatbase + `${frontSpace(result.targets[0].message)} (${result.targets[0].path})` }
+    if (result.targets.length === 1) { return formatbase + `${frontSpace(result.targets[0].message)} (${result.targets[0].path || result.targets[0].pattern})` }
     // expanded version for more complicated rules
     return formatbase + result.targets
       .map(t => `\n\t${t.passed ? okSymbol : errorSymbol} ${t.path}${t.message ? ': ' + t.message : ''}`)

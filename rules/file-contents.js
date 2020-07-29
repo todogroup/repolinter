@@ -26,7 +26,7 @@ async function fileContents (fs, options, not = false) {
   if (files.length === 0) {
     return new Result(
       'Did not find file matching the specified patterns',
-      fileList.map(f => { return { passed: false, path: f } }),
+      fileList.map(f => { return { passed: false, pattern: f } }),
       !options['fail-on-non-existent'])
   }
 

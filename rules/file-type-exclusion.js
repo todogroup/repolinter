@@ -23,7 +23,7 @@ async function fileTypeExclusion (fs, options) {
   if (targets.length === 0) {
     const message = 'Excluded file type doesn\'t exist'
 
-    return new Result(message, [{ passed: true, path: options.type }], true)
+    return new Result(message, [{ passed: true, pattern: options.type }], true)
   }
 
   const passed = !targets.find(t => !t.passed)

@@ -29,7 +29,9 @@ async function fileCreate (fs, options, targets, dryRun = false) {
 
   // read the text from the source, if necessary
   let content
-  if (typeof options.text === 'string') { content = options.text } else if (typeof options.text === 'object') {
+  if (typeof options.text === 'string') {
+    content = options.text
+  } else if (typeof options.text === 'object') {
     if (options.text.url) {
       const req = await fetch(options.text.url)
       if (!req.ok) { return new Result(`Could not fetch from ${options.text.url}, received status code ${req.status}`, [], false) }
@@ -56,8 +58,8 @@ async function fileCreate (fs, options, targets, dryRun = false) {
     ? `text from ${options.text.file || options.text.url}`
     : `contents "${content}"`
 
-  const removeMessage = shouldRemove ? `Remove file(s) (${targets.join(', ')}).` : ''
-  return new Result(removeMessage, [{ message: `Create file with ${what}`, passed: true, path: options.file }], true)
+  const removeTargets = shouldRemove ? targets.filter(t => t !== options.file).map(t => { return { passed: true, path: t, message: 'Remove file' } }) : []
+  return new Result('', [{ message: `Create file with ${what}`, passed: true, path: options.file }].concat(removeTargets), true)
 }
 
 module.exports = fileCreate

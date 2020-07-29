@@ -24,7 +24,7 @@ async function fileExistence (fs, options) {
     ? new Result('', [{ passed: true, path: file, message: 'Found file' }], true)
     : new Result(
       `${options['fail-message'] !== undefined ? options['fail-message'] + '. ' : ''}Did not find a file matching the specified patterns`,
-      fileList.map(f => { return { passed: false, path: f } }),
+      fileList.map(f => { return { passed: false, pattern: f } }),
       false)
 }
 
