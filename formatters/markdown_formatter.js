@@ -12,8 +12,9 @@ const FAIL_SYMBOL = '❌'
 const WARN_SYMBOL = '⚠️'
 const PASS_SYMBOL = '✅'
 const INFO_SYMBOL = 'ℹ️'
+const FIX_SYMBOL = '🔨'
 
-const SUGGESTED_FIX = `${INFO_SYMBOL} **Suggested Fix**:`
+const SUGGESTED_FIX = `${FIX_SYMBOL} **Suggested Fix**:`
 const APPLIED_FIX = `${PASS_SYMBOL} **Applied Fix**:`
 
 const DISCLAIMER =
