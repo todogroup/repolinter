@@ -11,7 +11,6 @@ const ERROR_SYMBOL = '❗'
 const FAIL_SYMBOL = '❌'
 const WARN_SYMBOL = '⚠️'
 const PASS_SYMBOL = '✅'
-const INFO_SYMBOL = 'ℹ️'
 const FIX_SYMBOL = '🔨'
 
 const SUGGESTED_FIX = `${FIX_SYMBOL} **Suggested Fix**:`
@@ -85,7 +84,7 @@ class MarkdownFormatter {
       const body = '\n\n' +
         opWrap(null, result.lintResult.message, '. ') +
         opWrap(null, result.lintResult.targets.length && result.lintResult.targets[0].message, ' ') +
-        opWrap('(`', result.lintResult.targets.length && result.lintResult.targets[0].path, '`). ') +
+        opWrap('(`', result.lintResult.targets.length && (result.lintResult.targets[0].path || result.lintResult.targets[0].pattern), '`). ') +
         opWrap(null, result.ruleInfo.policyInfo, '. ') +
         opWrap('For more information please visit ', result.ruleInfo.policyUrl, '.')
       formatBase.push(body)
@@ -180,7 +179,7 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
     // create the summary block
     const summary =
 `\n\nThis Repolinter run generated the following results:
-| ${ERROR_SYMBOL}  Error | ${FAIL_SYMBOL}  Fail | ${WARN_SYMBOL}  Warn | ${PASS_SYMBOL}  Pass | ${INFO_SYMBOL}  Ignored | Total |
+| ${ERROR_SYMBOL}  Error | ${FAIL_SYMBOL}  Fail | ${WARN_SYMBOL}  Warn | ${PASS_SYMBOL}  Pass | Ignored | Total |
 |---|---|---|---|---|---|
 | ${sorted[FormatResult.ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_WARN].length} | ${sorted[FormatResult.RULE_PASSED].length} | ${sorted[FormatResult.IGNORED].length} | ${output.results.length} |`
     formatBase.push(summary)
@@ -190,7 +189,7 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
       { type: FormatResult.RULE_NOT_PASSED_ERROR, name: 'Fail', symbol: FAIL_SYMBOL, collapse: false },
       { type: FormatResult.RULE_NOT_PASSED_WARN, name: 'Warning', symbol: WARN_SYMBOL, collapse: true },
       { type: FormatResult.RULE_PASSED, name: 'Passed', symbol: PASS_SYMBOL, collapse: true },
-      { type: FormatResult.IGNORED, name: 'Ignored', symbol: INFO_SYMBOL, collapse: true }
+      { type: FormatResult.IGNORED, name: 'Ignored', symbol: '', collapse: true }
     ]
     // filter down to sections that have items
     const relevantSections = sectionConfig
