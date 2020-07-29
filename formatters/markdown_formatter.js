@@ -180,14 +180,14 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
     // create the summary block
     const summary =
 `\n\nThis Repolinter run generated the following results:
-| ${PASS_SYMBOL}  Pass | ${FAIL_SYMBOL}  Fail | ${WARN_SYMBOL}  Warn | ${ERROR_SYMBOL}  Error | ${INFO_SYMBOL}  Ignored | Total |
+| ${ERROR_SYMBOL}  Error | ${FAIL_SYMBOL}  Fail | ${WARN_SYMBOL}  Warn | ${PASS_SYMBOL}  Pass | ${INFO_SYMBOL}  Ignored | Total |
 |---|---|---|---|---|---|
-| ${sorted[FormatResult.RULE_PASSED].length} | ${sorted[FormatResult.RULE_NOT_PASSED_ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_WARN].length} | ${sorted[FormatResult.ERROR].length} | ${sorted[FormatResult.IGNORED].length} | ${output.results.length} |`
+| ${sorted[FormatResult.ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_ERROR].length} | ${sorted[FormatResult.RULE_NOT_PASSED_WARN].length} | ${sorted[FormatResult.RULE_PASSED].length} | ${sorted[FormatResult.IGNORED].length} | ${output.results.length} |`
     formatBase.push(summary)
     // configure each section
     const sectionConfig = [
-      { type: FormatResult.RULE_NOT_PASSED_ERROR, name: 'Fail', symbol: FAIL_SYMBOL, collapse: false },
       { type: FormatResult.ERROR, name: 'Error', symbol: ERROR_SYMBOL, collapse: false },
+      { type: FormatResult.RULE_NOT_PASSED_ERROR, name: 'Fail', symbol: FAIL_SYMBOL, collapse: false },
       { type: FormatResult.RULE_NOT_PASSED_WARN, name: 'Warning', symbol: WARN_SYMBOL, collapse: true },
       { type: FormatResult.RULE_PASSED, name: 'Passed', symbol: PASS_SYMBOL, collapse: true },
       { type: FormatResult.IGNORED, name: 'Ignored', symbol: INFO_SYMBOL, collapse: true }
