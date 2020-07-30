@@ -25,7 +25,7 @@ const DISCLAIMER =
 
 const COLLAPSE_TOP =
 `<details>
-<summary>Click to see passed rules</summary>`
+<summary>Click to see rules</summary>`
 const COLLAPSE_BOTTOM = '</details>'
 
 /**
