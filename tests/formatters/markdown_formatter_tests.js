@@ -68,7 +68,8 @@ describe('formatters', () => {
       // console.debug(JSON.stringify(sections))
 
       for (let i = 0, len = expected.length; i < len; i++) {
-        filteredSections[i].should.include(expected[i])
+        expect(filteredSections[i].lvl).to.equal(expected[i].lvl)
+        expect(filteredSections[i].slug).to.contain(expected[i].slug)
       }
     })
 

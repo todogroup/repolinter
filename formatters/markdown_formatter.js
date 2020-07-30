@@ -55,6 +55,19 @@ class MarkdownFormatter {
   }
 
   /**
+   * Creates href tag allowing a header to be linked to in an issue or PR.
+   * You can append the output of this function to a header to make it linkable.
+   *
+   * @private
+   * @param {string} name The name of the rule (unslugged)
+   * @returns {string} A formatted header lint (ex. <a href="#user-content-some-heading" id="some-heading">#</a>)
+   */
+  static makeHeaderLink (name) {
+    const slug = slugger.slug(name)
+    return `<a href="#user-content-${slug}" id="${slug}">#</a>`
+  }
+
+  /**
    * Format a FormatResult object into a line of human-readable text.
    *
    * @param {FormatResult} result The result to format, must be valid
@@ -63,7 +76,8 @@ class MarkdownFormatter {
    * @returns {string} The formatted string
    */
   static formatResult (result, symbol, dryRun) {
-    const formatBase = [`### ${MarkdownFormatter.formatRuleHeading(result.ruleInfo.name, symbol)}`]
+    const header = MarkdownFormatter.formatRuleHeading(result.ruleInfo.name, symbol)
+    const formatBase = [`### ${header} ${MarkdownFormatter.makeHeaderLink(header)}`]
     if (result.status === FormatResult.ERROR) {
       // the rule failed to run for some reason?
       const content =
@@ -159,7 +173,7 @@ class MarkdownFormatter {
    */
   static createSection (name, body, collapse = false) {
     const section =
-`\n\n## ${name}
+`\n\n## ${name} ${MarkdownFormatter.makeHeaderLink(name)}
 ${collapse ? `\n${COLLAPSE_TOP}\n` : ''}
 ${body}
 ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
@@ -200,10 +214,10 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
       // generate rule-items
       const subItems = sorted[cfg.type].map(r => {
         const heading = MarkdownFormatter.formatRuleHeading(r.ruleInfo.name, cfg.symbol)
-        return `\n  - [${heading}](#${slugger.slug(heading)})`
+        return `\n  - [${heading}](#user-content-${slugger.slug(heading)})`
       })
       // generate top level section
-      return `\n- [${cfg.name}](#${slugger.slug(cfg.name)})${subItems.join('')}`
+      return `\n- [${cfg.name}](#user-content-${slugger.slug(cfg.name)})${subItems.join('')}`
     })
     formatBase.push(...toc)
     // generate content sections
