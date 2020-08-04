@@ -31,12 +31,12 @@ require('yargs')
         default: [],
         type: 'array'
       })
-      .option('ruleset-file', {
+      .option('rulesetFile', {
         alias: 'r',
         describe: 'Specify an alternate location for the repolinter.json configuration to use (This will default to repolinter.json at the root of the project, or the internal default ruleset if none is found).',
         type: 'string'
       })
-      .option('ruleset-url', {
+      .option('rulesetUrl', {
         alias: 'u',
         describe: 'Specify an alternate URL repolinter.json configuration to use (This will default to repolinter.json at the root of the project, or the internal default ruleset if none is found).',
         type: 'string'
@@ -56,10 +56,10 @@ require('yargs')
   }, async (/** @type {any} */ argv) => {
     let rulesetParsed = null
     // resolve the ruleset if a url is specified
-    if (argv['ruleset-url']) {
-      const res = await fetch(argv['ruleset-url'])
+    if (argv.rulesetUrl) {
+      const res = await fetch(argv.rulesetUrl)
       if (!res.ok) {
-        console.error(`Failed to fetch config from ${argv['ruleset-url']} with status code ${res.status}`)
+        console.error(`Failed to fetch config from ${argv.rulesetUrl} with status code ${res.status}`)
         process.exitCode = 1
         return
       }
@@ -73,17 +73,17 @@ require('yargs')
       if (result) {
         console.error(result)
         process.exitCode = 1
-        rimraf(tmpDir, function () {})
+        rimraf(tmpDir, () => {})
         return
       }
     }
     // run the linter
-    const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, rulesetParsed || argv['ruleset-file'])
+    const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, rulesetParsed || argv.rulesetFile)
     // create the output
     let formatter
-    if (argv.format === 'json') {
+    if (argv.format && argv.format.toLowerCase() === 'json') {
       formatter = repolinter.jsonFormatter
-    } else if (argv.format === 'markdown') {
+    } else if (argv.format && argv.format.toLowerCase() === 'markdown') {
       formatter = repolinter.markdownFormatter
     } else {
       formatter = repolinter.defaultFormatter

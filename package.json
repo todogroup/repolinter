@@ -65,6 +65,7 @@
     "markdownlint": "^0.20.4",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
-    "standard": "^14.3.3"
+    "standard": "^14.3.3",
+    "strip-ansi": "^6.0.0"
   }
 }

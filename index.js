@@ -49,9 +49,9 @@ module.exports.resultFormatter = exports.defaultFormatter
  * a custom ruleset object to use.
  *
  * @param {string} targetDir The directory of the repository to lint.
- * @param {string[]} filterPaths A list of directories to allow linting of, or [] for all.
- * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
- * @param {object|string|null} ruleset A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
+ * @param {string[]} [filterPaths] A list of directories to allow linting of, or [] for all.
+ * @param {boolean} [dryRun] If true, repolinter will report suggested fixes, but will make no disk modifications.
+ * @param {object|string|null} [ruleset] A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
  * Set to null for repolinter to automatically find it in the repository.
  * @returns {Promise<LintResult>} An object representing the output of the linter
  */
@@ -67,11 +67,11 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
   let rulesetPath
   if (typeof ruleset === 'string') {
     rulesetPath = ruleset
-    ruleset = await jsonfile.readFile(ruleset)
+    ruleset = await jsonfile.readFile(path.resolve(targetDir, rulesetPath))
   } else if (!ruleset) {
-    rulesetPath = findConfig('repolint.json', { cwd: targetDir })
-    rulesetPath = rulesetPath || findConfig('repolinter.json', { cwd: targetDir })
-    rulesetPath = rulesetPath || path.join(__dirname, 'rulesets/default.json')
+    rulesetPath = findConfig('repolint.json', { cwd: targetDir }) ||
+      findConfig('repolinter.json', { cwd: targetDir }) ||
+      path.join(__dirname, 'rulesets/default.json')
     ruleset = await jsonfile.readFile(rulesetPath)
   }
 

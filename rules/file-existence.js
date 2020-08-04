@@ -16,7 +16,7 @@ const FileSystem = require('../lib/file_system')
  */
 async function fileExistence (fs, options) {
   const fileList = options.globsAny || options.files || options.directories
-  const file = await fs.findFirstFile(fileList, options.nocase)
+  const file = options.dirs ? await fs.findFirst(fileList, options.nocase) : await fs.findFirstFile(fileList, options.nocase)
 
   const passed = !!file
 
