@@ -7,6 +7,14 @@
             "type": "boolean",
             "default": false
         },
+        "newlines": {
+          "type": "object",
+          "default": {},
+          "properties": {
+            "begin": { "type": "number", "default": 0 },
+            "end": { "type": "number", "default": 0 }
+          }
+        },
         "files": {
             "type": "array",
             "items": { "type": "string" }

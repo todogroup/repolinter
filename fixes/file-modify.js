@@ -64,12 +64,19 @@ async function fileModify (fs, options, targets, dryRun = false) {
   const resTargets = await Promise.all(files.map(async file => {
     // do file operation
     if (!dryRun) {
-      if (options.write_mode === 'append') { await fs.setFileContents(file, await fs.getFileContents(file) + content) } else { await fs.setFileContents(file, content + await fs.getFileContents(file)) }
+      const startNewlines = (options.newlines && options.newlines.begin ? new Array(options.newlines.begin).fill('\n').join('') : '')
+      const endNewlines = (options.newlines && options.newlines.end ? new Array(options.newlines.end).fill('\n').join('') : '')
+      const fileContent = startNewlines + content + endNewlines
+      if (options.write_mode === 'append') {
+        await fs.setFileContents(file, await fs.getFileContents(file) + fileContent)
+      } else {
+        await fs.setFileContents(file, fileContent + await fs.getFileContents(file))
+      }
     }
     // return the target information
     const message = typeof options.text === 'object'
       ? `${options.write_mode} text from ${options.text.file || options.text.url} to file`
-      : `${options.write_mode} "${content}" to file`
+      : `${options.write_mode} ${JSON.stringify(content)} to file`
     return {
       message,
       passed: true,
