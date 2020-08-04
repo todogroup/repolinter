@@ -131,14 +131,17 @@ class MarkdownFormatter {
     }
     // suggested fix for overall rule/fix combo
     if (result.fixResult && result.fixResult.passed) {
-      const fixSuggest = `\n\n${dryRun ? SUGGESTED_FIX : APPLIED_FIX}${opWrap(' ', result.fixResult.message, '.')}`
-      formatBase.push(fixSuggest)
       // find all fixes which didn't have a lint target (haven't been displayed yet)
       const unassociatedFixList = result.fixResult.targets
         .filter(t => !t.path || !result.lintResult.targets.find(l => l.path === t.path))
-      const fixList = unassociatedFixList.map(f => `\n- \`${f.path || f.pattern}\`${opWrap(': ', f.message, '.')}`)
-      if (fixList.length) { formatBase.push('\n') }
-      formatBase.push(...fixList)
+      // break if there aren't any
+      if (result.fixResult.message || unassociatedFixList.length !== 0) {
+        const fixSuggest = `\n\n${dryRun ? SUGGESTED_FIX : APPLIED_FIX}${opWrap(' ', result.fixResult.message, '.')}`
+        formatBase.push(fixSuggest)
+        const fixList = unassociatedFixList.map(f => `\n- \`${f.path || f.pattern}\`${opWrap(': ', f.message, '.')}`)
+        if (fixList.length) { formatBase.push('\n') }
+        formatBase.push(...fixList)
+      }
     }
     // return the created string!
     return formatBase.join('')
