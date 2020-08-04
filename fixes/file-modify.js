@@ -76,7 +76,7 @@ async function fileModify (fs, options, targets, dryRun = false) {
     // return the target information
     const message = typeof options.text === 'object'
       ? `${options.write_mode} text from ${options.text.file || options.text.url} to file`
-      : `${options.write_mode} ${JSON.stringify(content)} to file`
+      : `${options.write_mode} \`${JSON.stringify(content).slice(1, -1)}\` to file`
     return {
       message,
       passed: true,
