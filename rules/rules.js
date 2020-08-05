@@ -14,5 +14,6 @@ module.exports = [
   'git-grep-log',
   'git-list-tree',
   'git-working-tree',
-  'license-detectable-by-licensee'
+  'license-detectable-by-licensee',
+  'json-schema-passes'
 ]

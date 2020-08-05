@@ -21,7 +21,7 @@ function getContent (options) {
 async function fileContents (fs, options, not = false) {
   // support legacy configuration keys
   const fileList = options.globsAll || options.files
-  const files = await fs.findAllFiles(fileList)
+  const files = await fs.findAllFiles(fileList, !!options.nocase)
 
   if (files.length === 0) {
     return new Result(

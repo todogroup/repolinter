@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/script-passes-config.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "$ref": "http://json-schema.org/draft-07/schema"
+    },
+    "glob": { "type": "string" },
+    "nocase": {
+        "type": "boolean",
+        "default": false
+    },
+    "succeed-on-non-existent": {
+        "type": "boolean",
+        "default": false
+    },
+    "human-readable-message": { "type": "string" }
+  },
+  "required": ["glob", "schema"]
+}
