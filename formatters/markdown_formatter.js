@@ -17,11 +17,7 @@ const SUGGESTED_FIX = `${FIX_SYMBOL} **Suggested Fix**:`
 const APPLIED_FIX = `${PASS_SYMBOL} **Applied Fix**:`
 
 const DISCLAIMER =
-  '*This report was generated automatically by the Repolinter Action bot. If you see an issue please report it to ...*' +
-  '\n\nRepolinter is a tool used by New Relic to maintain consistency across our repositories.' +
-  ' Each rule below represents a policy that New Relic implements in the Open Source initiative.' +
-  ' For more information about this issue and/or Repolinter, please go to ... .' +
-  ' These checks will not prevent code from merging, but instead serve as a reminder to adhere to open source policies.'
+  '*This report was generated automatically by the Repolinter.*'
 
 const COLLAPSE_TOP =
 `<details>
@@ -186,11 +182,12 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
   /**
    *
    * @param {import('..').LintResult} output The linter output to format
+   * @param {string} [output.formatOptions.disclaimer] A disclaimer to put at the top of the markdown document.
    * @param {boolean?} [dryRun] Whether or not to print fix "suggested" or "applied"
    * @returns {string} The formatted output
    */
   static formatOutput (output, dryRun) {
-    const formatBase = [`# Repolinter Report\n\n${DISCLAIMER}`]
+    const formatBase = [`# Repolinter Report\n\n${(output.formatOptions && output.formatOptions.disclaimer) || DISCLAIMER}`]
     // count each type of format result in an object
     const sorted = MarkdownFormatter.sortResults(output.results)
     // create the summary block

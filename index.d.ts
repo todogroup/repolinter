@@ -51,6 +51,7 @@ declare class LintResult {
     errMsg?: string
     results: FormatResult[]
     targets: { [key: string]: Result }
+    formatOptions?: { [key: string]: any }
 }
 
 declare interface Formatter {

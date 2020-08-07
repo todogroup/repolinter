@@ -32,6 +32,9 @@ describe('formatters', () => {
         targetDir: '.',
         filterPaths: [],
         ruleset: {}
+      },
+      formatOptions: {
+        disclaimer: 'This is a disclaimer.'
       }
     }
 
@@ -71,6 +74,12 @@ describe('formatters', () => {
         expect(filteredSections[i].lvl).to.equal(expected[i].lvl)
         expect(filteredSections[i].slug).to.contain(expected[i].slug)
       }
+    })
+
+    it('contains the disclaimer', () => {
+      const output = formatter.formatOutput(result, false)
+
+      expect(output).to.contain(result.formatOptions.disclaimer)
     })
 
     it('generates valid markdown when running against itself', async () => {

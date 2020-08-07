@@ -53,5 +53,10 @@ describe('package', () => {
       expect(actual).to.have.length(1)
       expect(actual[0].status).to.equal('IGNORED')
     })
+
+    it('passes through formatOptions', async () => {
+      const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/repolinter-formatter-opts.json'))
+      expect(actual.formatOptions).to.deep.equal({ hello: 'world' })
+    })
   })
 })

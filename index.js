@@ -39,6 +39,7 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @property {string} [errMsg] A string indication error information, will be present if errored is true.
  * @property {FormatResult[]} results The output of all the linter rules.
  * @property {Object.<string, Result>} targets An object representing axiom type: axiom targets.
+ * @property {object} [formatOptions] Additional options to pass to the formatter, generated from the output or config.
  */
 
 /**
@@ -56,10 +57,6 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @returns {Promise<LintResult>} An object representing the output of the linter
  */
 async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null) {
-  // TODO: More tests
-  // TODO: rewrite formatters (1 of 2)
-  // TODO: write markdown formatter
-
   const fileSystem = new FileSystem()
   fileSystem.targetDir = targetDir
   if (filterPaths.length > 0) { fileSystem.filterPaths = filterPaths }
@@ -90,7 +87,8 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
       /** @ts-ignore */
       errMsg: val.error,
       results: [],
-      targets: {}
+      targets: {},
+      formatOptions: ruleset.formatOptions
     }
   }
   // parse it
@@ -117,7 +115,8 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
     passed,
     errored: false,
     results: result,
-    targets: targetObj
+    targets: targetObj,
+    formatOptions: ruleset.formatOptions
   }
 
   return allFormatInfo

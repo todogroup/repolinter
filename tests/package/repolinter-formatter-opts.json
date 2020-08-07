@@ -1,0 +1,29 @@
+{
+  "$schema": "../../rulesets/schema.json",
+  "version": 2,
+  "axioms": {},
+  "rules": {
+    "readme-file-exists": {
+      "level": "error",
+      "rule": {
+        "type": "file-existence",
+        "options": {
+          "globsAny": ["README*"],
+          "nocase": true
+        }
+      }
+    },
+    "test-file-exists": {
+      "level": "error",
+      "rule": {
+        "type": "file-existence",
+        "options": {
+          "globsAny": ["repolinter_tests.js"]
+        }
+      }
+    }
+  },
+  "formatOptions": {
+    "hello": "world"
+  }
+}
