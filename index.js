@@ -41,6 +41,26 @@ module.exports.lint = function lint (targetDir, filterPaths = [], ruleset = null
       // Execute axiom
       const axiomFunction = require(path.join(__dirname, 'axioms', axiomId))
       targets = targets.concat(axiomName + '=*')
+      // Handle contributor-count axiom
+      if (axiomId === 'contributor-count') {
+        const contributorAxioms = Object.keys(ruleset.rules).filter((rule) =>
+          rule.includes('contributor')
+        )
+        // Evaluate each contributor axiom
+        contributorAxioms.forEach((axiom) => {
+          const operator = axiom.match(/<|>|=/g)[0]
+          const num = Number(axiom.match(/[0-9]+/g)[0])
+          const evaluate = {
+            '<': (a, b) => a < b,
+            '>': (a, b) => a > b,
+            '=': (a, b) => a === b
+          }
+          if (evaluate[operator](axiomFunction(fileSystem), num)) {
+            targets = targets.concat(axiomName + operator + num)
+          }
+        })
+        return
+      }
       targets = targets.concat(axiomFunction(fileSystem).map(axiomOutput => axiomName + '=' + axiomOutput))
     })
   }
