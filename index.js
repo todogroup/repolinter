@@ -20,13 +20,58 @@ const Axioms = require('./axioms/axioms')
  * @property {(output: LintResult, dryRun: boolean) => string} formatOutput A function to format the entire linter output
  */
 
-/** @type {Formatter} */
+/**
+ * This formatter outputs the LintResult CLI style, including
+ * colors on supported platforms.
+ * ```console
+ * ✔ license-file-exists: found (LICENSE)
+ * ✔ readme-file-exists: found (README.md)
+ * ✔ contributing-file-exists: found (CONTRIBUTING)
+ * ✔ code-of-conduct-file-exists: found (CODE-OF-CONDUCT)
+ * ✔ changelog-file-exists: found (CHANGELOG)
+ * ✔ readme-references-license: File README.md contains license
+ * ✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
+ * ✔ test-directory-exists: found (tests)
+ * ✔ integrates-with-ci: found (.travis.yml)
+ * ✔ source-license-headers-exist: The first 5 lines of 'index.js' contain all of the requested patterns.
+ * ...
+ * ✔ github-issue-template-exists: found (ISSUE_TEMPLATE)
+ * ✔ github-pull-request-template-exists: found (PULL_REQUEST_TEMPLATE)
+ * ✔ package-metadata-exists: found (Gemfile)
+ * ✔ package-metadata-exists: found (package.json)
+ * ```
+ *
+ * @type {Formatter}
+ */
 module.exports.defaultFormatter = require('./formatters/symbol_formatter')
-/** @type {Formatter} */
+
+/**
+ * This formatter outputs the raw JSON string of the LintResult object.
+ *
+ * @type {Formatter}
+ */
 module.exports.jsonFormatter = require('./formatters/json_formatter')
-/** @type {Formatter} */
+
+/**
+ * This formatter outputs a markdown document designed to created into
+ * a GitHub issue or similar.
+ * ```markdown
+ * # Repolinter Report
+ *
+ * This Repolinter run generated the following results:
+ * | ❗  Error | ❌  Fail | ⚠️  Warn | ✅  Pass | Ignored | Total |
+ * |---|---|---|---|---|---|
+ * | 0 | 0 | 0 | 15 | 10 | 25 |
+ * ...
+ * ```
+ * You can also specify formatOptions.disclaimer to include a disclaimer
+ * at the top of the markdown document.
+ *
+ * @type {Formatter}
+ */
 module.exports.markdownFormatter = require('./formatters/markdown_formatter')
-/** @type {Formatter} */
+
+/** The same as defaultFormatter @type {Formatter} */
 module.exports.resultFormatter = exports.defaultFormatter
 
 /**
