@@ -47,7 +47,9 @@ module.exports.resultFormatter = exports.defaultFormatter
  * to run repolinter on a specified directory targetDir. You can
  * also optionally specify which paths to allowlist (filterPaths),
  * whether or not to actually commit modifications (fixes), and
- * a custom ruleset object to use.
+ * a custom ruleset object to use. This function will not throw
+ * an error on failure, instead indicating that an error has
+ * ocurred in returned value.
  *
  * @param {string} targetDir The directory of the repository to lint.
  * @param {string[]} [filterPaths] A list of directories to allow linting of, or [] for all.
