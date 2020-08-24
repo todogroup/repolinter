@@ -74,7 +74,7 @@ By default Repolinter will automatically execute fixes as specified by the [rule
 
 ## Rulesets
 
-Similar to how [eslint](https://eslint.org/) uses an [eslintrc](https://eslint.org/docs/user-guide/configuring) file to determine what validation processes will occur, Repolinter uses a JSON configuration file (refereed to as a *ruleset*) to determine what checks should be run against a repository. Inside a ruleset, there are two main behaviors that can be configured:
+Similar to how [eslint](https://eslint.org/) uses an [eslintrc](https://eslint.org/docs/user-guide/configuring) file to determine what validation processes will occur, Repolinter uses a JSON configuration file (referred to as a *ruleset*) to determine what checks should be run against a repository. Inside a ruleset, there are two main behaviors that can be configured:
  * **Rules** - Checks Repolinter should perform against the repository.
  * **Axioms** - External libraries Repolinter should use to conditionally run rules.
 
@@ -196,3 +196,10 @@ An example configuration using an axiom to detect the packaging system for a pro
   }
 }
 ```
+
+## Going Further
+
+ * [Rule Reference](rules.md)
+ * [Fix Reference](fixes.md)
+ * [Axiom Reference](axioms.md)
+ * [Developer Guide](development.md)
