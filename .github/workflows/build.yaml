@@ -3,16 +3,53 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: ['12', '10']
-    name: Node ${{ matrix.node }} sample
+        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
+    name: Node ${{ matrix.node }} sample (${{ matrix.os }})
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup node
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm test
+
+      - name: Cache NPM
+        id: cache-node-modules
+        uses: actions/cache@v1
+        env:
+          cache-name: node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.cache-name }}-
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+
+      - name: Cache Bundler
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      - name: Bundle Install
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+          echo "::add-path::$GITHUB_WORKSPACE/vendor/bundle/ruby/2.7.0/bin"
+
+      - name: Run Test
+        run: npm test
