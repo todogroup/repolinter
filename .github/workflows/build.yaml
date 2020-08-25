@@ -37,13 +37,9 @@ jobs:
         if: ${{ runner.os == 'macOS' }}
         run: brew install cmake pkg-config icu4c
 
-      - name: Setup Licensee and Linguist Dependencies (Windows)
-        if: ${{ runner.os == 'Windows' }}
-        run: choco install cmake
-
       - name: Setup Licensee and Linguist Dependencies (Linux)
         if: ${{ runner.os == 'Linux' }}
-        run: sudo apt-get install -y git libicu57 make build-essential cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev
+        run: sudo apt-get install -y build-essential libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev ruby-dev
 
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
