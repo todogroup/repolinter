@@ -33,7 +33,7 @@ describe('package', () => {
       expect(res.results[1].lintResult.passed).to.equal(true)
       expect(res.results[1].lintResult.targets).to.have.length(1)
       expect(res.results[1].lintResult.targets[0].passed).to.equal(true)
-      expect(res.results[1].lintResult.targets[0].path).to.equal('repolinter_tests.js')
+      expect(res.results[1].lintResult.targets[0].path).to.equal('lint-tests.js')
     })
 
     it('outputs the same results for new and old-style config', async () => {
