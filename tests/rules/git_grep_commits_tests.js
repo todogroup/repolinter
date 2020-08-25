@@ -13,7 +13,7 @@ chai.use(require('chai-string'))
 
 describe('rule', () => {
   describe('git_grep_commits', function () {
-    this.timeout(5000) // Calling external Git might take some time.
+    this.timeout(30000) // Calling external Git might take some time.
 
     const gitGrepCommits = require('../../rules/git-grep-commits')
     const DIFF_CORRECT_CASE = 'Copyright 2017 TODO Group\\. All rights reserved\\.'

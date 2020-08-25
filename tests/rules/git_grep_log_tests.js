@@ -9,7 +9,7 @@ chai.use(require('chai-string'))
 
 describe('rule', () => {
   describe('git_grep_log', function () {
-    this.timeout(5000) // Calling external Git might take some time.
+    this.timeout(30000) // Calling external Git might take some time.
 
     const gitGrepLog = require('../../rules/git-grep-log')
     const LOG_WRONG_CASE = 'THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES'

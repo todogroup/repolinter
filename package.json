@@ -8,7 +8,7 @@
     "repolinter": "bin/repolinter.js"
   },
   "scripts": {
-    "test": "standard --env mocha && mocha tests/**/*.js --no-timeouts",
+    "test": "standard --env mocha && mocha tests/**/*.js",
     "coverage": "nyc npm test",
     "fix": "standard --fix"
   },
@@ -37,7 +37,7 @@
     "url": "https://github.com/todogroup/repolinter.git"
   },
   "dependencies": {
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.4",
     "chalk": "^4.1.0",
     "emoji-regex": "^9.0.0",
     "eslint-config-standard": "^14.1.1",
@@ -46,28 +46,28 @@
     "is-windows": "^1.0.2",
     "isbinaryfile": "^4.0.6",
     "jsonfile": "^6.0.1",
-    "lodash": "^4.17.15",
-    "log-symbols": "^3.0.0",
+    "lodash": "^4.17.20",
+    "log-symbols": "^4.0.0",
     "matched": "^5.0.0",
+    "nock": "^13.0.4",
     "node-fetch": "^2.6.0",
     "rimraf": "^3.0.2",
-    "simple-git": "^1.132.0",
+    "simple-git": "^2.20.1",
     "standardjs": "^1.0.0-alpha",
-    "yargs": "^15.4.0"
+    "yargs": "^15.4.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-each": "0.0.1",
     "chai-string": "^1.5.0",
-    "eslint": "^7.3.1",
-    "eslint-plugin-jsdoc": "^28.5.1",
+    "eslint": "^7.7.0",
+    "eslint-plugin-jsdoc": "^30.2.4",
     "markdown-toc": "^1.2.0",
     "markdownlint": "^0.20.4",
-    "mocha": "^7.1.1",
-    "nock": "^13.0.4",
-    "nyc": "^15.0.1",
-    "standard": "^14.3.3",
+    "mocha": "^8.1.1",
+    "nyc": "^15.1.0",
+    "standard": "^14.3.4",
     "strip-ansi": "^6.0.0"
   }
 }

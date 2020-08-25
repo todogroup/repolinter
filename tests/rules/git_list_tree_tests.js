@@ -11,7 +11,7 @@ const FileSystem = require('../../lib/file_system')
 
 describe('rule', () => {
   describe('git_list_tree', function () {
-    this.timeout(5000) // Calling external Git might take some time.
+    this.timeout(30000) // Calling external Git might take some time.
 
     const gitListTree = require('../../rules/git-list-tree')
     const PATH_WRONG_CASE = 'rules/git-list-TREE\\.js'
