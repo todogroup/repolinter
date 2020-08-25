@@ -49,11 +49,7 @@ jobs:
 
       - name: Install Licensee and Linguist
         if: ${{ runner.os != 'Windows' }}
-        run: gem install licensee github-linguist
-
-      - name: Add Bundle to Path
-        if: ${{ runner.os != 'Windows' }}
-        run: echo "::add-path::$GITHUB_WORKSPACE/vendor/bundle/ruby/2.7.0/bin"
+        run: gem install --no-ri --no-rdoc licensee github-linguist
 
       - name: Run Test
         run: npm test

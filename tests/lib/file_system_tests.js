@@ -102,7 +102,7 @@ describe('lib', () => {
       })
 
       it('should honor filtered files', async () => {
-        const includedFiles = ['index.js', 'bin/repolinter.bat']
+        const includedFiles = ['index.js', path.join('bin', 'repolinter.bat')]
         const fs = new FileSystem(path.resolve('.'), includedFiles)
 
         const filesRaw = await fs.findAll('**/*', false)
@@ -171,7 +171,7 @@ describe('lib', () => {
       it('should return the contents of a file', async () => {
         const raw = await fs.getFileContents('text_file_for_test.txt')
         // replace newlines to prevent compatibility issues
-        const actual = raw.replace('\r', '')
+        const actual = raw.replace(/\r/g, '')
         expect(actual).to.equal('The contents of this file\nwill be monitored for quality assurance purposes\n')
       })
     })
@@ -188,8 +188,9 @@ describe('lib', () => {
       it('should change the contents of a file', async () => {
         const expected = 'somefilecontents\nmorecontents\n'
         fs.setFileContents('text_file_for_test.txt', expected)
-        const fileContents = await realFs.promises.readFile(filePath)
-        expect(fileContents).to.equal(expected)
+        const fileContents = await realFs.promises.readFile(filePath, 'utf8')
+        const realFileContents = fileContents.replace(/\r/g, '')
+        expect(realFileContents).to.equal(expected)
       })
 
       after(async () => {

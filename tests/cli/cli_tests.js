@@ -31,7 +31,7 @@ async function execAsync (
 }
 
 describe('cli', function () {
-  const repolinterPath = path.resolve('bin/repolinter.js')
+  const repolinterPath = process.platform === 'win32' ? path.resolve('bin/repolinter.bat') : path.resolve('bin/repolinter.js')
   const selfPath = path.resolve('tests/cli')
   this.timeout(30000)
 
