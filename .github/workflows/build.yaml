@@ -4,11 +4,12 @@ on: [push, pull_request]
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         node-version: ['12', '10']
         os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
     runs-on: ${{ matrix.os }}
-    name: Node ${{ matrix.node }} sample (${{ matrix.os }})
+    name: Node ${{ matrix.node-version }} sample (${{ matrix.os }})
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -31,6 +32,18 @@ jobs:
 
       - name: Install NPM Dependencies
         run: npm ci
+
+      - name: Setup Licensee and Linguist Dependencies (MacOS)
+        if: ${{ runner.os == 'macOS' }}
+        run: brew install cmake pkg-config icu4c
+
+      - name: Setup Licensee and Linguist Dependencies (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        run: choco install cmake
+
+      - name: Setup Licensee and Linguist Dependencies (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        run: sudo apt-get install -y git libicu57 make build-essential cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev
 
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
