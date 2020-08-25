@@ -311,7 +311,7 @@ async function determineTargets (axiomconfig, fs) {
   const ruleresults = await Promise.all(Object.entries(axiomconfig)
     .map(async ([axiomId, axiomName]) => {
       // Execute axiom if it exists
-      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return [axiomId, new Result(`invalid axiom name ${axiomId}`, [], false)] }
+      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return [axiomName, new Result(`invalid axiom name ${axiomId}`, [], false)] }
       const axiomFunction = allAxioms[axiomId]()
       return [axiomName, await axiomFunction(fs)]
     }))
