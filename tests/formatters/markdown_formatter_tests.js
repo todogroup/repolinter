@@ -82,7 +82,9 @@ describe('formatters', () => {
       expect(output).to.contain(result.formatOptions.disclaimer)
     })
 
-    it('generates valid markdown when running against itself', async () => {
+    it('generates valid markdown when running against itself', async function () {
+      this.timeout(30000)
+
       const lintres = await repolinter.lint(path.resolve('.'))
 
       const actual = formatter.formatOutput(lintres, false)
@@ -95,7 +97,9 @@ describe('formatters', () => {
       expect(res.test).to.have.length(0)
     })
 
-    it('does not contain the string "undefined"', async () => {
+    it('does not contain the string "undefined"', async function () {
+      this.timeout(30000)
+
       const lintres = await repolinter.lint(path.resolve('.'))
 
       const actual = formatter.formatOutput(lintres, false)

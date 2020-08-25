@@ -30,9 +30,10 @@ async function execAsync (
   })
 }
 
-describe('cli', () => {
+describe('cli', function () {
   const repolinterPath = path.resolve('bin/repolinter.js')
   const selfPath = path.resolve('tests/cli')
+  this.timeout(30000)
 
   it('runs repolinter from the CLI', async () => {
     const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath), false))

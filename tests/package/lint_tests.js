@@ -9,7 +9,9 @@ const expect = chai.expect
 const repolinter = require(path.resolve('.'))
 
 describe('package', () => {
-  describe('repolinter', () => {
+  describe('repolinter', function () {
+    this.timeout(30000)
+
     it('does not pass', async () => {
       const res = await repolinter.lint(path.resolve('tests/package'))
 
@@ -36,7 +38,7 @@ describe('package', () => {
       expect(res.results[1].lintResult.targets[0].path).to.equal('lint_tests.js')
     })
 
-    it('outputs the same results for new and old-style config', async () => {
+    it('outputs the same results for new and old-style config', async function () {
       const expected = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default.json'))
       const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default-legacy.json'))
 
@@ -54,7 +56,7 @@ describe('package', () => {
       expect(actual[0].status).to.equal('IGNORED')
     })
 
-    it('passes through formatOptions', async () => {
+    it('passes through formatOptions', async function () {
       const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/repolinter-formatter-opts.json'))
       expect(actual.formatOptions).to.deep.equal({ hello: 'world' })
     })

@@ -57,7 +57,8 @@ describe('formatters', () => {
       expect(formatResult).to.contain('dir')
     })
 
-    it('does not contain the string undefined', async () => {
+    it('does not contain the string undefined', async function () {
+      this.timeout(30000)
       const symbolFormatter = require('../../formatters/symbol_formatter')
       const lintres = await repolinter.lint(path.resolve('.'))
 

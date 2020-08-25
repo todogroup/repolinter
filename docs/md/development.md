@@ -11,13 +11,13 @@ Repolinter is broken down into 7 main components, each of which is contained in 
 
 ## Axioms
 
-Axioms are registered in [axioms/axioms.js](../../axioms/axioms.js). An axiom implementation consists of a module with the following interface:
+Axioms are registered in [axioms/axioms.js](../../axioms/axioms.js) and in [rulesets/schema.json](../../rulesets/schema.json). An axiom implementation consists of a module with the following interface:
 ```TypeScript
 async (fs: FileSystem) => Result
 ```
 Where fs is a [`FileSystem`](../../lib/file_system.js) scoped to the current repository.
 
-The contents of the result should be an array of targets that the axiom has determined are valid (ex. for language detecting axiom a possible result could be `new Result('', ['javascript', 'typescript'], true)`). If the axiom fails to execute, it should return a failing result with an error message included instead of throwing an error.
+The contents of the result should be an array of targets where `t.path` is a target that the axiom has determined is valid (ex. for language detecting axiom a possible result could be `new Result('', [{ path: 'javascript' passed: true }, { path: 'typescript', passed: true}], true)`). If the axiom fails to execute, it should return a failing result with an error message included instead of throwing an error.
 
 ## Rules
 
