@@ -7,8 +7,10 @@ const expect = chai.expect
 const realFs = require('fs')
 
 describe('lib', () => {
-  describe('file_system', () => {
+  describe('file_system', function () {
     const FileSystem = require('../../lib/file_system')
+
+    this.timeout(10000)
 
     describe('fileExists', () => {
       it('should return pass if the file exists', async () => {
