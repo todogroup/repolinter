@@ -6,7 +6,6 @@ const Result = require('../lib/result')
 const FileSystem = require('../lib/file_system')
 /** @type {any} */
 const fetch = require('node-fetch')
-const nodeFs = require('fs')
 
 /**
  * Create a new file, or replace a files contents
@@ -48,7 +47,7 @@ async function fileCreate (fs, options, targets, dryRun = false) {
   if (!dryRun) {
     // delete the old files if necessary
     if (shouldRemove) {
-      await Promise.all(targets.map(t => nodeFs.promises.unlink(t)))
+      await Promise.all(targets.map(t => fs.removeFile(t)))
     }
     // write it to the file
     await fs.setFileContents(options.file, content)

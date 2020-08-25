@@ -67,10 +67,10 @@ async function fileModify (fs, options, targets, dryRun = false) {
       const startNewlines = (options.newlines && options.newlines.begin ? new Array(options.newlines.begin).fill('\n').join('') : '')
       const endNewlines = (options.newlines && options.newlines.end ? new Array(options.newlines.end).fill('\n').join('') : '')
       const fileContent = startNewlines + content + endNewlines
-      if (options.write_mode === 'append') {
-        await fs.setFileContents(file, await fs.getFileContents(file) + fileContent)
-      } else {
+      if (options.write_mode === 'prepend') {
         await fs.setFileContents(file, fileContent + await fs.getFileContents(file))
+      } else {
+        await fs.setFileContents(file, await fs.getFileContents(file) + fileContent)
       }
     }
     // return the target information
