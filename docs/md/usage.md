@@ -92,7 +92,7 @@ Repolinter will pull its configuration from the following sources in order of pr
 Any ruleset starts with the following base:
 ```JSON
 {
-  "$schema": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rulesets/schema.json",
+  "$schema": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json",
   "version": 2,
   "axioms": {},
   "rules": {}
@@ -182,7 +182,7 @@ Each axiom is configured as a key value pair in the `axioms` object, where `<axi
 An example configuration using an axiom to detect the packaging system for a project:
 ```JSON
 {
-  "$schema": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rulesets/schema.json",
+  "$schema": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json",
   "version": 2,
   "axioms": {
     "packagers": "package-type"

@@ -2,6 +2,7 @@ const path = require('path')
 const chai = require('chai')
 const cp = require('child_process')
 const fs = require('fs')
+const ServerMock = require('mock-http-server')
 const stripAnsi = require('strip-ansi')
 const repolinter = require(path.resolve('.'))
 const expect = chai.expect
@@ -93,8 +94,8 @@ describe('cli', function () {
 
   it('runs repolinter on a remote git repository', async () => {
     const [actual, actual2] = await Promise.all([
-      execAsync(`${repolinterPath} lint --git https://github.com/prototypicalpro/repolinter.git`),
-      execAsync(`${repolinterPath} lint -g https://github.com/prototypicalpro/repolinter.git`)
+      execAsync(`${repolinterPath} lint --git https://github.com/todogroup/repolinter.git`),
+      execAsync(`${repolinterPath} lint -g https://github.com/todogroup/repolinter.git`)
     ])
 
     expect(actual.code).to.equal(0)
@@ -104,12 +105,32 @@ describe('cli', function () {
   })
 
   it('runs repolinter using a remote ruleset', async () => {
-    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], false, 'repolinter-other.json'), false))
-    const [actual, actual2, actual3] = await Promise.all([
-      execAsync(`${repolinterPath} lint ${selfPath} --rulesetUrl https://raw.githubusercontent.com/prototypicalpro/repolinter/master/tests/cli/repolinter-other.json`),
-      execAsync(`${repolinterPath} lint ${selfPath} --ruleset-url https://raw.githubusercontent.com/prototypicalpro/repolinter/master/tests/cli/repolinter-other.json`),
-      execAsync(`${repolinterPath} lint ${selfPath} -u https://raw.githubusercontent.com/prototypicalpro/repolinter/master/tests/cli/repolinter-other.json`)
-    ])
+    const server = new ServerMock({ host: 'localhost', port: 9000 }, {})
+    await new Promise(resolve => server.start(resolve))
+    server.on({
+      method: 'GET',
+      path: '/repolinter-other.json',
+      reply: {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+        body: await fs.promises.readFile(path.resolve(__dirname, 'repolinter-other.json'), 'utf-8')
+      }
+    })
+
+    let expected, actual, actual2, actual3
+    try {
+      expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], false, 'repolinter-other.json'), false))
+      const [act1, act2, act3] = await Promise.all([
+        execAsync(`${repolinterPath} lint ${selfPath} --rulesetUrl http://localhost:9000/repolinter-other.json`),
+        execAsync(`${repolinterPath} lint ${selfPath} --ruleset-url http://localhost:9000/repolinter-other.json`),
+        execAsync(`${repolinterPath} lint ${selfPath} -u http://localhost:9000/repolinter-other.json`)
+      ])
+      actual = act1
+      actual2 = act2
+      actual3 = act3
+    } finally {
+      await new Promise(resolve => server.stop(resolve))
+    }
 
     expect(actual.code).to.equal(0)
     expect(actual2.code).to.equal(0)

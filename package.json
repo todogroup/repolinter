@@ -67,6 +67,7 @@
     "markdown-toc": "^1.2.0",
     "markdownlint": "^0.20.4",
     "mocha": "^8.1.1",
+    "mock-http-server": "^1.4.2",
     "nyc": "^15.1.0",
     "standard": "^14.3.4",
     "strip-ansi": "^6.0.0"

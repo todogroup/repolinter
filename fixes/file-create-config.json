@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/fixes/file-create-config.json",
+    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/fixes/file-create-config.json",
     "type": "object",
     "properties": {
         "file": { "type": "string" },

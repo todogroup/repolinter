@@ -28,13 +28,13 @@ A rule consists of two parts: a JavaScript module, which determines the rule's f
 The configuration JSON schema determines how `rule.options` should be validated for this rule. All [JSON Schema](https://json-schema.org/) tools supported by [AJV](https://ajv.js.org/) all available, with a few important caveats:
  * The file itself should always be named `<rule-name>-config.json` and be located under the `rules` folder.
  * The top-level type should always be `object`.
- * The `$id` field should be an absolute raw.githubusercontent.com URL to where the schema is hosted on GitHub (ex. https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/apache-notice-config.json). This allows IDEs such as VSCode to apply the schema via a URL.
+ * The `$id` field should be an absolute raw.githubusercontent.com URL to where the schema is hosted on GitHub (ex. https://raw.githubusercontent.com/todogroup/repolinter/master/rules/apache-notice-config.json). This allows IDEs such as VSCode to apply the schema via a URL.
 
 To get started, you can use the following template:
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rules/<rule-name>-config.json",
+    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/<rule-name>-config.json",
     "type": "object",
     "properties": {}
 }
@@ -67,7 +67,7 @@ To get started, you can use the following template:
 ```JSON
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/prototypicalpro/repolinter/master/fixes/<fix-name>-config.json",
+    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/fixes/<fix-name>-config.json",
     "type": "object",
     "properties": {}
 }
