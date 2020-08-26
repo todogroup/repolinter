@@ -360,9 +360,9 @@ async function validateConfig (config) {
   const ajvProps = new Ajv()
   // find all json schemas
   const parsedRuleSchemas = Promise.all(Rules
-    .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', rs + '-config.json'))))
+    .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', `${rs}-config.json`))))
   const parsedFixSchemas = Promise.all(Fixes
-    .map(fs => jsonfile.readFile(path.resolve(__dirname, 'fixes', fs + '-config.json'))))
+    .map(fs => jsonfile.readFile(path.resolve(__dirname, 'fixes', `${fs}-config.json`))))
   const allSchemas = (await Promise.all([parsedFixSchemas, parsedRuleSchemas]))
     .reduce((a, c) => a.concat(c), [])
   // load them into the validator
