@@ -1,254 +1,283 @@
 # ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) ![Build Status](https://github.com/todogroup/repolinter/workflows/Build/badge.svg)
 
-Lint open source repositories for common issues.
+## Installation
 
-## Usage
-
-To run against a directory, add it to the command line `npx repolinter /my/code/dir`.
-
-To run against a git repository, use the `--git` option: `npx repolinter --git https://my.git.code/awesome`.
-
-Note, if you are running a version of npm < 5.2.0, run `npm install npx` first.
-
-You can also run Repo Linter locally by cloning this repository and running `bin/repolinter.js` with either a directory of a git repository the same as above. This is useful during development.
-
-## Examples
-
-To quickly get started, checkout this repository and run `npx repolinter` against itself.
-
+Repolinter requires [Node.JS](https://nodejs.org/en/) >= v10 to function properly. Once Node.JS is installed, you can install repolinter using `npm`:
+```sh
+npm install -g repolinter
 ```
-git clone https://github.com/todogroup/repolinter
-npx repolinter
-✔ license-file-exists: found (LICENSE)
-✔ readme-file-exists: found (README.md)
-✔ contributing-file-exists: found (CONTRIBUTING)
-✔ code-of-conduct-file-exists: found (CODE-OF-CONDUCT)
-✔ changelog-file-exists: found (CHANGELOG)
-✔ readme-references-license: File README.md contains license
-✔ binaries-not-present: Excluded file type doesn't exist (**/*.exe,**/*.dll)
-✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
-✔ test-directory-exists: found (tests)
-✔ integrates-with-ci: found (.travis.yml)
-✔ source-license-headers-exist: The first 5 lines of 'index.js' contain all of the requested patterns.
+
+## Linting a Local Repository
+
+Once installed, run the following to lint a directory:
+```sh
+repolinter lint <directory>
+```
+The above command will lint `<directory>` with the local `repolinter.json` or the [default ruleset](./rulesets/default.json) if none is found, output the result to the stdout, and set the exit code based on the lint result:
+```console
+repolinter % repolinter lint .
+Target directory: <directory>
+Lint:
+✔ license-file-exists: Found file (LICENSE)
+✔ readme-file-exists: Found file (README.md)
+✔ contributing-file-exists: Found file (CONTRIBUTING)
+✔ code-of-conduct-file-exists: Found file (CODE-OF-CONDUCT)
+✔ changelog-file-exists: Found file (CHANGELOG)
 ...
-✔ github-issue-template-exists: found (ISSUE_TEMPLATE)
-✔ github-pull-request-template-exists: found (PULL_REQUEST_TEMPLATE)
-✔ package-metadata-exists: found (Gemfile)
-✔ package-metadata-exists: found (package.json)
+repolinter % echo $?
+0
 ```
 
-## Command line dependencies
+## Linting a Remote Repository
 
-You will need to have Node, Ruby/Ruby-Dev, and Bundle installed in order to use repolinter. If you are installing on OS X, you will also likely need to install RVM.
-
-The npm log-symbols package must be installed to run `repolinter`.
+Repolinter also supports linting a git repository using the `--git` flag. With this flag enabled, the directory input will be interpreted as a git URL instead:
+```sh
+repolinter lint -g https://github.com/todogroup/repolinter.git
 ```
-npm install log-symbols
+
+## Using Alternate Formatters
+
+The Repolinter CLI currently supports three formatting modes:
+* Default (also referred to as result)
+* JSON
+* Markdown
+
+Support for additional formatters is enabled through the [developer API](./docs/md/development.md).
+
+You can switch formatters using the `--format` flag. An example of using the JSON formatter:
+```console
+repolinter % repolinter lint --format json .
+{"params":{"targetDir":"/Users/nkoontz/Documents/code/repolinter","filterPaths":[],...
 ```
-Repolinter will use https://github.com/benbalter/licensee and https://github.com/github/linguist when installed.
+An example of using the Markdown formatter:
+```console
+repolinter % repolinter lint --format markdown .
+# Repolinter Report
 
-Licensee will lead to a test being done to see if the project's licensee is identified by Licensee. Version 9.9.0 or later is needed, older versions will probably cause errors.
-
-Linguist allows per-language tests to be performed.
-
-Run `bundle install` to get Licensee and Linguist support.
-
-## Custom Result Formatter
-By default, results will be shown as in the example format above.
-
-When using `repolinter` in another project, you can set `resultFormatter` to a custom formatter. Any custom formatter needs to have a `format` function that takes a single [Result](./lib/result.js) argument, and returns a string.
-
-## Default ruleset
-The default ruleset (```rulesets/default.json```) defines a set of common patterns against certain rules.  i.e., the `license-file-exists` and `readme-file-exists` default rules both trigger a `file-exists` test but against different file patterns.
-
-All languages:
-* [license-file-exists](#license-file-exists)
-* [readme-file-exists](#readme-file-exists)
-* [contributing-file-exists](#contributing-file-exists)
-* [code-of-conduct-file-exists](#code-of-conduct-file-exists)
-* [changelog-file-exists](#changelog-file-exists)
-* [support-file-exists](#support-file-exists)
-* [readme-references-license](#readme-references-license)
-* [binaries-not-present](#binaries-not-present)
-* [license-detectable-by-licensee](#license-detectable-by-licensee)
-* [test-directory-exists](#test-directory-exists)
-* [integrates-with-ci](#integrates-with-ci)
-* [source-license-headers-exist](#source-license-headers-exist)
-
-### license-file-exists
-Fails if there isn't a file matching ```LICENSE*``` or ```COPYING*``` in the root of the target directory.
-
-### readme-file-exists
-Fails if there isn't a file matching ```README*``` in the root of the target directory.
-
-### contributing-file-exists
-Fails if there isn't a file matching ```CONTRIB*``` in the root of the target directory.
-
-### code-of-conduct-file-exists
-Fails if there isn't a file matching ```CODEOFCONDUCT*```, ```CODE-OF-CONDUCT*``` or ```CODE_OF_CONDUCT*``` in the root of the target directory.
-
-### changelog-file-exists
-Fails if there isn't a file matching ```CHANGELOG*``` in the root of the target directory.
-
-### security-file-exists
-Fails if there isn't a file matching ```SECURITY.md``` in the root of the target directory. See https://help.github.com/en/articles/adding-a-security-policy-to-your-repository for more details.
-
-### support-file-exists
-Fails if there isn't a file matching ```SUPPORT*``` in the root of the target directory. See https://blog.github.com/2017-07-20-support-file-support/ for more details.
-
-### code-of-conduct-file-contains-email
-Fails of the code of conduct file does not contain an email address.
-
-### readme-references-license
-Fails if the files matching ```README*``` doesn't match the regular expression ```license```.
-
-### binaries-not-present
-Fails if ```*.dll``` or ```*.exe``` files are in the target directory.
-
-### integrates-with-ci
-Fails if there isn't a file supporting a Continuous Integration tool, matching ```.gitlab-ci.yml```, ```.travis.yml```, ```appveyor.yml```, ```circle.yml```, or ```Jenkinsfile```
- in the root of the target directory.
-
-### source-license-headers-exist
-Produces a failure for each file matching ```**/*.js,!node_modules/**``` option if the first 5 lines don't match all the patterns ```copyright```, ```all rights reserved```, and ```licensed under```.
-
-### test-directory-exists
-Fails if there isn't a directory matching ```test*``` or ```specs``` in the directory tree of the target directory.
-
-### github-issue-template-exists
-Fails if there isn't a file matching ```ISSUE_TEMPLATE*``` in the root of the target directory or under the ```.github``` directory. See https://blog.github.com/2016-02-17-issue-and-pull-request-templates/ for more details.
-
-### github-pull-request-template-exists
-Fails if there isn't a file matching ```PULL_REQUEST_TEMPLATE*``` in the root of the target directory or under the ```.github``` directory. See https://blog.github.com/2016-02-17-issue-and-pull-request-templates/ for more details.
-
-## Configuring rules
-
-Currently you need to create a new ruleset to add, remove, or configure rules. We'll be adding the ability to inherit from an existing ruleset to simplify this in the future.
-
-### Overriding the ruleset globally or for a project
-To override the default ruleset copy ```rulesets/default.json``` to ```repolint.json``` (or ```repolinter.json```) in the target directory, any ancestor directory of the target directory, or your user directory.
-
-### Disabling rules
-To disable a rule change it's value to ```false```, for example:
+This Repolinter run generated the following results:
+| ❗  Error | ❌  Fail | ⚠️  Warn | ✅  Pass | Ignored | Total |
+|---|---|---|---|---|---|
+| 0 | 0 | 0 | 15 | 10 | 25 |
+...
 ```
+
+## Limiting Paths
+
+Repolinter supports an allowed list of paths through the `--allowPaths` option to prevent the accidental linting of build artifacts. These paths must still be contained in the target directory/repository.
+```sh
+repolinter lint --allowPaths ./a/path --allowPaths /another/path
+```
+
+## Disabling Modifications
+
+By default Repolinter will automatically execute fixes as specified by the [ruleset](#rulesets). If this is not desired functionality, you can disable this with the `--dryRun` flag.
+
+## Rulesets
+
+Similar to how [eslint](https://eslint.org/) uses an [eslintrc](https://eslint.org/docs/user-guide/configuring) file to determine what validation processes will occur, Repolinter uses a JSON or YAML configuration file (referred to as a *ruleset*) to determine what checks should be run against a repository. Inside a ruleset, there are two main behaviors that can be configured:
+ * **Rules** - Checks Repolinter should perform against the repository.
+ * **Axioms** - External libraries Repolinter should use to conditionally run rules.
+
+These combined capabilities give you fine-grained control over the checks Repolinter runs.
+
+### Providing a Ruleset
+
+Repolinter will pull its configuration from the following sources in order of priority:
+1. A ruleset specified with `--rulesetFile` or `--rulesetUrl`
+2. A `repolint.json`, `repolinter.json`, `repolint.yaml`, or `repolinter.yaml` file at the root of the project being linted
+3. The [default ruleset](./rulesets/default.json)
+
+### Creating a Ruleset
+
+Any ruleset starts with the following base:
+```JSON
 {
-  "rules": {
-    "all": {
-      "license-file-exists:file-existence": false
+  "$schema": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json",
+  "version": 2,
+  "axioms": {},
+  "rules": {}
+}
+```
+```YAML
+---
+"$schema": https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rulesets/schema.json
+version: 2
+axioms: {}
+rules:
+```
+Where:
+ * **`$schema`**- points to the [JSON schema](./rulesets/schema.json) for all Repolinter rulesets. This schema both validates the ruleset and makes the ruleset creation process a bit easier.
+ * **`version`** - specifies the ruleset version Repolinter should expect. Currently there are two versions: omitted for legacy config ([example](https://github.com/todogroup/repolinter/blob/1a66d77e3a744222a049bdb4041437cbcf26a308/rulesets/default.json)) and `2` for all others. Use `2` unless you know what you're doing.
+ * **`axiom`** - The axiom functionality, covered in [Axoms](#axioms).
+ * **`rules`** - The actual ruleset, covered in [Rules](#rules).
+
+#### Rules
+
+Rules are objects of the following format:
+```JSON
+"<rule-name>": {
+  "level": "error" | "warning" | "off",
+  "rule": {
+    "type": "<rule-type>",
+    "options": {
+      <rule-options>
+    }
+  },
+  "where": ["condition=*"],
+  "fix": {
+    "type": "<fix-type>",
+    "options": {
+      <fix-options>
+    }
+  },
+  "policyInfo": "...",
+  "policyUrl": "..."
+}
+```
+```YAML
+<rule-name>:
+  level: error | warning | off
+  rule:
+    type: <rule-type>
+    options:
+      <rule-options>
+  where: [condition=*]
+  fix:
+    type: <fix-type>
+    options:
+      <fix-options>
+  policyInfo: >
+    ...
+  policyUrl: >
+    ...
+```
+ * **`rule`** - The check to perform. Repolinter can perform any check listed under the [rules documentation](./docs/md/rules.md). Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the `file-existence` check can be used in a `README-file-exists` rule and a `LICENSE-file-exists` rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.
+ * **`level`** - The error level to notify if the check fails. `warning` will not change the exit code and `off` will not run the check.
+ * **`where`** - Conditionally enable or disable this rule based off of [axioms](#axioms). Strings in this array follow the format of `<axiom>=<value>`, where value is either an axiom output or `*` to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the [axioms documentation](./docs/rules/axioms).
+ * **`fix`** *(optional)* - The action to perform if the check fails. Repolinter can perform any action listed under [fixes documentation](./docs/md/fixes.md).
+ * **`policyInfo`**, **`policyUrl`** *(optional)* - Information used by the formatter to indicate why the check exists from a policy perspective. Note: `policyInfo` will automatically have a period appended to it for formatting purposes.
+
+A minimal example of a rule that checks for the existence of a `README`:
+```JSON
+"readme-file-exists" : {
+  "level": "error",
+  "rule": {
+    "type": "file-existence",
+    "options": {
+      "globsAny": ["README*"]
     }
   }
 }
 ```
-
-### Changing a rule's level
-To change the level when a rule returns a failure change the first argument of the rule to ```error```, ```warning```, or ```info```, for example:
+```YAML
+readme-file-exists:
+  level: error
+  rule:
+    type: file-existence
+    options:
+      globsAny:
+      - README*
 ```
-{
-  "rules": {
-    "all": {
-      "license-detectable-by-licensee": ["info"]
+
+Checking that the `README` matches a certain hash, and replacing it if not:
+```JSON
+"readme-file-up-to-date" : {
+  "level": "error",
+  "rule": {
+    "type": "file-hash",
+    "options": {
+      "globsAny": ["README*"],
+      "algorithm": "sha256",
+      "hash": "..."
     }
-  }
+  },
+  "fix": {
+    "type": "file-create",
+    "options": {
+      "file": "README.md",
+      "replace": true,
+      "text": { "url": "www.example.com/mytext.txt" }
+    }
+  },
+  "policyInfo": "Gotta keep that readme up to date",
+  "policyUrl": "www.example.com/mycompany"
 }
 ```
+```YAML
+readme-file-up-to-date:
+  level: error
+  rule:
+    type: file-hash
+    options:
+      globsAny:
+      - README*
+      algorithm: sha256
+      hash: "..."
+  fix:
+    type: file-create
+    options:
+      file: README.md
+      replace: true
+      text:
+        url: www.example.com/mytext.txt
+  policyInfo: Gotta keep that readme up to date
+  policyUrl: www.example.com/mycompany
 
-### Configuring a rule's options
-To configure a rule's options change the second argument of the rule to an object specifying the rule's options, see [rules](#rules) for details about each rule's options. For example:
 ```
-{
-  "rules": {
-    "all": {
-      "source-license-headers-exist:file-starts-with": ["warning", {"files": ["**/*.java"], "lineCount": 2, "patterns": ["Copyright", "All rights reserved", "Licensed under"]}]
-    }
-  }
+
+#### Axioms
+
+```JSON
+"axioms": {
+  "<axiom-id>": "<axiom-target>"
 }
 ```
-
-### Axioms: Running rules only in certain situations
-Rules can be configured to only run if the repository passes a particular test or 'axiom'.
-
-Axioms are defined in an axiom block in the ruleset. For example:
-
+```YAML
+axioms:
+  <axiom-id>: axiom-target
 ```
+
+Each axiom is configured as a key value pair in the `axioms` object, where `<axiom-id>` specifies the program to run and `<axiom-target>` specifies the target to be used in the `where` conditional. The available axiom IDs can be found in the [axiom documentation](./docs/md/axioms.md). It should be noted that some axioms require external packages to run.
+
+An example configuration using an axiom to detect the packaging system for a project:
+```JSON
+{
+  "$schema": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json",
+  "version": 2,
   "axioms": {
-    "linguist":"language",
-    "licensee":"license"
-  }
-```
-
-This will run both the linguist and licensee axioms and put their output into 'language' and 'license' respectively.
-
-The axioms are then tied to rules. For example, the following rule will only run when the linguist axiom has put the value 'java' into the language value:
-
-```
-    "language=java": {
-      "package-metadata-exists:file-existence": ["error", {"files": ["pom.xml", "build.xml", "build.gradle"]}]
+    "packagers": "package-type"
+  },
+  "rules": {
+    "this-only-runs-if-npm": {
+      "level": "error",
+      "where": ["package-type=npm"],
+      "rule": { ... }
     }
+  }
+}
+```
+```YAML
+---
+"$schema": https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json
+version: 2
+axioms:
+  packagers: package-type
+rules:
+  this-only-runs-if-npm:
+    level: error
+    where: [package-type=npm]
+    rule:
+      ...
 ```
 
-You can also match any response by using a '\*'; however note that currently there is no wildcard matching, ie: you couldn't match 'j*' to get both java and javascript.
+## Going Further
 
-There are currently three axioms defined:
+ * [Rule Reference](./docs/md/rules.md)
+ * [Fix Reference](./docs/md/fixes.md)
+ * [Axiom Reference](./docs/md/axioms.md)
+ * [Developer Guide](./docs/md/development.md)
 
-#### Linguist
-Languages are detected using Linguist which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
-
-#### Licensee
-Licenses are detected using Licensee which must be in your path, see [command line dependencies](#command-line-dependencies) for details.
-
-#### Packagers
-Package systems (for example Maven, NPM and PyPI) are detected by looking for certain common filenames. See the axioms/packagers.js file for the full mapping.
-
-## Rules
-
-The rules system is made up of rule types which can be customized to fit your needs.
-
-### directory-existence
-Fails if none of the directories specified in the ```directories``` option exist. Pass in a ```fail-message``` option to further explain why the directory should exist to the user. Pass in ```"nocase": true``` in the options for a case-insensitive search.
-
-### file-contents
-Fails if the content of any of the files specified in the ```files``` option doesn't match the regular expression specified in the ```content``` option. If the content is a regular expression or some other non-human-readable string, include the ```human-readable-content``` option with human-readable output. By default, no output is returned if no file exists given the inputs. Use the ```fail-on-non-existent``` option to return a failure.
-
-### file-existence
-Fails if none of the files specified in the ```files``` option exist. Pass in a ```fail-message``` option to further explain why the file should exist to the user. Pass in ```"nocase": true``` in the options for a case-insensitive search.
-
-### file-hash
-Fails if the content of file specified in the ```file``` option does not hash to the hex value in the ```hash``` option.  The default algorithm is ```sha256``` and can be changed in the ```algorithm``` option. Use the ```succeed-on-non-existent``` option if a missing file is acceptable, otherwise a missing file produces a failure.
-
-### file-not-contents
-The opposite of ```file-contents```. By default, no output is returned if no file exists given the inputs. Use the ```succeed-on-non-existent``` option to return a success result.
-
-### file-starts-with
-Produces a failure for each file matching the ```files``` option if the first ```lineCount``` lines don't match all of the regular expressions specified in the ```patterns``` option. Set the ```skip-binary-files``` option to skip files that aren't text. By default, no output is returned if no file exists given the inputs. In that case, use the ```succeed-on-non-existent``` option to return a success result. Certain files can be omitted from being checked by using the ```skip-paths-matching``` option as an object with `extensions` and `patterns` array members.
-
-### file-type-exclusion
-Fails if any files match the ```type``` option.
-
-### git-grep-commits
-Searches Git commits for configurable blacklisted words. These
-words can in fact be extended regular expressions. These checks can be
-a bit time consuming, depending on the size of the Git history.
-
-### git-grep-log
-Searches Git commit messages for configurable blacklisted words. These
-words can in fact be extended regular expressions. These checks can be
-a bit time consuming, depending on the size of the Git history.
-
-### git-list-tree
-Check for blacklisted paths in Git.
-
-### git-working-tree
-Checks whether the directory is managed with Git.
-
-### license-detectable-by-licensee
-Fails if Licensee doesn't detect the repository's license.
-
-This rule requires ```licensee``` in the path, see [command line dependencies](#command-line-dependencies) for details.
-
-## Implementing Rules
-
-Rules are written in JavaScript (see the rules/ directory for examples). A rule can also be written in JSON as a 'rule set' (i.e. a configuraton of rules) allowing rules to be composed from smaller items. The rules/apache-notice.json is an example of a rule implemented in JSON.
 
 ## License
 
-This project is licensed under the [Apache 2.0](LICENSE) license using http://reuse.software best practice.
+This project is licensed under the [Apache 2.0](LICENSE) license using https://reuse.software best practice.
