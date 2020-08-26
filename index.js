@@ -362,7 +362,7 @@ async function validateConfig (config) {
   const parsedRuleSchemas = Promise.all(Rules
     .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', `${rs}-config.json`))))
   const parsedFixSchemas = Promise.all(Fixes
-    .map(fs => jsonfile.readFile(path.resolve(__dirname, 'fixes', `${fs}-config.json`))))
+    .map(f => jsonfile.readFile(path.resolve(__dirname, 'fixes', `${f}-config.json`))))
   const allSchemas = (await Promise.all([parsedFixSchemas, parsedRuleSchemas]))
     .reduce((a, c) => a.concat(c), [])
   // load them into the validator
