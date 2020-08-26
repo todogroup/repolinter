@@ -31,9 +31,12 @@ async function fileContents (fs, options, not = false) {
   }
 
   const results = await Promise.all(files.map(async file => {
-    let fileContents = await fs.getFileContents(file)
+    const fileContents = await fs.getFileContents(file)
     if (fileContents === undefined) {
-      fileContents = ''
+      return new Result(
+        'Did not find file matching the specified patterns',
+        fileList.map(f => { return { passed: false, pattern: f } }),
+        !options['fail-on-non-existent'])
     }
     const regexp = new RegExp(options.content, options.flags)
 
