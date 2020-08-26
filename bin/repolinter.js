@@ -13,7 +13,7 @@ const yaml = require('js-yaml')
 
 // eslint-disable-next-line no-unused-expressions
 require('yargs')
-  .command('lint <directory>', 'run repolinter on the specified directory, outputting results to STDOUT.', yargs => {
+  .command(['lint <directory>', '*'], 'run repolinter on the specified directory, outputting results to STDOUT.', yargs => {
     yargs
       .positional('directory', {
         describe: 'The target directory to lint',
