@@ -38,6 +38,25 @@ describe('package', () => {
       expect(res.results[1].lintResult.targets[0].path).to.equal('lint_tests.js')
     })
 
+    it('returns the correct results for a YAML config', async () => {
+      const res = await repolinter.lint(path.resolve('tests/package'), undefined, false, path.resolve('tests/package/repolinter-yaml.yml'))
+
+      expect(res.results).to.have.length(2)
+      // readme-file-exists rule
+      expect(res.results[0].ruleInfo.name).to.equal('readme-file-exists')
+      expect(res.results[0].ruleInfo.ruleType).to.equal('file-existence')
+      expect(res.results[0].ruleInfo.fixType).to.equal(undefined)
+      expect(res.results[0].lintResult.passed).to.equal(false)
+      // test-file-exists rule
+      expect(res.results[1].ruleInfo.name).to.equal('test-file-exists')
+      expect(res.results[1].ruleInfo.ruleType).to.equal('file-existence')
+      expect(res.results[1].ruleInfo.fixType).to.equal(undefined)
+      expect(res.results[1].lintResult.passed).to.equal(true)
+      expect(res.results[1].lintResult.targets).to.have.length(1)
+      expect(res.results[1].lintResult.targets[0].passed).to.equal(true)
+      expect(res.results[1].lintResult.targets[0].path).to.equal('lint_tests.js')
+    })
+
     it('outputs the same results for new and old-style config', async function () {
       const expected = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default.json'))
       const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default-legacy.json'))

@@ -74,7 +74,7 @@ By default Repolinter will automatically execute fixes as specified by the [rule
 
 ## Rulesets
 
-Similar to how [eslint](https://eslint.org/) uses an [eslintrc](https://eslint.org/docs/user-guide/configuring) file to determine what validation processes will occur, Repolinter uses a JSON configuration file (referred to as a *ruleset*) to determine what checks should be run against a repository. Inside a ruleset, there are two main behaviors that can be configured:
+Similar to how [eslint](https://eslint.org/) uses an [eslintrc](https://eslint.org/docs/user-guide/configuring) file to determine what validation processes will occur, Repolinter uses a JSON or YAML configuration file (referred to as a *ruleset*) to determine what checks should be run against a repository. Inside a ruleset, there are two main behaviors that can be configured:
  * **Rules** - Checks Repolinter should perform against the repository.
  * **Axioms** - External libraries Repolinter should use to conditionally run rules.
 
@@ -84,7 +84,7 @@ These combined capabilities give you fine-grained control over the checks Repoli
 
 Repolinter will pull its configuration from the following sources in order of priority:
 1. A ruleset specified with `--rulesetFile` or `--rulesetUrl`
-2. A `repolint.json` or `repolinter.json` file at the root of the project being linted
+2. A `repolint.json`, `repolinter.json`, `repolint.yaml`, or `repolinter.yaml` file at the root of the project being linted
 3. The [default ruleset](../../rulesets/default.json)
 
 ### Creating a Ruleset
@@ -98,6 +98,14 @@ Any ruleset starts with the following base:
   "rules": {}
 }
 ```
+```YAML
+---
+"$schema": https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rulesets/schema.json
+version: 2
+axioms: {}
+rules:
+```
+Where:
  * **`$schema`**- points to the [JSON schema](../../rulesets/schema.json) for all Repolinter rulesets. This schema both validates the ruleset and makes the ruleset creation process a bit easier.
  * **`version`** - specifies the ruleset version Repolinter should expect. Currently there are two versions: omitted for legacy config ([example](https://github.com/todogroup/repolinter/blob/1a66d77e3a744222a049bdb4041437cbcf26a308/rulesets/default.json)) and `2` for all others. Use `2` unless you know what you're doing.
  * **`axiom`** - The axiom functionality, covered in [Axoms](#axioms).
@@ -126,6 +134,23 @@ Rules are objects of the following format:
   "policyUrl": "..."
 }
 ```
+```YAML
+<rule-name>:
+  level: error | warning | off
+  rule:
+    type: <rule-type>
+    options:
+      <rule-options>
+  where: [condition=*]
+  fix:
+    type: <fix-type>
+    options:
+      <fix-options>
+  policyInfo: >
+    ...
+  policyUrl: >
+    ...
+```
  * **`rule`** - The check to perform. Repolinter can perform any check listed under the [rules documentation](./rules.md). Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the `file-existence` check can be used in a `README-file-exists` rule and a `LICENSE-file-exists` rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.
  * **`level`** - The error level to notify if the check fails. `warning` will not change the exit code and `off` will not run the check.
  * **`where`** - Conditionally enable or disable this rule based off of [axioms](#axioms). Strings in this array follow the format of `<axiom>=<value>`, where value is either an axiom output or `*` to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the [axioms documentation](./axioms).
@@ -143,6 +168,15 @@ A minimal example of a rule that checks for the existence of a `README`:
     }
   }
 }
+```
+```YAML
+readme-file-exists:
+  level: error
+  rule:
+    type: file-existence
+    options:
+      globsAny:
+      - README*
 ```
 
 Checking that the `README` matches a certain hash, and replacing it if not:
@@ -169,6 +203,27 @@ Checking that the `README` matches a certain hash, and replacing it if not:
   "policyUrl": "www.example.com/mycompany"
 }
 ```
+```YAML
+readme-file-up-to-date:
+  level: error
+  rule:
+    type: file-hash
+    options:
+      globsAny:
+      - README*
+      algorithm: sha256
+      hash: "..."
+  fix:
+    type: file-create
+    options:
+      file: README.md
+      replace: true
+      text:
+        url: www.example.com/mytext.txt
+  policyInfo: Gotta keep that readme up to date
+  policyUrl: www.example.com/mycompany
+
+```
 
 #### Axioms
 
@@ -177,6 +232,11 @@ Checking that the `README` matches a certain hash, and replacing it if not:
   "<axiom-id>": "<axiom-target>"
 }
 ```
+```YAML
+axioms:
+  <axiom-id>: axiom-target
+```
+
 Each axiom is configured as a key value pair in the `axioms` object, where `<axiom-id>` specifies the program to run and `<axiom-target>` specifies the target to be used in the `where` conditional. The available axiom IDs can be found in the [axiom documentation](./axioms.md). It should be noted that some axioms require external packages to run.
 
 An example configuration using an axiom to detect the packaging system for a project:
@@ -195,6 +255,19 @@ An example configuration using an axiom to detect the packaging system for a pro
     }
   }
 }
+```
+```YAML
+---
+"$schema": https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json
+version: 2
+axioms:
+  packagers: package-type
+rules:
+  this-only-runs-if-npm:
+    level: error
+    where: [package-type=npm]
+    rule:
+      ...
 ```
 
 ## Going Further

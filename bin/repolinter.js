@@ -9,6 +9,7 @@ const git = require('simple-git/promise')()
 const fetch = require('node-fetch')
 const fs = require('fs')
 const os = require('os')
+const yaml = require('js-yaml')
 
 // eslint-disable-next-line no-unused-expressions
 require('yargs')
@@ -33,12 +34,12 @@ require('yargs')
       })
       .option('rulesetFile', {
         alias: 'r',
-        describe: 'Specify an alternate location for the repolinter.json configuration to use (This will default to repolinter.json at the root of the project, or the internal default ruleset if none is found).',
+        describe: 'Specify an alternate location for the repolinter configuration to use (This will default to repolinter.json/repolinter.yaml at the root of the project, or the internal default ruleset if none is found).',
         type: 'string'
       })
       .option('rulesetUrl', {
         alias: 'u',
-        describe: 'Specify an alternate URL repolinter.json configuration to use (This will default to repolinter.json at the root of the project, or the internal default ruleset if none is found).',
+        describe: 'Specify an alternate URL repolinter configuration to use (This will default to repolinter.json/repolinter.yaml at the root of the project, or the internal default ruleset if none is found).',
         type: 'string'
       })
       .option('git', {
@@ -55,6 +56,8 @@ require('yargs')
       })
   }, async (/** @type {any} */ argv) => {
     let rulesetParsed = null
+    let jsonerror
+    let yamlerror
     // resolve the ruleset if a url is specified
     if (argv.rulesetUrl) {
       const res = await fetch(argv.rulesetUrl)
@@ -63,7 +66,29 @@ require('yargs')
         process.exitCode = 1
         return
       }
-      rulesetParsed = await res.json()
+      const data = await res.text()
+      // attempt to parse as JSON
+      try {
+        rulesetParsed = JSON.parse(data)
+      } catch (e) {
+        jsonerror = e
+      }
+      // attempt to parse as YAML
+      if (!rulesetParsed) {
+        try {
+          rulesetParsed = yaml.safeLoad(data)
+        } catch (e) {
+          yamlerror = e
+        }
+      }
+      // throw an error if neither worked
+      if (!rulesetParsed) {
+        console.log(`Failed to fetch ruleset from URL ${argv.rulesetUrl}:`)
+        console.log(`\tJSON failed with error ${jsonerror && jsonerror.toString()}`)
+        console.log(`\tYAML failed with error ${yamlerror && yamlerror.toString()}`)
+        process.exitCode = 1
+        return
+      }
     }
     let tmpDir = null
     // temporarily clone a git repo to lint

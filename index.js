@@ -5,6 +5,8 @@ const jsonfile = require('jsonfile')
 const Ajv = require('ajv')
 const path = require('path')
 const findConfig = require('find-config')
+const fs = require('fs')
+const yaml = require('js-yaml')
 // eslint-disable-next-line no-unused-vars
 const Result = require('./lib/result')
 const RuleInfo = require('./lib/ruleinfo')
@@ -108,17 +110,45 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
   fileSystem.targetDir = targetDir
   if (filterPaths.length > 0) { fileSystem.filterPaths = filterPaths }
 
-  let rulesetPath
+  let rulesetPath = null
   if (typeof ruleset === 'string') {
-    rulesetPath = ruleset
-    ruleset = await jsonfile.readFile(path.resolve(targetDir, rulesetPath))
+    rulesetPath = path.resolve(targetDir, ruleset)
   } else if (!ruleset) {
     rulesetPath = findConfig('repolint.json', { cwd: targetDir }) ||
+      findConfig('repolint.yaml', { cwd: targetDir }) ||
+      findConfig('repolint.yml', { cwd: targetDir }) ||
       findConfig('repolinter.json', { cwd: targetDir }) ||
+      findConfig('repolinter.yaml', { cwd: targetDir }) ||
+      findConfig('repolinter.yml', { cwd: targetDir }) ||
       path.join(__dirname, 'rulesets/default.json')
-    ruleset = await jsonfile.readFile(rulesetPath)
   }
-
+  if (rulesetPath !== null) {
+    const extension = path.extname(rulesetPath)
+    try {
+      const file = await fs.promises.readFile(rulesetPath, 'utf-8')
+      if (extension === '.yaml' || extension === '.yml') {
+        ruleset = yaml.safeLoad(file)
+      } else {
+        ruleset = JSON.parse(file)
+      }
+    } catch (e) {
+      return {
+        params: {
+          targetDir,
+          filterPaths,
+          rulesetPath,
+          ruleset
+        },
+        passed: false,
+        errored: true,
+        /** @ts-ignore */
+        errMsg: e && e.toString(),
+        results: [],
+        targets: {},
+        formatOptions: ruleset.formatOptions
+      }
+    }
+  }
   // validate config
   const val = await validateConfig(ruleset)
   if (!val.passed) {
