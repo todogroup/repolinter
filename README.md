@@ -148,9 +148,9 @@ Rules are objects of the following format:
     type: <fix-type>
     options:
       <fix-options>
-  policyInfo: >
+  policyInfo: >-
     ...
-  policyUrl: >
+  policyUrl: >-
     ...
 ```
  * **`rule`** - The check to perform. Repolinter can perform any check listed under the [rules documentation](./docs/md/rules.md). Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the `file-existence` check can be used in a `README-file-exists` rule and a `LICENSE-file-exists` rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.
