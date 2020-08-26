@@ -101,8 +101,6 @@ Any ruleset starts with the following base:
 }
 ```
 ```YAML
----
-"$schema": https://raw.githubusercontent.com/prototypicalpro/repolinter/master/rulesets/schema.json
 version: 2
 axioms: {}
 rules:
@@ -259,8 +257,6 @@ An example configuration using an axiom to detect the packaging system for a pro
 }
 ```
 ```YAML
----
-"$schema": https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json
 version: 2
 axioms:
   packagers: package-type
