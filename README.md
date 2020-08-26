@@ -1,5 +1,7 @@
 # ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) ![Build Status](https://github.com/todogroup/repolinter/workflows/Build/badge.svg)
 
+Lint open source repositories for common issues.
+
 ## Installation
 
 Repolinter requires [Node.JS](https://nodejs.org/en/) >= v10 to function properly. Once Node.JS is installed, you can install repolinter using `npm`:
@@ -114,20 +116,20 @@ Where:
 #### Rules
 
 Rules are objects of the following format:
-```JSON
+```JavaScript
 "<rule-name>": {
   "level": "error" | "warning" | "off",
   "rule": {
     "type": "<rule-type>",
     "options": {
-      <rule-options>
+      // <rule-options>
     }
   },
   "where": ["condition=*"],
   "fix": {
     "type": "<fix-type>",
     "options": {
-      <fix-options>
+      // <fix-options>
     }
   },
   "policyInfo": "...",
@@ -240,7 +242,7 @@ axioms:
 Each axiom is configured as a key value pair in the `axioms` object, where `<axiom-id>` specifies the program to run and `<axiom-target>` specifies the target to be used in the `where` conditional. The available axiom IDs can be found in the [axiom documentation](./docs/md/axioms.md). It should be noted that some axioms require external packages to run.
 
 An example configuration using an axiom to detect the packaging system for a project:
-```JSON
+```JavaScript
 {
   "$schema": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json",
   "version": 2,
@@ -251,7 +253,7 @@ An example configuration using an axiom to detect the packaging system for a pro
     "this-only-runs-if-npm": {
       "level": "error",
       "where": ["package-type=npm"],
-      "rule": { ... }
+      "rule": { /* ... */ }
     }
   }
 }
