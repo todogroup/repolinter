@@ -49,8 +49,6 @@ describe('lib', () => {
     })
 
     describe('findFirstFile', function () {
-      this.retries(3)
-
       it('should return the first element of findAllFiles', async () => {
         const includedDirectories = ['lib/', 'rules/']
         const fs = new FileSystem(path.resolve('./tests'), includedDirectories)
