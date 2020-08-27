@@ -1,8 +1,14 @@
 {
+  "axioms": {
+    "contributor-count": "contributor-count"
+  },
   "rules": {
     "all": {
       "readme-file-exists:file-existence": ["error", {"files": ["README*"]}],
       "test-exists:file-existence": ["error", {"files": ["repolinter_tests.js"]}]
+    },
+    "contributor-count>10": {
+      "contributing-file-exists:file-existence": ["info", {"files": ["CONTRIB*"]}]
     }
   }
 }
