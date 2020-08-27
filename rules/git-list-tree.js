@@ -4,29 +4,7 @@
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
-const FileSystem = require/**
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * cccccccccccccccccccccccccc * @param targetDir
- * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
- * @param targetDir
- */
-('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 function gitAllCommits (targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']

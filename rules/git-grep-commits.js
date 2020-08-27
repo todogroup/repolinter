@@ -4,53 +4,7 @@
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
-const FileSystem = require/**
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc *
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
-cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc * @param fileSystem
-cccccccccccccccccccccccccc * @param options
-cccccccccccccccccccccccccc */
-('../lib/file_system')
+const FileSystem = require('../lib/file_system')
 
 function listCommitsWithLines (fileSystem, options) {
   const pattern = '(' + options.denylist.join('|') + ')'
