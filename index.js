@@ -100,12 +100,12 @@ module.exports.resultFormatter = exports.defaultFormatter
  *
  * @param {string} targetDir The directory of the repository to lint.
  * @param {string[]} [filterPaths] A list of directories to allow linting of, or [] for all.
- * @param {boolean} [dryRun] If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @param {object|string|null} [ruleset] A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
  * Set to null for repolinter to automatically find it in the repository.
+ * @param {boolean} [dryRun] If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<LintResult>} An object representing the output of the linter
  */
-async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null) {
+async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false) {
   const fileSystem = new FileSystem()
   fileSystem.targetDir = targetDir
   if (filterPaths.length > 0) { fileSystem.filterPaths = filterPaths }

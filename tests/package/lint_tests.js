@@ -39,7 +39,7 @@ describe('package', () => {
     })
 
     it('returns the correct results for a YAML config', async () => {
-      const res = await repolinter.lint(path.resolve('tests/package'), undefined, false, path.resolve('tests/package/repolinter-yaml.yml'))
+      const res = await repolinter.lint(path.resolve('tests/package'), undefined, path.resolve('tests/package/repolinter-yaml.yml'))
 
       expect(res.results).to.have.length(2)
       // readme-file-exists rule
@@ -58,8 +58,8 @@ describe('package', () => {
     })
 
     it('outputs the same results for new and old-style config', async function () {
-      const expected = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default.json'))
-      const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/default-legacy.json'))
+      const expected = await repolinter.lint(path.resolve('tests/package'), [], path.resolve('tests/package/default.json'))
+      const actual = await repolinter.lint(path.resolve('tests/package'), [], path.resolve('tests/package/default-legacy.json'))
 
       expect(expected.errored).to.equal(false)
       expect(actual.errored).to.equal(false)
@@ -76,7 +76,7 @@ describe('package', () => {
     })
 
     it('passes through formatOptions', async function () {
-      const actual = await repolinter.lint(path.resolve('tests/package'), [], false, path.resolve('tests/package/repolinter-formatter-opts.json'))
+      const actual = await repolinter.lint(path.resolve('tests/package'), [], path.resolve('tests/package/repolinter-formatter-opts.json'))
       expect(actual.formatOptions).to.deep.equal({ hello: 'world' })
     })
   })

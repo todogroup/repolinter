@@ -77,7 +77,7 @@ describe('cli', function () {
   })
 
   it('runs repolinter from the CLI using a config file', async () => {
-    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, undefined, false, 'repolinter-other.json'), false))
+    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, undefined, 'repolinter-other.json'), false))
     const [actual, actual2, actual3] = await Promise.all([
       execAsync(`${repolinterPath} lint ${selfPath} -r repolinter-other.json`),
       execAsync(`${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other.json`),
@@ -93,7 +93,7 @@ describe('cli', function () {
   })
 
   it('runs repolinter from the CLI using a YAML config file', async () => {
-    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, undefined, false, 'repolinter-other.yml'), false))
+    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, undefined, 'repolinter-other.yml'), false))
     const [actual, actual2, actual3] = await Promise.all([
       execAsync(`${repolinterPath} lint ${selfPath} -r repolinter-other.yml`),
       execAsync(`${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other.yml`),
@@ -135,7 +135,7 @@ describe('cli', function () {
 
     let expected, actual, actual2, actual3
     try {
-      expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], false, 'repolinter-other.json'), false))
+      expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], 'repolinter-other.json'), false))
       const [act1, act2, act3] = await Promise.all([
         execAsync(`${repolinterPath} lint ${selfPath} --rulesetUrl http://localhost:9000/repolinter-other.json`),
         execAsync(`${repolinterPath} lint ${selfPath} --ruleset-url http://localhost:9000/repolinter-other.json`),
@@ -171,7 +171,7 @@ describe('cli', function () {
 
     let expected, actual, actual2, actual3
     try {
-      expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], false, 'repolinter-other.yml'), false))
+      expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], 'repolinter-other.yml'), false))
       const [act1, act2, act3] = await Promise.all([
         execAsync(`${repolinterPath} lint ${selfPath} --rulesetUrl http://localhost:9000/repolinter-other.yml`),
         execAsync(`${repolinterPath} lint ${selfPath} --ruleset-url http://localhost:9000/repolinter-other.yml`),

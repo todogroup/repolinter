@@ -103,7 +103,7 @@ require('yargs')
       }
     }
     // run the linter
-    const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, argv.dryRun, rulesetParsed || argv.rulesetFile)
+    const output = await repolinter.lint(tmpDir || path.resolve(process.cwd(), argv.directory), argv.allowPaths, rulesetParsed || argv.rulesetFile, argv.dryRun)
     // create the output
     let formatter
     if (argv.format && argv.format.toLowerCase() === 'json') {

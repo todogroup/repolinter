@@ -58,7 +58,7 @@ declare interface Formatter {
     formatOutput(output: LintResult, dryRun: boolean): string
 }
 
-export declare function lint(targetDir: string, filterPaths?: string[], dryRun?: boolean, ruleset?: any): Promise<LintResult>
+export declare function lint(targetDir: string, filterPaths?: string[], ruleset?: any, dryRun?: boolean): Promise<LintResult>
 export declare function runRuleset(ruleset: RuleInfo[], targets: boolean|{ [key: string]: Result }, dryRun: boolean): Promise<FormatResult[]>
 export declare function determineTargets(axiomconfig: any, fs: FileSystem): Promise<{ [key: string]: Result }>
 export declare function validateConfig(config: any): Promise<{ passed: boolean, error?: string }>
