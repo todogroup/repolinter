@@ -4,7 +4,29 @@
 // eslint-disable-next-line no-unused-vars
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
-const FileSystem = require('../lib/file_system')
+const FileSystem = require/**
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * cccccccccccccccccccccccccc * @param options
+ * cccccccccccccccccccccccccc cccccccccccccccccccccccccc
+ * @param options
+ */
+('../lib/file_system')
 
 function getContent (options) {
   return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content

@@ -19,7 +19,7 @@ const Axioms = require('./axioms/axioms')
 /**
  * @typedef {object} Formatter
  *
- * @property {(output: LintResult, dryRun: boolean) => string} formatOutput A function to format the entire linter output
+ * @property {func} formatOutput A function to format the entire linter output
  */
 
 /**
@@ -79,8 +79,13 @@ module.exports.resultFormatter = exports.defaultFormatter
 /**
  * @typedef {object} LintResult
  *
- * @property {{ targetDir: string, filterPaths: string[], rulesetPath?: string, ruleset: object }} params
+ * @property {Object} params
  * The parameters to the lint function call, including the found/supplied ruleset object.
+ * @property {string} params.targetDir
+ * @property {string[]} params.filterPaths
+ * @property {string} [params.rulesetPath]
+ * @property {Object} params.ruleset
+ *
  * @property {boolean} passed Whether or not all lint rules and fix rules succeeded. Will be false if an error occurred during linting.
  * @property {boolean} errored Whether or not an error occurred during the linting process (ex. the configuration failed validation).
  * @property {string} [errMsg] A string indication error information, will be present if errored is true.
@@ -209,7 +214,7 @@ async function lint (targetDir, filterPaths = [], dryRun = false, ruleset = null
  * is for rules. This function is split in three to allow NCC to
  * statically determine the modules to resolve.
  *
- * @returns {Promise<Object.<string, () => any>>}
+ * @return {Promise<Object>}
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadRules () {
@@ -229,7 +234,7 @@ async function loadRules () {
  * is for fixes. This function is split in three to allow NCC to
  * statically determine the modules to resolve.
  *
- * @returns {Promise<Object.<string, () => any>>}
+ * @returns {Promise<Object>}
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadFixes () {
@@ -249,7 +254,7 @@ async function loadFixes () {
  * is for Axioms. This function is split in three to allow NCC to
  * statically determine the modules to resolve.
  *
- * @returns {Promise<Object.<string, () => any>>}
+ * @returns {Promise}
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadAxioms () {
@@ -298,7 +303,6 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
     let result
     try {
       // load the rule
-      /** @type {(fs: FileSystem, options: object) => Promise<Result> | Result} */
       const ruleFunc = allRules[r.ruleType]()
       // run the rule!
       result = await ruleFunc(fileSystem, r.ruleConfig)
@@ -314,7 +318,6 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
     if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
     let fixresult
     try {
-      /** @type {(fs: FileSystem, options: object, targets: string[], dryRun: boolean) => Promise<Result> | Result} */
       const fixFunc = allFixes[r.fixType]()
       fixresult = await fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
     } catch (e) {
@@ -333,7 +336,7 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
  *
  * @param {object} axiomconfig A configuration conforming to the "axioms" section in schema.json
  * @param {FileSystem} fs The filesystem to run axioms against
- * @returns {Promise<Object.<string, Result>>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
+ * @returns {Promise<Result[]>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
  */
 async function determineTargets (axiomconfig, fs) {
   // load axioms
@@ -353,7 +356,7 @@ async function determineTargets (axiomconfig, fs) {
  * Validate a repolint configuration against a known JSON schema
  *
  * @param {object} config The configuration to validate
- * @returns {Promise<{ passed: boolean, error?: string }>} Whether or not the config validation succeeded
+ * @returns {Promise<Rules[]>} Whether or not the config validation succeeded
  */
 async function validateConfig (config) {
   // compile the json schema
