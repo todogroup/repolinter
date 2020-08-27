@@ -15,7 +15,7 @@ Once installed, run the following to lint a directory:
 ```sh
 repolinter lint <directory>
 ```
-The above command will lint `<directory>` with the local `repolinter.json` or the [default ruleset](./rulesets/default.json) if none is found, output the result to the stdout, and set the exit code based on the lint result:
+The above command will lint `<directory>` with the local `repolinter.json` ruleset or the [default ruleset](./rulesets/default.json) if none is found:
 ```console
 repolinter % repolinter lint .
 Target directory: <directory>
@@ -32,19 +32,17 @@ repolinter % echo $?
 
 ## Linting a Remote Repository
 
-Repolinter also supports linting a git repository using the `--git` flag. With this flag enabled, the directory input will be interpreted as a git URL instead:
+Repolinter also supports linting a git repository using the `--git` flag. With this flag enabled, the directory input will be interpreted as a git URL which Repolinter will automatically clone into a temporary directory.
 ```sh
 repolinter lint -g https://github.com/todogroup/repolinter.git
 ```
 
-## Using Alternate Formatters
+## Formatting the Output
 
-The Repolinter CLI currently supports three formatting modes:
+The Repolinter CLI currently supports three output formatting modes:
 * Default (also referred to as result)
 * JSON
 * Markdown
-
-Support for additional formatters is enabled through the [developer API](./docs/md/development.md).
 
 You can switch formatters using the `--format` flag. An example of using the JSON formatter:
 ```console
@@ -74,7 +72,7 @@ repolinter lint --allowPaths ./a/path --allowPaths /another/path
 
 By default Repolinter will automatically execute fixes as specified by the [ruleset](#rulesets). If this is not desired functionality, you can disable this with the `--dryRun` flag.
 
-## Rulesets
+## Ruleset Configuration
 
 Similar to how [eslint](https://eslint.org/) uses an [eslintrc](https://eslint.org/docs/user-guide/configuring) file to determine what validation processes will occur, Repolinter uses a JSON or YAML configuration file (referred to as a *ruleset*) to determine what checks should be run against a repository. Inside a ruleset, there are two main behaviors that can be configured:
  * **Rules** - Checks Repolinter should perform against the repository.
@@ -91,7 +89,7 @@ Repolinter will pull its configuration from the following sources in order of pr
 
 ### Creating a Ruleset
 
-Any ruleset starts with the following base:
+Any ruleset starts with the following base, shown in both JSON and YAML format:
 ```JSON
 {
   "$schema": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json",
@@ -154,7 +152,7 @@ Rules are objects of the following format:
  * **`rule`** - The check to perform. Repolinter can perform any check listed under the [rules documentation](./docs/md/rules.md). Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the `file-existence` check can be used in a `README-file-exists` rule and a `LICENSE-file-exists` rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.
  * **`level`** - The error level to notify if the check fails. `warning` will not change the exit code and `off` will not run the check.
  * **`where`** - Conditionally enable or disable this rule based off of [axioms](#axioms). Strings in this array follow the format of `<axiom>=<value>`, where value is either an axiom output or `*` to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the [axioms documentation](./docs/rules/axioms).
- * **`fix`** *(optional)* - The action to perform if the check fails. Repolinter can perform any action listed under [fixes documentation](./docs/md/fixes.md).
+ * **`fix`** *(optional)* - The action to perform if the check performed by `rule` fails. Repolinter can perform any action listed under [fixes documentation](./docs/md/fixes.md).
  * **`policyInfo`**, **`policyUrl`** *(optional)* - Information used by the formatter to indicate why the check exists from a policy perspective. Note: `policyInfo` will automatically have a period appended to it for formatting purposes.
 
 A minimal example of a rule that checks for the existence of a `README`:
@@ -268,13 +266,22 @@ rules:
       ...
 ```
 
+## API
+
+Repolinter also includes an extensible JavaScript API:
+```JavaScript
+const repolinter = require('repolinter')
+const result = await repolinter.lint('.')
+```
+
+This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under [API Documentation]().
+
 ## Going Further
 
  * [Rule Reference](./docs/md/rules.md)
  * [Fix Reference](./docs/md/fixes.md)
  * [Axiom Reference](./docs/md/axioms.md)
  * [Developer Guide](./docs/md/development.md)
-
 
 ## License
 

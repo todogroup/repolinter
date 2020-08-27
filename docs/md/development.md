@@ -1,13 +1,13 @@
 # Development
 
 Repolinter is broken down into 7 main components, each of which is contained in a subfolder:
- * **Axioms** - located under [axioms](../axioms)
- * **CLI** - located under [bin](../bin)
- * **Rules** - located under [rules](../rules)
- * **Fixes** - located under [fixes](../fixes)
- * **Formatters** - located under [formatters](../formatters)
- * **Utilities** - located under [lib](../lib)
- * **Built-In Rulesets and Schema** - located under [rulesets](../rulesets)
+ * **Axioms** - located under [axioms](../../axioms)
+ * **CLI** - located under [bin](../../bin)
+ * **Rules** - located under [rules](../../rules)
+ * **Fixes** - located under [fixes](../../fixes)
+ * **Formatters** - located under [formatters](../../formatters)
+ * **Utilities** - located under [lib](../../lib)
+ * **Built-In Rulesets and Schema** - located under [rulesets](../../rulesets)
 
 ## Axioms
 
@@ -90,10 +90,10 @@ The fix implementation is encouraged to use `Result#targets` to show the individ
 
 ## Formatters
 
-Formatters are exported by [index.js](../../index.js), and manually implemented in the [CLI](../../bin/repolinter.js). A formatter implementation consists of the following interface:
+Formatters are exported by [index.js](../../index.js) and manually called by the [CLI](../../bin/repolinter.js). A formatter implementation consists of the following interface:
 ```TypeScript
 interface Formatter {
-  function formatOutput(output: LintResult, dryRun: boolean): string
+  formatOutput(output: LintResult, dryRun: boolean): string
 }
 ```
 Formatters do not print to `STDOUT` instead choosing to return the output as a string.
