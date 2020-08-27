@@ -8,9 +8,9 @@ const expect = chai.expect
 
 describe('linguist', function () {
   this.timeout(30000)
-  const licenseeInstalled = commandExists('github-linguist')
+  const linguistInstalled = commandExists('github-linguist')
 
-  if (!licenseeInstalled) {
+  if (!linguistInstalled) {
     it.skip('tests linguist functionality', () => {})
   } else {
     const linguistAxiom = require('../../axioms/linguist')

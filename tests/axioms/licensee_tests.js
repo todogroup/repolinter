@@ -6,8 +6,9 @@ const path = require('path')
 const chai = require('chai')
 const expect = chai.expect
 
-describe('licensee', () => {
+describe('licensee', function () {
   const licenseeInstalled = commandExists('licensee')
+  this.timeout(30000)
 
   if (!licenseeInstalled) {
     it.skip('tests licensee functionality', () => {})
