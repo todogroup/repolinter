@@ -11,11 +11,19 @@ function gitAllCommits (targetDir) {
   return spawnSync('git', args).stdout.toString().split('\n')
 }
 
+/**
+ * @param targetDir
+ * @param commit
+ */
 function gitFilesAtCommit (targetDir, commit) {
   const args = ['-C', targetDir, 'ls-tree', '-r', '--name-only', commit]
   return spawnSync('git', args).stdout.toString().split('\n')
 }
 
+/**
+ * @param fileSystem
+ * @param options
+ */
 function listFiles (fileSystem, options) {
   const files = []
 

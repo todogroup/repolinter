@@ -16,12 +16,18 @@ function grepLog (fileSystem, options) {
   return parseLog(log)
 }
 
+/**
+ * @param log
+ */
 function parseLog (log) {
   const logEntries = log.split('\ncommit ').filter(x => !!x)
 
   return logEntries.map(entry => extractInfo(entry))
 }
 
+/**
+ * @param commit
+ */
 function extractInfo (commit) {
   const [hash, , , ...message] = commit.split('\n')
   return {

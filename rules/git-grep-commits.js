@@ -18,16 +18,31 @@ function listCommitsWithLines (fileSystem, options) {
   }).filter(commit => commit.lines.length > 0)
 }
 
+/**
+ * @param targetDir
+ */
 function gitAllCommits (targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']
   return spawnSync('git', args).stdout.toString().trim().split('\n')
 }
 
+/**
+ * @param targetDir
+ * @param pattern
+ * @param ignoreCase
+ * @param commit
+ */
 function gitGrep (targetDir, pattern, ignoreCase, commit) {
   const args = ['-C', targetDir, 'grep', '-E', ignoreCase ? '-i' : '', pattern, commit]
   return spawnSync('git', args).stdout.toString().split('\n').filter(x => !!x)
 }
 
+/**
+ * @param targetDir
+ * @param pattern
+ * @param ignoreCase
+ * @param commit
+ */
 function gitLinesAtCommit (targetDir, pattern, ignoreCase, commit) {
   const lines = gitGrep(targetDir, pattern, ignoreCase, commit)
     .map((entry) => {
@@ -38,6 +53,10 @@ function gitLinesAtCommit (targetDir, pattern, ignoreCase, commit) {
   return lines
 }
 
+/**
+ * @param fileSystem
+ * @param options
+ */
 function listFiles (fileSystem, options) {
   const files = []
 
