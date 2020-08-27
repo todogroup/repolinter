@@ -30,7 +30,7 @@
                   "denylist": ["secret", "password"],
                   "ignoreCase": true
               }
-          } 
+          }
       }
   }
 }

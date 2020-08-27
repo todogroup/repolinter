@@ -8,7 +8,7 @@
       "all": {
         "license-file-exists:file-existence": ["error", {"files": ["LICENSE*", "COPYING*"], "nocase": true}],
         "readme-file-exists:file-existence": ["error", {"files": ["README*"], "nocase": true}],
-  
+
         "contributing-file-exists:file-existence": ["error", {"files": ["{docs/,.github/,}CONTRIB*"]}],
         "code-of-conduct-file-exists:file-existence": ["error", {"files": [
           "{docs/,.github/,}CODEOFCONDUCT*", "{docs/,.github/,}CODE-OF-CONDUCT*", "{docs/,.github/,}CODE_OF_CONDUCT*"
@@ -23,13 +23,13 @@
           "error",
           {
             "files": [
-              ".gitlab-ci.yml", 
-              ".travis.yml", 
-              "appveyor.yml", 
-              ".appveyor.yml", 
-              "circle.yml", 
-              ".circleci/config.yml", 
-              "Jenkinsfile", 
+              ".gitlab-ci.yml",
+              ".travis.yml",
+              "appveyor.yml",
+              ".appveyor.yml",
+              "circle.yml",
+              ".circleci/config.yml",
+              "Jenkinsfile",
               ".drone.yml",
               ".github/workflows/*",
               "azure-pipelines.yml"
