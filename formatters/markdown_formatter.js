@@ -27,6 +27,7 @@ const COLLAPSE_BOTTOM = '</details>'
 /**
  * Optionally add prefix or suffix to a string if it's truthy.
  *
+ * @private
  * @param {string?} pre The optional prefix
  * @param {string?} base The base string
  * @param {string?} [suf] The optional suffix
@@ -37,6 +38,12 @@ function opWrap (pre, base, suf) {
   return ''
 }
 
+/**
+ * A markdown formatter for Repolinter output, designed to be used with GH issues.
+ * Exported as markdownFormatter.
+ *
+ * @protected
+ */
 class MarkdownFormatter {
   /**
    * Creates a header for a rule-output block.
@@ -153,7 +160,7 @@ class MarkdownFormatter {
    * @returns {Object.<string, FormatResult[]>} The object representing sorted results.
    */
   static sortResults (results) {
-    /** @type {Object.<string, FormatResult[]>} */
+    /** @ignore @type {Object.<string, FormatResult[]>} */
     const out = {}
     for (const key of FormatResult.getAllStatus()) {
       out[key] = []
@@ -181,7 +188,7 @@ ${collapse ? `\n${COLLAPSE_BOTTOM}` : ''}`
 
   /**
    *
-   * @param {import('..').LintResult} output The linter output to format
+   * @param {LintResult} output The linter output to format
    * @param {string} [output.formatOptions.disclaimer] A disclaimer to put at the top of the markdown document.
    * @param {boolean?} [dryRun] Whether or not to print fix "suggested" or "applied"
    * @returns {string} The formatted output

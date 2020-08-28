@@ -1,6 +1,8 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+/** @module repolinter */
+
 const jsonfile = require('jsonfile')
 const Ajv = require('ajv')
 const path = require('path')
@@ -17,9 +19,8 @@ const Fixes = require('./fixes/fixes')
 const Axioms = require('./axioms/axioms')
 
 /**
- * @typedef {object} Formatter
- *
- * @property {func} formatOutput A function to format the entire linter output
+ * @typedef {Object} Formatter
+ * @property {function(LintResult, boolean): string} formatOutput A function to format the entire linter output.
  */
 
 /**
@@ -77,21 +78,21 @@ module.exports.markdownFormatter = require('./formatters/markdown_formatter')
 module.exports.resultFormatter = exports.defaultFormatter
 
 /**
- * @typedef {object} LintResult
+ * @typedef {Object} LintResult
  *
  * @property {Object} params
  * The parameters to the lint function call, including the found/supplied ruleset object.
- * @property {string} params.targetDir
- * @property {string[]} params.filterPaths
- * @property {string} [params.rulesetPath]
- * @property {Object} params.ruleset
+ * @property {string} params.targetDir The target directory repolinter was called with. May also be a git URL.
+ * @property {string[]} params.filterPaths The filter paths repolinter was called with.
+ * @property {string?} [params.rulesetPath] The path to the ruleset configuration repolinter was called with.
+ * @property {Object} params.ruleset The deserialized ruleset that Repolinter ran.
  *
  * @property {boolean} passed Whether or not all lint rules and fix rules succeeded. Will be false if an error occurred during linting.
  * @property {boolean} errored Whether or not an error occurred during the linting process (ex. the configuration failed validation).
  * @property {string} [errMsg] A string indication error information, will be present if errored is true.
  * @property {FormatResult[]} results The output of all the linter rules.
  * @property {Object.<string, Result>} targets An object representing axiom type: axiom targets.
- * @property {object} [formatOptions] Additional options to pass to the formatter, generated from the output or config.
+ * @property {Object} [formatOptions] Additional options to pass to the formatter, generated from the output or config.
  */
 
 /**
@@ -103,9 +104,10 @@ module.exports.resultFormatter = exports.defaultFormatter
  * an error on failure, instead indicating that an error has
  * ocurred in returned value.
  *
+ * @memberof repolinter
  * @param {string} targetDir The directory of the repository to lint.
  * @param {string[]} [filterPaths] A list of directories to allow linting of, or [] for all.
- * @param {object|string|null} [ruleset] A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
+ * @param {Object|string|null} [ruleset] A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
  * Set to null for repolinter to automatically find it in the repository.
  * @param {boolean} [dryRun] If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<LintResult>} An object representing the output of the linter
@@ -146,7 +148,7 @@ async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false
         },
         passed: false,
         errored: true,
-        /** @ts-ignore */
+        /** @ignore */
         errMsg: e && e.toString(),
         results: [],
         targets: {},
@@ -166,7 +168,7 @@ async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false
       },
       passed: false,
       errored: true,
-      /** @ts-ignore */
+      /** @ignore */
       errMsg: val.error,
       results: [],
       targets: {},
@@ -176,7 +178,7 @@ async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false
   // parse it
   const configParsed = parseConfig(ruleset)
   // determine axiom targets
-  /** @type {Object.<string, Result>} */
+  /** @ignore @type {Object.<string, Result>} */
   let targetObj = {}
   // Identify axioms and execute them
   if (ruleset.axioms) { targetObj = await determineTargets(ruleset.axioms, fileSystem) }
@@ -214,7 +216,8 @@ async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false
  * is for rules. This function is split in three to allow NCC to
  * statically determine the modules to resolve.
  *
- * @return {Promise<Object>}
+ * @private
+ * @returns {Promise<Object.<string, Function>>}
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadRules () {
@@ -234,7 +237,8 @@ async function loadRules () {
  * is for fixes. This function is split in three to allow NCC to
  * statically determine the modules to resolve.
  *
- * @returns {Promise<Object>}
+ * @private
+ * @returns {Promise<Object.<string, Function>>}
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadFixes () {
@@ -254,7 +258,8 @@ async function loadFixes () {
  * is for Axioms. This function is split in three to allow NCC to
  * statically determine the modules to resolve.
  *
- * @returns {Promise}
+ * @private
+ * @returns {Promise<Object.<string, Function>>}
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadAxioms () {
@@ -268,6 +273,7 @@ async function loadAxioms () {
  * Run all operations in a ruleset, including linting and fixing. Returns
  * a list of objects with the output of the linter rules
  *
+ * @memberof repolinter
  * @param {RuleInfo[]} ruleset A ruleset (list of rules with information about each). This parameter can be generated from a config using parseConfig.
  * @param {Object.<string, Result>|boolean} targets The axiom targets to enable for this run of the ruleset. Structure is from the output of determineTargets. Use true for all targets.
  * @param {FileSystem} fileSystem A filesystem object configured with filter paths and a target directory.
@@ -334,9 +340,10 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
  * Given an axiom configuration, determine the appropriate targets to run against
  * (e.g. "target=javascript").
  *
- * @param {object} axiomconfig A configuration conforming to the "axioms" section in schema.json
+ * @memberof repolinter
+ * @param {Object} axiomconfig A configuration conforming to the "axioms" section in schema.json
  * @param {FileSystem} fs The filesystem to run axioms against
- * @returns {Promise<Result[]>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
+ * @returns {Promise<Object.<string, Result>>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
  */
 async function determineTargets (axiomconfig, fs) {
   // load axioms
@@ -355,8 +362,11 @@ async function determineTargets (axiomconfig, fs) {
 /**
  * Validate a repolint configuration against a known JSON schema
  *
- * @param {object} config The configuration to validate
- * @returns {Promise<Rules[]>} Whether or not the config validation succeeded
+ * @memberof repolinter
+ * @param {Object} config The configuration to validate
+ * @returns {Promise<Object>}
+ * A object representing or not the config validation succeeded (passed)
+ * an an error message if not (error)
  */
 async function validateConfig (config) {
   // compile the json schema
@@ -387,7 +397,8 @@ async function validateConfig (config) {
  * Parse a JSON object config (with repolinter.json structure) and return a list
  * of RuleInfo objects which will then be used to determine how to run the linter.
  *
- * @param {object} config The repolinter.json config
+ * @memberof repolinter
+ * @param {Object} config The repolinter.json config
  * @returns {RuleInfo[]} The parsed rule data
  */
 function parseConfig (config) {
@@ -429,8 +440,12 @@ function parseConfig (config) {
     .reduce((a, c) => a.concat(c))
 }
 
-exports.runRuleset = runRuleset
-exports.determineTargets = determineTargets
-exports.validateConfig = validateConfig
-exports.parseConfig = parseConfig
-exports.lint = lint
+module.exports.runRuleset = runRuleset
+module.exports.determineTargets = determineTargets
+module.exports.validateConfig = validateConfig
+module.exports.parseConfig = parseConfig
+module.exports.lint = lint
+module.exports.Result = Result
+module.exports.RuleInfo = RuleInfo
+module.exports.FileSystem = FileSystem
+module.exports.FormatResult = FormatResult

@@ -11,6 +11,7 @@ const Result = require('../lib/result')
  * Pads a string with a space if the string exists,
  * returns the falsey input value otherwise.
  *
+ * @private
  * @param {string?} string The string or null input
  * @returns {string} A padded string or empty string
  */
@@ -18,6 +19,11 @@ function frontSpace (string) {
   return string ? (' ' + string) : ''
 }
 
+/**
+ * The default CLI formatter. Exported as defaultFormatter and resultFormatter.
+ *
+ * @protected
+ */
 class SymbolFormatter {
   /**
    * Format a FormatResult object into a line of human-readable text.
@@ -58,7 +64,7 @@ class SymbolFormatter {
 
   /**
    *
-   * @param {import('..').LintResult} output The linter output to format
+   * @param {LintResult} output The linter output to format
    * @param {boolean} dryRun Whether or not to generate in "report" format
    * @returns {string} The formatted output
    */
