@@ -274,13 +274,14 @@ const repolinter = require('repolinter')
 const result = await repolinter.lint('.')
 ```
 
-This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under [API Documentation]().
+This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under [API Documentation](https://newrelic-forks.github.io/repolinter/#api-reference).
 
 ## Going Further
 
  * [Rule Reference](./docs/md/rules.md)
  * [Fix Reference](./docs/md/fixes.md)
  * [Axiom Reference](./docs/md/axioms.md)
+ * [API Reference](https://newrelic-forks.github.io/repolinter/#api-reference)
  * [Developer Guide](./docs/md/development.md)
 
 ## License

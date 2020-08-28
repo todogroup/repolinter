@@ -55,6 +55,7 @@ jobs:
         run: npm test
 
   documentation:
+    name: Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
