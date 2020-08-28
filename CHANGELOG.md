@@ -11,6 +11,7 @@
    * `async` was added to the function interface.
  * Major changes have been make to the [JSON Formatter](index.js) to accommodate the structure change of `LintResult`.
  * Non top-level configuration support (ex. `targetdir/otherdir/repolinter.json` would trigger another lint of `otherdir`) has been removed for now.
+ * Renamed several rule options to more clearly convey functionality (`files` -> `globsAny`) and remove problematic language (`blacklist` -> `denylist`). Backwards compatibility for old property names in version 1 rulesets is still maintained, however the schema will fail to validate in version 2.
  * Some slight changes have been made to the default formatter to accommodate the feature list below.
 
 ### Features

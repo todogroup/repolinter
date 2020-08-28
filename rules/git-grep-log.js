@@ -43,6 +43,9 @@ function extractInfo (commit) {
  * @returns {Result} The lint rule result
  */
 function gitGrepLog (fs, options) {
+  // backwards compatibility with blacklist
+  options.denylist = options.denylist || options.blacklist
+
   const commits = grepLog(fs, options)
 
   const targets = commits.map(commit => {

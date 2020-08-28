@@ -31,6 +31,18 @@ describe('rule', () => {
       expect(actual.message).to.contain(ruleopts.denylist[0])
     })
 
+    it('is backwards compatible with blacklist', () => {
+      const ruleopts = {
+        blacklist: [DIFF_WRONG_CASE],
+        ignoreCase: false
+      }
+
+      const actual = gitGrepCommits(new FileSystem(), ruleopts)
+
+      expect(actual.passed).to.equal(true)
+      expect(actual.message).to.contain(ruleopts.blacklist[0])
+    })
+
     it('fails if the denylist pattern matches a commit', () => {
       const ruleopts = {
         denylist: [DIFF_CORRECT_CASE],

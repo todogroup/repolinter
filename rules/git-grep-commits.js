@@ -89,6 +89,9 @@ function listFiles (fileSystem, options) {
  * @returns {Result} The lint rule result
  */
 function gitGrepCommits (fs, options) {
+  // backwards compatibility with blacklist
+  options.denylist = options.denylist || options.blacklist
+
   const files = listFiles(fs, options)
   const targets = files.map(file => {
     const [firstCommit, ...rest] = file.commits

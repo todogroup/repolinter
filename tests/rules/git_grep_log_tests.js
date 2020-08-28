@@ -27,6 +27,19 @@ describe('rule', () => {
       expect(actual.message).to.contain(ruleopts.denylist[0])
     })
 
+    it('is backwards compatible with blacklist', () => {
+      const ruleopts = {
+        blacklist: [LOG_WRONG_CASE],
+        ignoreCase: false
+      }
+
+      const actual = gitGrepLog(new FileSystem(), ruleopts)
+
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(0)
+      expect(actual.message).to.contain(ruleopts.blacklist[0])
+    })
+
     it('fails if the denylist pattern matches a commit message', () => {
       const ruleopts = {
         denylist: [LOG_WRONG_CASE],

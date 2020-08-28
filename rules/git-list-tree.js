@@ -53,6 +53,9 @@ function listFiles (fileSystem, options) {
  * @returns {Result} The lint rule result
  */
 function gitListTree (fs, options) {
+  // backwards compatibility with blacklist
+  options.denylist = options.denylist || options.blacklist
+
   const files = listFiles(fs, options)
 
   const targets = files.map(file => {

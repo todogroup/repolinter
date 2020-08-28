@@ -28,6 +28,18 @@ describe('rule', () => {
       expect(actual.targets).to.have.length(0)
     })
 
+    it('is backwards compatible with blacklist', () => {
+      const ruleopts = {
+        blacklist: [PATH_WRONG_CASE],
+        ignoreCase: false
+      }
+
+      const actual = gitListTree(new FileSystem(), ruleopts)
+
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(0)
+    })
+
     it('fails if the denylist pattern matches a path', () => {
       const ruleopts = {
         denylist: [PATH_WRONG_CASE],
