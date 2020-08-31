@@ -4,5 +4,6 @@
 module.exports = [
   'licensee',
   'linguist',
-  'packagers'
+  'packagers',
+  'contributor-count'
 ]

@@ -266,6 +266,31 @@ rules:
       ...
 ```
 
+Some axioms (ex. [`contributor-count`](./docs/md/axioms.md#contributor-count)) output numerical values instead of strings. For these axioms, numerical comparisons (`<`, `>`, `<=`, `>=`) can be also be specified in the `where` conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.
+```JavaScript
+{
+  "axioms": {
+    "contributor-count": "contributors"
+  },
+  "rules": {
+    "my-rule": {
+      "where": ["contributors>6", "contributors<200"],
+      // ...
+    }
+  }
+}
+```
+```YAML
+axioms:
+  contributor-count: contributors
+rules:
+  my-rule:
+    where:
+    - contributors>6
+    - contributors<200
+    rule:
+      ...
+```
 ## API
 
 Repolinter also includes an extensible JavaScript API:

@@ -94,6 +94,28 @@ describe('api', () => {
       expect(res[0].fixResult).to.equal(undefined)
     })
 
+    it('runs a rule conditionally with a numerical axiom', async () => {
+      const mockconfig = [
+        new RuleInfo('my-rule', 'error', ['number>3'], 'apache-notice', {})
+      ]
+      const res = await repolinter.runRuleset(mockconfig, { number: new Result('', [{ passed: true, path: '4' }], true) }, realFs, false)
+      expect(res).to.have.length(1)
+      expect(res[0].status).to.equal(FormatResult.RULE_PASSED)
+      expect(res[0].lintResult.passed).to.equal(true)
+      expect(res[0].fixResult).to.equal(undefined)
+    })
+
+    it('ignores a rule conditionally with a numerical axiom', async () => {
+      const mockconfig = [
+        new RuleInfo('my-rule', 'error', ['number>4'], 'apache-notice', {})
+      ]
+      const res = await repolinter.runRuleset(mockconfig, { number: new Result('', [{ passed: true, path: '4' }], true) }, realFs, false)
+      expect(res).to.have.length(1)
+      expect(res[0].status).to.equal(FormatResult.IGNORED)
+      expect(res[0].lintResult).to.equal(undefined)
+      expect(res[0].fixResult).to.equal(undefined)
+    })
+
     it('ignores a fix if the rule passes', async () => {
       const mockconfig = [
         new RuleInfo('my-rule', 'error', [], 'file-existence', { globsAny: ['README*'] }, 'garbage-fix', {})

@@ -270,6 +270,65 @@ async function loadAxioms () {
 }
 
 /**
+ * Checks a rule's list of axioms against a list of valid
+ * targets, and determines if the rule should run or not
+ * based on the following rules criteria:
+ * * The rule's list has a direct match on a target OR
+ * * The rule specifies a numerical axiom (ex. >) and the target
+ *   list contains a target that matches that axiom.
+ *
+ * Supported numerical axioms are >, <, >=, <=, and = Only
+ *
+ * @memberof repolinter
+ * @param {string[]} validTargets The axiom target list in "target=thing" format, including the wildcard entry ("target=*").
+ * For numerical targets it is assumed that only one entry and the wildcard are present (e.g. ["target=2", "target=3", "target=*"] is invalid)
+ * @param {string[]} ruleAxioms The rule "where" specification to validate against.
+ * @returns {string[]} The list pf unsatisfied axioms, if any. Empty array indicates the rule should run.
+ */
+function shouldRuleRun (validTargets, ruleAxioms) {
+  // parse out numerical axioms, splitting them by name, operand, and number
+  const ruleRegex = /([\w-]+)((?:>|<)=?)(\d+)/i
+  const numericalRuleAxioms = []
+  const regularRuleAxioms = []
+  for (const ruleax of ruleAxioms) {
+    const match = ruleRegex.exec(ruleax)
+    if (match !== null && match[1] && match[2] && !isNaN(parseInt(match[3]))) {
+      // parse the numerical version
+      numericalRuleAxioms.push({ axiom: ruleax, name: match[1], operand: match[2], number: parseInt(match[3]) })
+    } else {
+      // parse the non-numerical version
+      regularRuleAxioms.push(ruleax)
+    }
+  }
+  // test that every non-number axiom matches a target
+  // start a list of condidions that don't pass
+  const table = new Set(validTargets)
+  const failedRuleAxioms = regularRuleAxioms.filter(r => !table.has(r))
+  // check the numbered axioms
+  // convert the targets into { targetName: number } for all numerical ones
+  const numericalTargets = validTargets
+    .map(r => r.split('='))
+    .map(([name, maybeNumber]) => [name, parseInt(maybeNumber)])
+    .filter(([name, maybeNumber]) => !isNaN(maybeNumber))
+  /** @ts-ignore */
+  const numericalTargetsMap = new Map(numericalTargets)
+  // test each numerical Rule against it's numerical axiom, return the axioms that failed
+  return numericalRuleAxioms
+    .filter(({ axiom, name, operand, number }) => {
+      // get the number to test against
+      const target = numericalTargetsMap.get(name)
+      if (target === undefined) return true
+      // test the number based on the operand
+      return !((operand === '<' && target < number) ||
+        (operand === '<=' && target <= number) ||
+        (operand === '>' && target > number) ||
+        (operand === '>=' && target >= number))
+    })
+    .map(({ axiom }) => axiom)
+    .concat(failedRuleAxioms)
+}
+
+/**
  * Run all operations in a ruleset, including linting and fixing. Returns
  * a list of objects with the output of the linter rules
  *
@@ -282,11 +341,15 @@ async function loadAxioms () {
  */
 async function runRuleset (ruleset, targets, fileSystem, dryRun) {
   // generate a flat array of axiom string identifiers
+  /** @ignore @type {string[]} */
   let targetArray = []
   if (typeof targets !== 'boolean') {
     targetArray = Object.entries(targets)
+      // restricted to only passed axioms
       .filter(([axiomId, res]) => res.passed)
+      // pair the axiom ID with the axiom target array
       .map(([axiomId, res]) => [axiomId, res.targets.map(t => t.path)])
+      // join the target arrays together into one array of all the targets
       .map(([axiomId, paths]) => [`${axiomId}=*`].concat(paths.map(p => `${axiomId}=${p}`)))
       .reduce((a, c) => a.concat(c), [])
   }
@@ -300,8 +363,8 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
     // check axioms and enable appropriately
     if (r.level === 'off') { return FormatResult.CreateIgnored(r, 'ignored because level is "off"') }
     // filter to only targets with no matches
-    if (typeof targets !== 'boolean') {
-      const ignoreReasons = r.where.filter(check => !targetArray.find(tar => check === tar))
+    if (typeof targets !== 'boolean' && r.where && r.where.length) {
+      const ignoreReasons = shouldRuleRun(targetArray, r.where)
       if (ignoreReasons.length > 0) { return FormatResult.CreateIgnored(r, `ignored due to unsatisfied condition(s): "${ignoreReasons.join('", "')}"`) }
     }
     // check if the rule file exists
@@ -444,6 +507,7 @@ module.exports.runRuleset = runRuleset
 module.exports.determineTargets = determineTargets
 module.exports.validateConfig = validateConfig
 module.exports.parseConfig = parseConfig
+module.exports.shouldRuleRun = shouldRuleRun
 module.exports.lint = lint
 module.exports.Result = Result
 module.exports.RuleInfo = RuleInfo

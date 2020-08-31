@@ -63,6 +63,7 @@ export declare function runRuleset(ruleset: RuleInfo[], targets: boolean|{ [key:
 export declare function determineTargets(axiomconfig: any, fs: FileSystem): Promise<{ [key: string]: Result }>
 export declare function validateConfig(config: any): Promise<{ passed: boolean, error?: string }>
 export declare function parseConfig(config: any): RuleInfo[]
+export declare function shouldRuleRun(validTargets: string[], ruleAxioms: string[]): string[]
 
 export declare const defaultFormatter: Formatter
 export declare const jsonFormatter: Formatter
