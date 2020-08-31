@@ -74,6 +74,7 @@
     "mock-http-server": "^1.4.2",
     "nyc": "^15.1.0",
     "standard": "^14.3.4",
-    "strip-ansi": "^6.0.0"
+    "strip-ansi": "^6.0.0",
+    "unist-util-is": "^4.0.2"
   }
 }
