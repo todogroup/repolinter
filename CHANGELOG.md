@@ -27,6 +27,7 @@
   For more information on these options please see the [Repolinter CLI](./bin/repolinter.js).
 * Added several other functions to the Node API: `runRuleset`, `determineTargets`, `validateConfig`, and `parseConfig`.
 * Added TypeScript types for the Node API.
+* Add numerical comparison support for axioms and the [`contributor-count`](./docs/md/axioms.md#contributor-count) axiom.
 
 ### Fixes
  * All file-based operations have been moved to `fs.promises`, which increased performance by a factor of 10.
