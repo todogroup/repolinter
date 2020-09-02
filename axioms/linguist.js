@@ -4,19 +4,15 @@
 const linguist = require('../lib/linguist')
 const Result = require('../lib/result')
 
-module.exports = function (fileSystem) {
+module.exports = async function (fileSystem) {
   const languages = []
   try {
-    var jsonObj = linguist.identifyLanguagesSync(fileSystem.targetDir)
+    var jsonObj = await linguist.identifyLanguages(fileSystem.targetDir)
     for (var language in jsonObj) {
       languages.push(language.toLowerCase())
     }
   } catch (error) {
-    if (error.message === 'Linguist not installed') {
-      return new Result('Linguist not found in path, only running language-independent rules', [], false)
-    } else {
-      return new Result(error.message, [], false)
-    }
+    return new Result(error.message, [], false)
   }
   return new Result('', languages.map(l => { return { passed: true, path: l } }), true)
 }

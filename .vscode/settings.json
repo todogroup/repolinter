@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/newrelic-forks/repolinter/master/rulesets/schema.json": ["/repolinter.yml", "/repolinter.yaml"]
+  }
+}

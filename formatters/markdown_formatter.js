@@ -111,26 +111,29 @@ class MarkdownFormatter {
       const start = '\n\n' +
         opWrap(null, result.ruleInfo.policyInfo, '. ') +
         opWrap('For more information please visit ', result.ruleInfo.policyUrl, '. ') +
-        opWrap(null, result.lintResult.message, '. ') +
-        'Below is a list of files or patterns that failed:\n\n'
+        opWrap(null, result.lintResult.message, '. ')
       formatBase.push(start)
-      // create bulleted list
-      // format the result based on these pieces of information
-      const list = result.lintResult.targets
-        // filter only failed targets
-        .filter(t => t.passed === false)
-        // match each target to it's fix result, if one exists
-        .map(t =>
-          result.fixResult && t.path ? [t, result.fixResult.targets.find(f => f.path === t.path) || null] : [t, null])
-        .map(([lintTarget, fixTarget]) => {
-          const base = `- \`${lintTarget.path || lintTarget.pattern}\`${opWrap(': ', lintTarget.message, '.')}`
-          // no fix format
-          if (!fixTarget || !fixTarget.passed) { return base }
-          // with fix format
-          return base + `\n  - ${dryRun ? SUGGESTED_FIX : APPLIED_FIX} ${fixTarget.message || result.fixResult.message}`
-        })
-        .join('\n')
-      formatBase.push(list)
+      // create bulleted list, filter only failed targets
+      const failedList = result.lintResult.targets.filter(t => t.passed === false)
+      if (failedList.length === 0) {
+        formatBase.push('All files passed this test.')
+      } else {
+        formatBase.push('Below is a list of files or patterns that failed:\n\n')
+        // format the result based on these pieces of information
+        const list = failedList
+          // match each target to it's fix result, if one exists
+          .map(t =>
+            result.fixResult && t.path ? [t, result.fixResult.targets.find(f => f.path === t.path) || null] : [t, null])
+          .map(([lintTarget, fixTarget]) => {
+            const base = `- \`${lintTarget.path || lintTarget.pattern}\`${opWrap(': ', lintTarget.message, '.')}`
+            // no fix format
+            if (!fixTarget || !fixTarget.passed) { return base }
+            // with fix format
+            return base + `\n  - ${dryRun ? SUGGESTED_FIX : APPLIED_FIX} ${fixTarget.message || result.fixResult.message}`
+          })
+          .join('\n')
+        formatBase.push(list)
+      }
     }
     // suggested fix for overall rule/fix combo
     if (result.fixResult && result.fixResult.passed) {
