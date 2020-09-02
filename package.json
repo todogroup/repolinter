@@ -40,6 +40,7 @@
   "dependencies": {
     "ajv": "^6.12.4",
     "chalk": "^4.1.0",
+    "command-exists": "^1.2.9",
     "emoji-regex": "^9.0.0",
     "eslint-config-standard": "^14.1.1",
     "find-config": "^1.0.0",
@@ -63,7 +64,6 @@
     "chai-as-promised": "^7.1.1",
     "chai-each": "0.0.1",
     "chai-string": "^1.5.0",
-    "command-exists": "^1.2.9",
     "documentation": "^13.0.2",
     "eslint": "^7.7.0",
     "eslint-plugin-jsdoc": "^30.3.0",
