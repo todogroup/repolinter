@@ -12,6 +12,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`file-existence`](#file-existence)
   - [`file-hash`](#file-hash)
   - [`file-not-contents`](#file-not-contents)
+  - [`file-not-exists`](#file-not-exists)
   - [`file-starts-with`](#file-starts-with)
   - [`file-type-exclusion`](#file-type-exclusion)
   - [`git-grep-commits`](#git-grep-commits)
@@ -64,6 +65,7 @@ Checks the existence of a given file.
 | -------------- | -------- | ---------- | ------- | -------------------------------------------------------------------------------------------------- |
 | `globsAny`     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if at least one glob returns a file.               |
 | `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                               |
+| `dirs`         | No       | `boolean`  | `false` | Set to `true` to include directories in the search (equivalent to `directory-exists`)              |
 | `fail-message` | No       | `string`   | `""`    | The string to print if the directory does not exist, used to create human-readable error messages. |
 
 ### `file-hash`
@@ -90,6 +92,17 @@ Checks none of a given list of files match a given regular expression.
 | `flags`                  | No       | `string`   | `""`                                | The flags to use for the regular expression in `content` (ex. `"i"` for case insensitivity).                                                                                                                                     |
 | `human-readable-content` | No       | `string`   | The regular expression in `content` | The string to print instead of the regular expression when generating human-readable output.                                                                                                                                     |
 | `fail-on-non-exist`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
+
+### `file-not-exists`
+
+Checks that a file doesn't exist.
+
+| Input          | Required | Type       | Default | Description                                                                                   |
+| -------------- | -------- | ---------- | ------- | --------------------------------------------------------------------------------------------- |
+| `globsAll`     | **Yes**  | `string[]` |         | A list of globs to search for. This rule fails if at least one glob returns a file.           |
+| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                          |
+| `dirs`         | No       | `boolean`  | `false` | Set to `true` to include directories in the search.                                           |
+| `pass-message` | No       | `string`   | `""`    | The string to print if the file does not exist, used to create human-readable error messages. |
 
 ### `file-starts-with`
 

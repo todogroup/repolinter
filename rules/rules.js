@@ -8,6 +8,7 @@ module.exports = [
   'file-existence',
   'file-hash',
   'file-not-contents',
+  'file-not-exists',
   'file-starts-with',
   'file-type-exclusion',
   'git-grep-commits',
