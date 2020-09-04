@@ -357,7 +357,6 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
   const allRules = await loadRules()
   // load the fixes
   const allFixes = await loadFixes()
-  // do the same with fixes
   // run the ruleset
   const results = ruleset.map(async r => {
     // check axioms and enable appropriately
