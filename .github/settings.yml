@@ -21,3 +21,7 @@ collaborators:
     
   - username: trevmex
     permission: admin
+ 
+  - username: prototypicalpro
+    permission: admin
+     
