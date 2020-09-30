@@ -2,13 +2,13 @@ toc:
   - name: Overview
     file: README.md
   - name: Development
-    file: docs/md/development.md
+    file: docs/development.md
   - name: Configuration Reference
     children:
       - name: Rules
-        file: docs/md/rules.md
+        file: docs/rules.md
       - name: Fixes
-        file: docs/md/fixes.md
+        file: docs/fixes.md
       - name: Axioms
-        file: docs/md/axioms.md
+        file: docs/axioms.md
   - name: API Reference
