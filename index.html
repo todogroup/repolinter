@@ -1,0 +1,5093 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset='utf-8'>
+  <title>repolinter 1.0.0 | Documentation</title>
+  <meta name='description' content='Lint open source repositories'>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link href='assets/bass.css' rel='stylesheet'>
+  <link href='assets/style.css' rel='stylesheet'>
+  <link href='assets/github.css' rel='stylesheet'>
+  <link href='assets/split.css' rel='stylesheet'>
+</head>
+<body class='documentation m0'>
+    <div class='flex'>
+      <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
+        <div class='py1 px2'>
+          <h3 class='mb0 no-anchor'>repolinter</h3>
+          <div class='mb1'><code>1.0.0</code></div>
+          <input
+            placeholder='Filter'
+            id='filter-input'
+            class='col12 block input'
+            spellcheck='false'
+            autocapitalize='off'
+            autocorrect='off'
+            type='text' />
+          <div id='toc'>
+            <ul class='list-reset h5 py1-ul'>
+              
+                
+                <li><a
+                  href='#overview'
+                  class="h5 bold black caps">
+                  Overview
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#development'
+                  class="h5 bold black caps">
+                  Development
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#configuration-reference'
+                  class="h5 bold black caps toggle-sibling">
+                  Configuration Reference
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  <ul class='list-reset py1-ul pl1'>
+                    <li class='h5'><span>Static members</span></li>
+                    
+                      <li><a
+                        href='#rules'
+                        class='regular pre-open'>
+                        .Rules
+                      </a></li>
+                    
+                      <li><a
+                        href='#fixes'
+                        class='regular pre-open'>
+                        .Fixes
+                      </a></li>
+                    
+                      <li><a
+                        href='#axioms'
+                        class='regular pre-open'>
+                        .Axioms
+                      </a></li>
+                    
+                    </ul>
+                  
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#api-reference'
+                  class="h5 bold black caps">
+                  API Reference
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#repolinter'
+                  class=" toggle-sibling">
+                  repolinter
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  <ul class='list-reset py1-ul pl1'>
+                    <li class='h5'><span>Static members</span></li>
+                    
+                      <li><a
+                        href='#repolinterdefaultformatter'
+                        class='regular pre-open'>
+                        .defaultFormatter
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterjsonformatter'
+                        class='regular pre-open'>
+                        .jsonFormatter
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolintermarkdownformatter'
+                        class='regular pre-open'>
+                        .markdownFormatter
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterresultformatter'
+                        class='regular pre-open'>
+                        .resultFormatter
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterlint'
+                        class='regular pre-open'>
+                        .lint
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolintershouldrulerun'
+                        class='regular pre-open'>
+                        .shouldRuleRun
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterrunruleset'
+                        class='regular pre-open'>
+                        .runRuleset
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterdeterminetargets'
+                        class='regular pre-open'>
+                        .determineTargets
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolintervalidateconfig'
+                        class='regular pre-open'>
+                        .validateConfig
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterparseconfig'
+                        class='regular pre-open'>
+                        .parseConfig
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterresult'
+                        class='regular pre-open'>
+                        .Result
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterruleinfo'
+                        class='regular pre-open'>
+                        .RuleInfo
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterformatresult'
+                        class='regular pre-open'>
+                        .FormatResult
+                      </a></li>
+                    
+                      <li><a
+                        href='#repolinterfilesystem'
+                        class='regular pre-open'>
+                        .FileSystem
+                      </a></li>
+                    
+                    </ul>
+                  
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#formatter'
+                  class="">
+                  Formatter
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#lintresult'
+                  class="">
+                  LintResult
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#numericaltargetsmap'
+                  class="">
+                  numericalTargetsMap
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#resulttarget'
+                  class="">
+                  ResultTarget
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#formatresultbase'
+                  class="">
+                  FormatResultBase
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#symbolformatter'
+                  class=" toggle-sibling">
+                  SymbolFormatter
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  <ul class='list-reset py1-ul pl1'>
+                    <li class='h5'><span>Static members</span></li>
+                    
+                      <li><a
+                        href='#symbolformatterformatresult'
+                        class='regular pre-open'>
+                        .formatResult
+                      </a></li>
+                    
+                      <li><a
+                        href='#symbolformattergetsymbol'
+                        class='regular pre-open'>
+                        .getSymbol
+                      </a></li>
+                    
+                      <li><a
+                        href='#symbolformatterformatoutput'
+                        class='regular pre-open'>
+                        .formatOutput
+                      </a></li>
+                    
+                    </ul>
+                  
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#jsonformatter'
+                  class=" toggle-sibling">
+                  JsonFormatter
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  <ul class='list-reset py1-ul pl1'>
+                    <li class='h5'><span>Static members</span></li>
+                    
+                      <li><a
+                        href='#jsonformatterformatoutput'
+                        class='regular pre-open'>
+                        .formatOutput
+                      </a></li>
+                    
+                    </ul>
+                  
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#markdownformatter'
+                  class=" toggle-sibling">
+                  MarkdownFormatter
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  <ul class='list-reset py1-ul pl1'>
+                    <li class='h5'><span>Static members</span></li>
+                    
+                      <li><a
+                        href='#markdownformatterformatresult'
+                        class='regular pre-open'>
+                        .formatResult
+                      </a></li>
+                    
+                      <li><a
+                        href='#markdownformatterformatoutput'
+                        class='regular pre-open'>
+                        .formatOutput
+                      </a></li>
+                    
+                    </ul>
+                  
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#slug'
+                  class="">
+                  slug
+                  
+                </a>
+                
+                </li>
+              
+            </ul>
+          </div>
+          <div class='mt1 h6 quiet'>
+            <a href='https://documentation.js.org/reading-documentation.html'>Need help reading this?</a>
+          </div>
+        </div>
+      </div>
+      <div id='split-right' class='relative overflow-auto height-viewport-100'>
+        
+          
+            <div class='keyline-top-not py2'><section class='py2 clearfix'>
+
+  <h2 id='overview' class='mt0'>
+    Overview
+  </h2>
+
+  
+    <h1><img src="docs/images/P_RepoLinter01_logo_only.png" alt="Repo Linter"> <img src="https://github.com/todogroup/repolinter/workflows/Build/badge.svg" alt="Build Status"></h1>
+<p>Lint open source repositories for common issues.</p>
+<h2>Installation</h2>
+<p>Repolinter requires <a href="https://nodejs.org/en/">Node.JS</a> >= v10 to function properly. Once Node.JS is installed, you can install repolinter using <code>npm</code>:</p>
+<pre class='hljs'>npm install -g repolinter</pre>
+<h2>Linting a Local Repository</h2>
+<p>Once installed, run the following to lint a directory:</p>
+<pre class='hljs'>repolinter lint &lt;directory&gt;</pre>
+<p>The above command will lint <code>&#x3C;directory></code> with the local <code>repolinter.json</code> ruleset or the <a href="./rulesets/default.json">default ruleset</a> if none is found:</p>
+<pre class='hljs'>repolinter % repolinter lint .
+Target directory: &lt;directory&gt;
+Lint:
+✔ license-file-exists: Found file (LICENSE)
+✔ readme-file-exists: Found file (README.md)
+✔ contributing-file-exists: Found file (CONTRIBUTING)
+✔ code-of-conduct-file-exists: Found file (CODE-OF-CONDUCT)
+✔ changelog-file-exists: Found file (CHANGELOG)
+...
+repolinter % echo $?
+0</pre>
+<h2>Linting a Remote Repository</h2>
+<p>Repolinter also supports linting a git repository using the <code>--git</code> flag. With this flag enabled, the directory input will be interpreted as a git URL which Repolinter will automatically clone into a temporary directory.</p>
+<pre class='hljs'>repolinter lint -g https://github.com/todogroup/repolinter.git</pre>
+<h2>Formatting the Output</h2>
+<p>The Repolinter CLI currently supports three output formatting modes:</p>
+<ul>
+<li>Default (also referred to as result)</li>
+<li>JSON</li>
+<li>Markdown</li>
+</ul>
+<p>You can switch formatters using the <code>--format</code> flag. An example of using the JSON formatter:</p>
+<pre class='hljs'>repolinter % repolinter lint --format json .
+{"params":{"targetDir":"/Users/nkoontz/Documents/code/repolinter","filterPaths":[],...</pre>
+<p>An example of using the Markdown formatter:</p>
+<pre class='hljs'>repolinter % repolinter lint --format markdown .
+<span class="hljs-meta">#</span><span class="bash"> Repolinter Report</span>
+
+This Repolinter run generated the following results:
+| ❗  Error | ❌  Fail | ⚠️  Warn | ✅  Pass | Ignored | Total |
+|---|---|---|---|---|---|
+| 0 | 0 | 0 | 15 | 10 | 25 |
+...</pre>
+<h2>Limiting Paths</h2>
+<p>Repolinter supports an allowed list of paths through the <code>--allowPaths</code> option to prevent the accidental linting of build artifacts. These paths must still be contained in the target directory/repository.</p>
+<pre class='hljs'>repolinter lint --allowPaths ./a/path --allowPaths /another/path</pre>
+<h2>Disabling Modifications</h2>
+<p>By default Repolinter will automatically execute fixes as specified by the <a href="#rulesets">ruleset</a>. If this is not desired functionality, you can disable this with the <code>--dryRun</code> flag.</p>
+<h2>Ruleset Configuration</h2>
+<p>Similar to how <a href="https://eslint.org/">eslint</a> uses an <a href="https://eslint.org/docs/user-guide/configuring">eslintrc</a> file to determine what validation processes will occur, Repolinter uses a JSON or YAML configuration file (referred to as a <em>ruleset</em>) to determine what checks should be run against a repository. Inside a ruleset, there are two main behaviors that can be configured:</p>
+<ul>
+<li><strong>Rules</strong> - Checks Repolinter should perform against the repository.</li>
+<li><strong>Axioms</strong> - External libraries Repolinter should use to conditionally run rules.</li>
+</ul>
+<p>These combined capabilities give you fine-grained control over the checks Repolinter runs.</p>
+<h3>Providing a Ruleset</h3>
+<p>Repolinter will pull its configuration from the following sources in order of priority:
+1. A ruleset specified with <code>--rulesetFile</code> or <code>--rulesetUrl</code>
+2. A <code>repolint.json</code>, <code>repolinter.json</code>, <code>repolint.yaml</code>, or <code>repolinter.yaml</code> file at the root of the project being linted
+3. The <a href="./rulesets/default.json">default ruleset</a></p>
+<h3>Creating a Ruleset</h3>
+<p>Any ruleset starts with the following base, shown in both JSON and YAML format:</p>
+<pre class='hljs'>{
+  <span class="hljs-attr">"$schema"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-number">2</span>,
+  <span class="hljs-attr">"axioms"</span>: {},
+  <span class="hljs-attr">"rules"</span>: {}
+}</pre>
+<pre class='hljs'><span class="hljs-attr">version:</span> <span class="hljs-number">2</span>
+<span class="hljs-attr">axioms:</span> <span class="hljs-string">{}</span>
+<span class="hljs-attr">rules:</span></pre>
+<p>Where:</p>
+<ul>
+<li><strong><code>$schema</code></strong>- points to the <a href="./rulesets/schema.json">JSON schema</a> for all Repolinter rulesets. This schema both validates the ruleset and makes the ruleset creation process a bit easier.</li>
+<li><strong><code>version</code></strong> - specifies the ruleset version Repolinter should expect. Currently there are two versions: omitted for legacy config (<a href="https://github.com/todogroup/repolinter/blob/1a66d77e3a744222a049bdb4041437cbcf26a308/rulesets/default.json">example</a>) and <code>2</code> for all others. Use <code>2</code> unless you know what you're doing.</li>
+<li><strong><code>axiom</code></strong> - The axiom functionality, covered in <a href="#axioms">Axoms</a>.</li>
+<li><strong><code>rules</code></strong> - The actual ruleset, covered in <a href="#rules">Rules</a>.</li>
+</ul>
+<h4>Rules</h4>
+<p>Rules are objects of the following format:</p>
+<pre class='hljs'><span class="hljs-string">"&lt;rule-name&gt;"</span>: {
+  <span class="hljs-string">"level"</span>: <span class="hljs-string">"error"</span> | <span class="hljs-string">"warning"</span> | <span class="hljs-string">"off"</span>,
+  <span class="hljs-string">"rule"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"&lt;rule-type&gt;"</span>,
+    <span class="hljs-string">"options"</span>: {
+      <span class="hljs-comment">// &lt;rule-options&gt;</span>
+    }
+  },
+  <span class="hljs-string">"where"</span>: [<span class="hljs-string">"condition=*"</span>],
+  <span class="hljs-string">"fix"</span>: {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"&lt;fix-type&gt;"</span>,
+    <span class="hljs-string">"options"</span>: {
+      <span class="hljs-comment">// &lt;fix-options&gt;</span>
+    }
+  },
+  <span class="hljs-string">"policyInfo"</span>: <span class="hljs-string">"..."</span>,
+  <span class="hljs-string">"policyUrl"</span>: <span class="hljs-string">"..."</span>
+}</pre>
+<pre class='hljs'><span class="hljs-string">&lt;rule-name&gt;:</span>
+  <span class="hljs-attr">level:</span> <span class="hljs-string">error</span> <span class="hljs-string">|</span> <span class="hljs-string">warning</span> <span class="hljs-string">|</span> <span class="hljs-string">off</span>
+  <span class="hljs-attr">rule:</span>
+    <span class="hljs-attr">type:</span> <span class="hljs-string">&lt;rule-type&gt;</span>
+    <span class="hljs-attr">options:</span>
+      <span class="hljs-string">&lt;rule-options&gt;</span>
+  <span class="hljs-attr">where:</span> <span class="hljs-string">[condition=*]</span>
+  <span class="hljs-attr">fix:</span>
+    <span class="hljs-attr">type:</span> <span class="hljs-string">&lt;fix-type&gt;</span>
+    <span class="hljs-attr">options:</span>
+      <span class="hljs-string">&lt;fix-options&gt;</span>
+  <span class="hljs-attr">policyInfo:</span> <span class="hljs-string">&gt;-
+    ...
+</span>  <span class="hljs-attr">policyUrl:</span> <span class="hljs-string">&gt;-</span>
+    <span class="hljs-string">...</span></pre>
+<ul>
+<li><strong><code>rule</code></strong> - The check to perform. Repolinter can perform any check listed under the <a href="./docs/md/rules.md">rules documentation</a>. Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the <code>file-existence</code> check can be used in a <code>README-file-exists</code> rule and a <code>LICENSE-file-exists</code> rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.</li>
+<li><strong><code>level</code></strong> - The error level to notify if the check fails. <code>warning</code> will not change the exit code and <code>off</code> will not run the check.</li>
+<li><strong><code>where</code></strong> - Conditionally enable or disable this rule based off of <a href="#axioms">axioms</a>. Strings in this array follow the format of <code>&#x3C;axiom>=&#x3C;value></code>, where value is either an axiom output or <code>*</code> to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the <a href="./docs/rules/axioms">axioms documentation</a>.</li>
+<li><strong><code>fix</code></strong> <em>(optional)</em> - The action to perform if the check performed by <code>rule</code> fails. Repolinter can perform any action listed under <a href="./docs/md/fixes.md">fixes documentation</a>.</li>
+<li><strong><code>policyInfo</code></strong>, <strong><code>policyUrl</code></strong> <em>(optional)</em> - Information used by the formatter to indicate why the check exists from a policy perspective. Note: <code>policyInfo</code> will automatically have a period appended to it for formatting purposes.</li>
+</ul>
+<p>A minimal example of a rule that checks for the existence of a <code>README</code>:</p>
+<pre class='hljs'>"readme-file-exists" : {
+  "level": "error",
+  "rule": {
+    "type": "file-existence",
+    "options": {
+      "globsAny": ["README*"]
+    }
+  }
+}</pre>
+<pre class='hljs'><span class="hljs-attr">readme-file-exists:</span>
+  <span class="hljs-attr">level:</span> <span class="hljs-string">error</span>
+  <span class="hljs-attr">rule:</span>
+    <span class="hljs-attr">type:</span> <span class="hljs-string">file-existence</span>
+    <span class="hljs-attr">options:</span>
+      <span class="hljs-attr">globsAny:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">README*</span></pre>
+<p>Checking that the <code>README</code> matches a certain hash, and replacing it if not:</p>
+<pre class='hljs'>"readme-file-up-to-date" : {
+  "level": "error",
+  "rule": {
+    "type": "file-hash",
+    "options": {
+      "globsAny": ["README*"],
+      "algorithm": "sha256",
+      "hash": "..."
+    }
+  },
+  "fix": {
+    "type": "file-create",
+    "options": {
+      "file": "README.md",
+      "replace": true,
+      "text": { "url": "www.example.com/mytext.txt" }
+    }
+  },
+  "policyInfo": "Gotta keep that readme up to date",
+  "policyUrl": "www.example.com/mycompany"
+}</pre>
+<pre class='hljs'><span class="hljs-attr">readme-file-up-to-date:</span>
+  <span class="hljs-attr">level:</span> <span class="hljs-string">error</span>
+  <span class="hljs-attr">rule:</span>
+    <span class="hljs-attr">type:</span> <span class="hljs-string">file-hash</span>
+    <span class="hljs-attr">options:</span>
+      <span class="hljs-attr">globsAny:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">README*</span>
+      <span class="hljs-attr">algorithm:</span> <span class="hljs-string">sha256</span>
+      <span class="hljs-attr">hash:</span> <span class="hljs-string">"..."</span>
+  <span class="hljs-attr">fix:</span>
+    <span class="hljs-attr">type:</span> <span class="hljs-string">file-create</span>
+    <span class="hljs-attr">options:</span>
+      <span class="hljs-attr">file:</span> <span class="hljs-string">README.md</span>
+      <span class="hljs-attr">replace:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-attr">text:</span>
+        <span class="hljs-attr">url:</span> <span class="hljs-string">www.example.com/mytext.txt</span>
+  <span class="hljs-attr">policyInfo:</span> <span class="hljs-string">Gotta</span> <span class="hljs-string">keep</span> <span class="hljs-string">that</span> <span class="hljs-string">readme</span> <span class="hljs-string">up</span> <span class="hljs-string">to</span> <span class="hljs-string">date</span>
+  <span class="hljs-attr">policyUrl:</span> <span class="hljs-string">www.example.com/mycompany</span></pre>
+<h4>Axioms</h4>
+<pre class='hljs'>"axioms": {
+  "&lt;axiom-id&gt;": "&lt;axiom-target&gt;"
+}</pre>
+<pre class='hljs'><span class="hljs-attr">axioms:</span>
+  <span class="hljs-string">&lt;axiom-id&gt;:</span> <span class="hljs-string">axiom-target</span></pre>
+<p>Each axiom is configured as a key value pair in the <code>axioms</code> object, where <code>&#x3C;axiom-id></code> specifies the program to run and <code>&#x3C;axiom-target></code> specifies the target to be used in the <code>where</code> conditional. The available axiom IDs can be found in the <a href="./docs/md/axioms.md">axiom documentation</a>. It should be noted that some axioms require external packages to run.</p>
+<p>An example configuration using an axiom to detect the packaging system for a project:</p>
+<pre class='hljs'>{
+  <span class="hljs-string">"$schema"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json"</span>,
+  <span class="hljs-string">"version"</span>: <span class="hljs-number">2</span>,
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"packagers"</span>: <span class="hljs-string">"package-type"</span>
+  },
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"this-only-runs-if-npm"</span>: {
+      <span class="hljs-string">"level"</span>: <span class="hljs-string">"error"</span>,
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"package-type=npm"</span>],
+      <span class="hljs-string">"rule"</span>: { <span class="hljs-comment">/* ... */</span> }
+    }
+  }
+}</pre>
+<pre class='hljs'><span class="hljs-attr">version:</span> <span class="hljs-number">2</span>
+<span class="hljs-attr">axioms:</span>
+  <span class="hljs-attr">packagers:</span> <span class="hljs-string">package-type</span>
+<span class="hljs-attr">rules:</span>
+  <span class="hljs-attr">this-only-runs-if-npm:</span>
+    <span class="hljs-attr">level:</span> <span class="hljs-string">error</span>
+    <span class="hljs-attr">where:</span> <span class="hljs-string">[package-type=npm]</span>
+    <span class="hljs-attr">rule:</span>
+      <span class="hljs-string">...</span></pre>
+<p>Some axioms (ex. <a href="./docs/md/axioms.md#contributor-count"><code>contributor-count</code></a>) output numerical values instead of strings. For these axioms, numerical comparisons (<code>&#x3C;</code>, <code>></code>, <code>&#x3C;=</code>, <code>>=</code>) can be also be specified in the <code>where</code> conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.</p>
+<pre class='hljs'>{
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"contributor-count"</span>: <span class="hljs-string">"contributors"</span>
+  },
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"contributors&gt;6"</span>, <span class="hljs-string">"contributors&lt;200"</span>],
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+}</pre>
+<pre class='hljs'><span class="hljs-attr">axioms:</span>
+  <span class="hljs-attr">contributor-count:</span> <span class="hljs-string">contributors</span>
+<span class="hljs-attr">rules:</span>
+  <span class="hljs-attr">my-rule:</span>
+    <span class="hljs-attr">where:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">contributors&gt;6</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">contributors&lt;200</span>
+    <span class="hljs-attr">rule:</span>
+      <span class="hljs-string">...</span></pre>
+<h2>API</h2>
+<p>Repolinter also includes an extensible JavaScript API:</p>
+<pre class='hljs'><span class="hljs-keyword">const</span> repolinter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'repolinter'</span>)
+<span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> repolinter.lint(<span class="hljs-string">'.'</span>)</pre>
+<p>This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under <a href="https://newrelic-forks.github.io/repolinter/#api-reference">API Documentation</a>.</p>
+<h2>Going Further</h2>
+<ul>
+<li><a href="./docs/md/rules.md">Rule Reference</a></li>
+<li><a href="./docs/md/fixes.md">Fix Reference</a></li>
+<li><a href="./docs/md/axioms.md">Axiom Reference</a></li>
+<li><a href="https://newrelic-forks.github.io/repolinter/#api-reference">API Reference</a></li>
+<li><a href="./docs/md/development.md">Developer Guide</a></li>
+</ul>
+<h2>License</h2>
+<p>This project is licensed under the <a href="LICENSE">Apache 2.0</a> license using <a href="https://reuse.software">https://reuse.software</a> best practice.</p>
+
+  
+</section></div>
+          
+        
+          
+            <div class='keyline-top-not py2'><section class='py2 clearfix'>
+
+  <h2 id='development' class='mt0'>
+    Development
+  </h2>
+
+  
+    <h1>Development</h1>
+<p>Repolinter is broken down into 7 main components, each of which is contained in a subfolder:</p>
+<ul>
+<li><strong>Axioms</strong> - located under <a href="../../axioms">axioms</a></li>
+<li><strong>CLI</strong> - located under <a href="../../bin">bin</a></li>
+<li><strong>Rules</strong> - located under <a href="../../rules">rules</a></li>
+<li><strong>Fixes</strong> - located under <a href="../../fixes">fixes</a></li>
+<li><strong>Formatters</strong> - located under <a href="../../formatters">formatters</a></li>
+<li><strong>Utilities</strong> - located under <a href="../../lib">lib</a></li>
+<li><strong>Built-In Rulesets and Schema</strong> - located under <a href="../../rulesets">rulesets</a></li>
+</ul>
+<h2>Axioms</h2>
+<p>Axioms are registered in <a href="../../axioms/axioms.js">axioms/axioms.js</a> and in <a href="../../rulesets/schema.json">rulesets/schema.json</a>. An axiom implementation consists of a module with the following interface:</p>
+<pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem) =&gt; Result</pre>
+<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository.</p>
+<p>The contents of the result should be an array of targets where <code>t.path</code> is a target that the axiom has determined is valid (ex. for language detecting axiom a possible result could be <code>new Result('', [{ path: 'javascript' passed: true }, { path: 'typescript', passed: true}], true)</code>). If the axiom fails to execute, it should return a failing result with an error message included instead of throwing an error.</p>
+<h2>Rules</h2>
+<p>A rule consists of two parts: a JavaScript module, which determines the rule's functionality and a JSON schema, which validates the rule's configuration options in rulesets. Rules are registered in <a href="../../rules/rules.js">rules/rules.js</a> and <a href="../../rulesets/schema.json">rulesets/schema.json</a>. Rules are also documented under <a href="./rules.md">rules.md</a>.</p>
+<h3>Rule Configuration JSON Schema</h3>
+<p>The configuration JSON schema determines how <code>rule.options</code> should be validated for this rule. All <a href="https://json-schema.org/">JSON Schema</a> tools supported by <a href="https://ajv.js.org/">AJV</a> all available, with a few important caveats:</p>
+<ul>
+<li>The file itself should always be named <code>&#x3C;rule-name>-config.json</code> and be located under the <code>rules</code> folder.</li>
+<li>The top-level type should always be <code>object</code>.</li>
+<li>The <code>$id</code> field should be an absolute raw.githubusercontent.com URL to where the schema is hosted on GitHub (ex. <a href="https://raw.githubusercontent.com/todogroup/repolinter/master/rules/apache-notice-config.json">https://raw.githubusercontent.com/todogroup/repolinter/master/rules/apache-notice-config.json</a>). This allows IDEs such as VSCode to apply the schema via a URL.</li>
+</ul>
+<p>To get started, you can use the following template:</p>
+<pre class='hljs'>{
+    <span class="hljs-attr">"$schema"</span>: <span class="hljs-string">"http://json-schema.org/draft-07/schema"</span>,
+    <span class="hljs-attr">"$id"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/rules/&lt;rule-name&gt;-config.json"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"object"</span>,
+    <span class="hljs-attr">"properties"</span>: {}
+}</pre>
+<p>Due to limitations with JSON Schema, you also must register your rule configuration schema in <a href="../../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.rule.allOf</code>:</p>
+<pre class='hljs'>{ <span class="hljs-attr">"if"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"type"</span>: { <span class="hljs-attr">"const"</span>: <span class="hljs-string">"&lt;rule-name&gt;"</span> } } }, <span class="hljs-attr">"then"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"options"</span>: { <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"../rules/&lt;rule-name&gt;-config.json"</span> } } } }</pre>
+<h3>JavaScript Implementation</h3>
+<p>A rule implementation consists of a module with the following interface:</p>
+<pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem, opts <span class="hljs-comment">/* type determined by your JSON schema */</span>) =&gt; Result</pre>
+<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository and <code>opts</code> is the options provided by the ruleset.</p>
+<p>A rule implementation is encouraged to use <code>Result#targets</code> to show the individual files/patterns checked when processing the rule. Including filenames in <code>Result#message</code> is discouraged as it makes formatting difficult. If a rule fails to execute, it should throw an error.</p>
+<h2>Fixes</h2>
+<p>A fix, similar to a rule, consists of two parts: a JavaScript module, which determines the fix's functionality and a JSON schema, which validates the fix's configuration options in rulesets. Fixes are registered in <a href="../../fixes/fixes.js">fixes/fixes.js</a> and <a href="../../rulesets/schema.json">rulesets/schema.json</a>. Fixes are also documented under <a href="./fixes.md">fixes.md</a>.</p>
+<h3>Fix Configuration JSON Schema</h3>
+<p>Fix JSON schemas work identically to <a href="#rule-configuration-json-schema">rule JSON schemas</a>, with the only difference the respective names and paths.</p>
+<p>To get started, you can use the following template:</p>
+<pre class='hljs'>{
+    <span class="hljs-attr">"$schema"</span>: <span class="hljs-string">"http://json-schema.org/draft-07/schema"</span>,
+    <span class="hljs-attr">"$id"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/fixes/&lt;fix-name&gt;-config.json"</span>,
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"object"</span>,
+    <span class="hljs-attr">"properties"</span>: {}
+}</pre>
+<p>Similar as with rules, you must register the fix schema in <a href="../../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.fix.allOf</code> (note that this is a different list than the rule registration list):</p>
+<pre class='hljs'>{ <span class="hljs-attr">"if"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"type"</span>: { <span class="hljs-attr">"const"</span>: <span class="hljs-string">"&lt;fix-name&gt;"</span> } } }, <span class="hljs-attr">"then"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"options"</span>: { <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"../rules/&lt;fix-name&gt;-config.json"</span> } } } }</pre>
+<h3>JavaScript Implementation</h3>
+<p>Unlike rules, a fix implementation consists of a module with the following interface:</p>
+<pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem, options <span class="hljs-comment">/* Type determined by your JSON schema */</span>, targets: <span class="hljs-built_in">string</span>[], dryRun: <span class="hljs-built_in">boolean</span>) =&gt; Result</pre>
+<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository, <code>opts</code> is the options provided by the ruleset, <code>targets</code> are filepaths which did not pass the rule associated with this fix, and <code>dryRun</code> determines if the fix is allowed to make changes to the repository.</p>
+<p>The fix implementation is encouraged to use <code>Result#targets</code> to show the individual files/patterns changed. If the fix fails to execute, it should either return a failed result or throw an error.</p>
+<h2>Formatters</h2>
+<p>Formatters are exported by <a href="../../index.js">index.js</a> and manually called by the <a href="../../bin/repolinter.js">CLI</a>. A formatter implementation consists of the following interface:</p>
+<pre class='hljs'><span class="hljs-keyword">interface</span> Formatter {
+  formatOutput(output: LintResult, dryRun: <span class="hljs-built_in">boolean</span>): <span class="hljs-built_in">string</span>
+}</pre>
+<p>Formatters do not print to <code>STDOUT</code> instead choosing to return the output as a string.</p>
+<p>If needed, a formatter can accept extra configuration from the ruleset through the <code>formatOptions</code> property, which will be directly passed through to <code>LintResult#formatOptions</code>. These options are not typed and are formatter dependent.</p>
+
+  
+</section></div>
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='configuration-reference'>
+      Configuration Reference
+    </h3>
+    
+    
+  </div>
+  
+
+  
+
+    <div class='pre p1 fill-light mt0'>Configuration Reference</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='rules'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>Rules</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <h1>Rules</h1>
+<p>Below is a complete list of rules that Repolinter can run, along with their configuration options.</p>
+<h2>Contents</h2>
+<ul>
+<li><a href="#contents">Contents</a></li>
+<li>
+<p><a href="#reference">Reference</a></p>
+<ul>
+<li><a href="#apache-notice"><code>apache-notice</code></a></li>
+<li><a href="#directory-existence"><code>directory-existence</code></a></li>
+<li><a href="#file-contents"><code>file-contents</code></a></li>
+<li><a href="#file-existence"><code>file-existence</code></a></li>
+<li><a href="#file-hash"><code>file-hash</code></a></li>
+<li><a href="#file-not-contents"><code>file-not-contents</code></a></li>
+<li><a href="#file-starts-with"><code>file-starts-with</code></a></li>
+<li><a href="#file-type-exclusion"><code>file-type-exclusion</code></a></li>
+<li><a href="#git-grep-commits"><code>git-grep-commits</code></a></li>
+<li><a href="#git-grep-log"><code>git-grep-log</code></a></li>
+<li><a href="#git-list-tree"><code>git-list-tree</code></a></li>
+<li><a href="#git-working-tree"><code>git-working-tree</code></a></li>
+<li><a href="#json-schema-passes"><code>json-schema-passes</code></a></li>
+<li><a href="#license-detectable-by-licensee"><code>license-detectable-by-licensee</code></a></li>
+</ul>
+</li>
+</ul>
+<h2>Reference</h2>
+<h3><code>apache-notice</code></h3>
+<p>No inputs. Checks for the presense of a <code>NOTICE</code> file in the root of the repository. This rule is equivalent to the following:</p>
+<pre class='hljs'>{
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"file-existence"</span>,
+  <span class="hljs-attr">"options"</span>: {<span class="hljs-attr">"globsAny"</span>: [<span class="hljs-string">"NOTICE*"</span>]}
+}</pre>
+<h3><code>directory-existence</code></h3>
+<p>Checks the existence of a given directory.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAny</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule passes if at least one glob returns a directory.</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search.</td>
+</tr>
+<tr>
+<td><code>fail-message</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>The string to print if the directory does not exist, used to create human-readable error messages.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-contents</code></h3>
+<p>Checks if the contents of a file match a given regular expression.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to get files for. This rule passes if all of the files returned by the globs match the supplied string, or if no files are returned.</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string</code></td>
+<td></td>
+<td>The regular expression to check using <code>String#search</code>. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. <code>".+@.+\\..+"</code> for an email address).</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to make the globs case insensitive. This does not effect the case sensitivity of the regular expression.</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>The flags to use for the regular expression in <code>content</code> (ex. <code>"i"</code> for case insensitivity).</td>
+</tr>
+<tr>
+<td><code>human-readable-content</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td>The regular expression in <code>content</code></td>
+<td>The string to print instead of the regular expression when generating human-readable output.</td>
+</tr>
+<tr>
+<td><code>fail-on-non-exist</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to disable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-existence</code></h3>
+<p>Checks the existence of a given file.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAny</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule passes if at least one glob returns a file.</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search.</td>
+</tr>
+<tr>
+<td><code>fail-message</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>The string to print if the directory does not exist, used to create human-readable error messages.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-hash</code></h3>
+<p>Checks that a given file matches a provided hash.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAny</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule passes if at least one file found matches the provided hash, and fails if no files are found.</td>
+</tr>
+<tr>
+<td><code>hash</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string</code></td>
+<td></td>
+<td>The hash to check against. Unless a different <code>algorithm</code> is specified, this will be sha256.</td>
+</tr>
+<tr>
+<td><code>algorithm</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>sha256</code></td>
+<td>The hash algorithm to use. Repolinter supports any algorithm supported by <a href="https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options">crypto.createHash</a></td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search.</td>
+</tr>
+<tr>
+<td><code>succeed-on-non-exist</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to enable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-not-contents</code></h3>
+<p>Checks none of a given list of files match a given regular expression.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to get files for. This rule passes if none of the files returned by the globs match the supplied string, or if no files are returned.</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string</code></td>
+<td></td>
+<td>The regular expression to check using <code>String#search</code>. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. <code>".+@.+\\..+"</code> for an email address).</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to make the globs case insensitive. This does not effect the case sensitivity of the regular expression.</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>The flags to use for the regular expression in <code>content</code> (ex. <code>"i"</code> for case insensitivity).</td>
+</tr>
+<tr>
+<td><code>human-readable-content</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td>The regular expression in <code>content</code></td>
+<td>The string to print instead of the regular expression when generating human-readable output.</td>
+</tr>
+<tr>
+<td><code>fail-on-non-exist</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to disable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-starts-with</code></h3>
+<p>Checks that the first lines of a file contain a set of regular expressions.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule passes if the starting contents of all found files match all patterns, and fails if no files are found.</td>
+</tr>
+<tr>
+<td><code>lineCount</code></td>
+<td><strong>Yes</strong></td>
+<td><code>number</code></td>
+<td></td>
+<td>The number of lines to scan into for each file.</td>
+</tr>
+<tr>
+<td><code>patterns</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>The regular expressions to check using <code>String#search</code>. These expressions should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. <code>".+@.+\\..+"</code> for an email address).</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>The flags to use for the regular expressions in <code>patterns</code> (ex. <code>"i"</code> for case insensitivity).</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search on the files. This will not effect the case sensitivity of <code>patterns</code>.</td>
+</tr>
+<tr>
+<td><code>succeed-on-non-exist</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to enable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+<tr>
+<td><code>skip-binary-files</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to exclude binary files from <code>globsAll</code>.</td>
+</tr>
+<tr>
+<td><code>skip-paths-matching</code></td>
+<td>No</td>
+<td><code>{ extensions?: string[], patterns?: string[], flags?: string }</code></td>
+<td><code>{}</code></td>
+<td>Use this option to exclude paths from <code>globsAll</code>, either by file extension or by regular expression.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-type-exclusion</code></h3>
+<p>Checks that no files exist of a certain filetype.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule passes if no files are found.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>git-grep-commits</code></h3>
+<p>Searches Git commits for configurable blacklisted words. These checks can be
+a bit time consuming, depending on the size of the Git history.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>denylist</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of patterns to search for.</td>
+</tr>
+<tr>
+<td><code>ignoreCase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to true to make <code>denylist</code> case insensitive.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>git-grep-log</code></h3>
+<p>Searches Git commit messages for configurable blacklisted words. These checks can be
+a bit time consuming, depending on the size of the Git history.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>denylist</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of patterns to search for.</td>
+</tr>
+<tr>
+<td><code>ignoreCase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to true to make <code>denylist</code> case insensitive.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>git-list-tree</code></h3>
+<p>Check for blacklisted filepaths in Git.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>denylist</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of patterns to search against all paths in the git history.</td>
+</tr>
+<tr>
+<td><code>ignoreCase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to true to make <code>denylist</code> case insensitive.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>git-working-tree</code></h3>
+<p>Checks whether the directory is managed with Git.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>allowSubDir</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td></td>
+<td>Whether or not to search subdirectories for a git repository.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>json-schema-passes</code></h3>
+<p>Checks if a given file matches a provided <a href="https://json-schema.org/">JSON schema</a>. This check is performed using <a href="https://ajv.js.org/">AJV</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>glob</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string</code></td>
+<td></td>
+<td>The file to check a schema against. If more than one file is found, the first match will be checked.</td>
+</tr>
+<tr>
+<td><code>schema</code></td>
+<td><strong>Yes</strong></td>
+<td>JSON Schema</td>
+<td></td>
+<td>The JSON schema to validate against, as a JSON object.</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search.</td>
+</tr>
+<tr>
+<td><code>human-readable-message</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td>The schema in <code>schema</code></td>
+<td>The string to print instead of the schema when generating human-readable output.</td>
+</tr>
+<tr>
+<td><code>succeed-on-non-exist</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to enable passing if no files are found from <code>glob</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>license-detectable-by-licensee</code></h3>
+<p>Fails if Licensee doesn't detect the repository's license. This rule takes no inputs, but requires <code>licensee</code> in the path, see <a href="#command-line-dependencies">command line dependencies</a> for details.</p>
+
+    <div class='pre p1 fill-light mt0'>Rules</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='fixes'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>Fixes</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <h1>Fixes</h1>
+<p>Below is a complete list of fixes that Repolinter can run, along with their configuration options.</p>
+<h2>Contents</h2>
+<ul>
+<li><a href="#contents">Contents</a></li>
+<li>
+<p><a href="#reference">Reference</a></p>
+<ul>
+<li><a href="#file-create"><code>file-create</code></a></li>
+<li><a href="#file-modify"><code>file-modify</code></a></li>
+</ul>
+</li>
+</ul>
+<h2>Reference</h2>
+<h3><code>file-create</code></h3>
+<p>Creates a file. Optionally removes or replaces files that failed.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string</code></td>
+<td></td>
+<td>The file to create. Path can be relative to the repository or absolute.</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string</code> | <code>{ url: string }</code> | <code>{ file: string }</code></td>
+<td></td>
+<td>The text to create the file with. Specify an object with the <code>url</code> or <code>file</code> property to pull text from a URL or file.</td>
+</tr>
+<tr>
+<td><code>replace</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to remove all failing files, as indicated by the rule.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-modify</code></h3>
+<p>Modify a file that failed a rule.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string</code> | <code>{ url: string }</code> | <code>{ file: string }</code></td>
+<td></td>
+<td>The text to create the file with. Specify an object with the <code>url</code> or <code>file</code> property to pull text from a URL or file.</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td>No</td>
+<td><code>string[]</code></td>
+<td>Failing files specified by the rule</td>
+<td>A list of globs to modify files with. If this value is omitted, file-modify will instead target files that failed the rule.</td>
+</tr>
+<tr>
+<td><code>skip-paths-matching</code></td>
+<td>No</td>
+<td><code>{ extensions?: string[], patterns?: string[], flags?: string }</code></td>
+<td><code>{}</code></td>
+<td>Use this option to exclude paths from <code>files</code>, either by file extension or by regular expression.</td>
+</tr>
+<tr>
+<td><code>write_mode</code></td>
+<td>No</td>
+<td><code>"prepend"</code> | <code>"append"</code></td>
+<td><code>"append"</code></td>
+<td>How file-modify should edit the file.</td>
+</tr>
+<tr>
+<td><code>newlines</code></td>
+<td>No</td>
+<td><code>{ begin?: number, end?: number }</code></td>
+<td><code>{ begin: 0, end: 0 }</code></td>
+<td>How many newlines should be added to the start or end of <code>text</code>. This property allows formatters to print <code>text</code> without these newlines, creating a better user experience.</td>
+</tr>
+</tbody>
+</table>
+
+    <div class='pre p1 fill-light mt0'>Fixes</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='axioms'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>Axioms</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <h1>Axioms</h1>
+<p>Below is a complete list of axioms that Repolinter can check.</p>
+<h2>Contents</h2>
+<ul>
+<li><a href="#contents">Contents</a></li>
+<li>
+<p><a href="#reference">Reference</a></p>
+<ul>
+<li><a href="#contributor-count"><code>contributor-count</code></a></li>
+<li><a href="#licensee"><code>licensee</code></a></li>
+<li><a href="#linguist"><code>linguist</code></a></li>
+<li><a href="#packagers"><code>packagers</code></a></li>
+</ul>
+</li>
+</ul>
+<h2>Reference</h2>
+<h3><code>contributor-count</code></h3>
+<p>This axiom uses <a href="https://github.com/domharrington/node-gitlog#readme">gitlog</a> to count the number of contributors to the current git repository. Contributors are counted based on unique occurrences of an author name in the git log. This axiom is a numerical axiom, meaning numerical comparisons can be used.</p>
+<p>An example of using this axiom:</p>
+<pre class='hljs'>{
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"contributor-count"</span>: <span class="hljs-string">"contributors"</span>
+  },
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"contributors&gt;6"</span>, <span class="hljs-string">"contributors&lt;200"</span>],
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+}</pre>
+<h3><code>licensee</code></h3>
+<p>This axiom uses <a href="https://github.com/licensee/licensee">licensee</a> to detect the license used in the current repository. To use this axiom licensee must be installed in your <code>PATH</code> or in the same directory as Repolinter.
+This axiom will return a list of <a href="https://spdx.org/licenses/">license identifiers</a> associated with the current repository.</p>
+<p>An example of using this axiom:</p>
+<pre class='hljs'>{
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"licensee"</span>: <span class="hljs-string">"license"</span>
+  },
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"license=Apache-2.0"</span>],
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+}</pre>
+<h3><code>linguist</code></h3>
+<p>This axiom uses GitHub's <a href="https://github.com/github/linguist">linguist</a> to detect programming languages in the current repository. To use this axiom, linguist must be installed in the system <code>PATH</code> or in the same directory as Repolinter. This axiom will return a lowercase list of programming languages from <a href="https://github.com/github/linguist/blob/master/lib/linguist/languages.yml">this list of supported languages</a>.</p>
+<p>An example of using this axiom:</p>
+<pre class='hljs'>{
+  <span class="hljs-string">"axioms"</span>: {
+    <span class="hljs-string">"linguist"</span>:<span class="hljs-string">" language"</span>
+  },
+  <span class="hljs-string">"rules"</span>: {
+    <span class="hljs-string">"my-rule"</span>: {
+      <span class="hljs-string">"where"</span>: [<span class="hljs-string">"language=javascript"</span>],
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+}</pre>
+<h3><code>packagers</code></h3>
+<p>This axiom detects the projects packaging system by looking for project metadata files such as the <a href="https://docs.npmjs.com/files/package.json">package.json</a>. The list of detectable packaging systems can be found in the <a href="../../axioms/packagers.js">axiom source</a>.</p>
+
+    <div class='pre p1 fill-light mt0'>Axioms</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <div class='keyline-top-not py2'><section class='py2 clearfix'>
+
+  <h2 id='api-reference' class='mt0'>
+    API Reference
+  </h2>
+
+  
+    
+
+  
+</section></div>
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='repolinter'>
+      repolinter
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>repolinter</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='repolinterdefaultformatter'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>defaultFormatter</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>This formatter outputs the LintResult CLI style, including
+colors on supported platforms.</p>
+<pre class='hljs'>✔ license-file-exists: found (LICENSE)
+✔ readme-file-exists: found (README.md)
+✔ contributing-file-exists: found (CONTRIBUTING)
+✔ code-of-conduct-file-exists: found (CODE-OF-CONDUCT)
+✔ changelog-file-exists: found (CHANGELOG)
+✔ readme-references-license: File README.md contains license
+✔ license-detectable-by-licensee: Licensee identified the license for project: Apache License 2.0
+✔ test-directory-exists: found (tests)
+✔ integrates-with-ci: found (.travis.yml)
+✔ source-license-headers-exist: The first 5 lines of 'index.js' contain all of the requested patterns.
+...
+✔ github-issue-template-exists: found (ISSUE_TEMPLATE)
+✔ github-pull-request-template-exists: found (PULL_REQUEST_TEMPLATE)
+✔ package-metadata-exists: found (Gemfile)
+✔ package-metadata-exists: found (package.json)</pre>
+
+    <div class='pre p1 fill-light mt0'>defaultFormatter</div>
+  
+    <p>
+      Type:
+      <a href="#formatter">Formatter</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterjsonformatter'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>jsonFormatter</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>This formatter outputs the raw JSON string of the LintResult object.</p>
+
+    <div class='pre p1 fill-light mt0'>jsonFormatter</div>
+  
+    <p>
+      Type:
+      <a href="#formatter">Formatter</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolintermarkdownformatter'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>markdownFormatter</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>This formatter outputs a markdown document designed to created into
+a GitHub issue or similar.</p>
+<pre class='hljs'><span class="hljs-section"># Repolinter Report</span>
+
+This Repolinter run generated the following results:
+| ❗  Error | ❌  Fail | ⚠️  Warn | ✅  Pass | Ignored | Total |
+|---|---|---|---|---|---|
+| 0 | 0 | 0 | 15 | 10 | 25 |
+...</pre>
+<p>You can also specify formatOptions.disclaimer to include a disclaimer
+at the top of the markdown document.</p>
+
+    <div class='pre p1 fill-light mt0'>markdownFormatter</div>
+  
+    <p>
+      Type:
+      <a href="#formatter">Formatter</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterresultformatter'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>resultFormatter</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The same as defaultFormatter @type {Formatter}</p>
+
+    <div class='pre p1 fill-light mt0'>resultFormatter</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterlint'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>lint(targetDir, filterPaths = [], ruleset = null, dryRun = false)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>An exposed function for the repolinter engine. Use this function
+to run repolinter on a specified directory targetDir. You can
+also optionally specify which paths to allowlist (filterPaths),
+whether or not to actually commit modifications (fixes), and
+a custom ruleset object to use. This function will not throw
+an error on failure, instead indicating that an error has
+ocurred in returned value.</p>
+
+    <div class='pre p1 fill-light mt0'>lint(targetDir: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, filterPaths: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>?, ruleset: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | null)?, dryRun: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#lintresult">LintResult</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>targetDir</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The directory of the repository to lint.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>filterPaths</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>?
+            = <code>[]</code>)</code>
+	    A list of directories to allow linting of, or [] for all.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleset</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | null)?
+            = <code>null</code>)</code>
+	    A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
+Set to null for repolinter to automatically find it in the repository.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dryRun</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+            = <code>false</code>)</code>
+	    If true, repolinter will report suggested fixes, but will make no disk modifications.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#lintresult">LintResult</a>></code>:
+        An object representing the output of the linter
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolintershouldrulerun'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>shouldRuleRun(validTargets, ruleAxioms)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Checks a rule's list of axioms against a list of valid
+targets, and determines if the rule should run or not
+based on the following rules criteria:</p>
+<ul>
+<li>The rule's list has a direct match on a target OR</li>
+<li>The rule specifies a numerical axiom (ex. >) and the target
+list contains a target that matches that axiom.</li>
+</ul>
+<p>Supported numerical axioms are >, &#x3C;, >=, &#x3C;=, and = Only</p>
+
+    <div class='pre p1 fill-light mt0'>shouldRuleRun(validTargets: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>, ruleAxioms: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>validTargets</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>)</code>
+	    The axiom target list in "target=thing" format, including the wildcard entry ("target=
+<em>").
+For numerical targets it is assumed that only one entry and the wildcard are present (e.g. ["target=2", "target=3", "target=</em>
+"] is invalid)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleAxioms</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>)</code>
+	    The rule "where" specification to validate against.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+        The list pf unsatisfied axioms, if any. Empty array indicates the rule should run.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterrunruleset'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>runRuleset(ruleset, targets, fileSystem, dryRun)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Run all operations in a ruleset, including linting and fixing. Returns
+a list of objects with the output of the linter rules</p>
+
+    <div class='pre p1 fill-light mt0'>runRuleset(ruleset: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;RuleInfo>, targets: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, Result> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>), fileSystem: FileSystem, dryRun: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;FormatResult>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleset</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;RuleInfo>)</code>
+	    A ruleset (list of rules with information about each). This parameter can be generated from a config using parseConfig.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>targets</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, Result> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>))</code>
+	    The axiom targets to enable for this run of the ruleset. Structure is from the output of determineTargets. Use true for all targets.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fileSystem</span> <code class='quiet'>(FileSystem)</code>
+	    A filesystem object configured with filter paths and a target directory.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dryRun</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    If true, repolinter will report suggested fixes, but will make no disk modifications.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;FormatResult>></code>:
+        Objects indicating the result of the linter rules
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterdeterminetargets'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>determineTargets(axiomconfig, fs)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Given an axiom configuration, determine the appropriate targets to run against
+(e.g. "target=javascript").</p>
+
+    <div class='pre p1 fill-light mt0'>determineTargets(axiomconfig: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, fs: FileSystem): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, Result>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>axiomconfig</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    A configuration conforming to the "axioms" section in schema.json
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fs</span> <code class='quiet'>(FileSystem)</code>
+	    The filesystem to run axioms against
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, Result>></code>:
+        An object representing axiom name: axiom results. The array will be null if the axiom could not run.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolintervalidateconfig'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>validateConfig(config)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Validate a repolint configuration against a known JSON schema</p>
+
+    <div class='pre p1 fill-light mt0'>validateConfig(config: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    The configuration to validate
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        A object representing or not the config validation succeeded (passed)
+an an error message if not (error)
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterparseconfig'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>parseConfig(config)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Parse a JSON object config (with repolinter.json structure) and return a list
+of RuleInfo objects which will then be used to determine how to run the linter.</p>
+
+    <div class='pre p1 fill-light mt0'>parseConfig(config: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;RuleInfo></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    The repolinter.json config
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;RuleInfo></code>:
+        The parsed rule data
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterresult'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>new Result(message, targets, passed)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Object representing the result of a rule or fix job.</p>
+
+    <div class='pre p1 fill-light mt0'>new Result(message: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?, targets: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#resulttarget">ResultTarget</a>>, passed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Message to display to console indications the output of the job. Does not need to contain the list of files checked.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>targets</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#resulttarget">ResultTarget</a>>)</code>
+	    A list of paths that this rule/fix changed or checked
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>passed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    Whether or not the rule/fix succeeded
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterruleinfo'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>new RuleInfo(name, level, where, ruleType, ruleConfig, fixType?, fixConfig?, policyInfo?, policyUrl?)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>A class containing parsed information from a single "rule"
+entry in the configuration.</p>
+
+    <div class='pre p1 fill-light mt0'>new RuleInfo(name: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, level: (<code>"off"</code> | <code>"error"</code> | <code>"warning"</code>), where: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>?, ruleType: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, ruleConfig: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, fixType: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?, fixConfig: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?, policyInfo: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?, policyUrl: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    Human readable name of the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>level</span> <code class='quiet'>((<code>"off"</code> | <code>"error"</code> | <code>"warning"</code>))</code>
+	    The print level of the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>where</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>?)</code>
+	    Axioms to conditionally run the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleType</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The type of rule to run (ex. "directory-existence")
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleConfig</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    The options object for the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fixType</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?)</code>
+	    The type of fix to run (ex. "file-modify")
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fixConfig</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?)</code>
+	    The options object for the fix to run
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>policyInfo</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?)</code>
+	    A string representing more in-depth information about this rule/fix combo.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>policyUrl</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)?)</code>
+	    A URL with relevant policy information pertaining to this rule/fix combo.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterformatresult'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>new FormatResult(ruleInfo, message, status, lintRes, fixRes)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>A class representing the information produces by a single rule/fix
+check. Do not use the constructor for this class, prefer the static
+factory functions instead.</p>
+
+    <div class='pre p1 fill-light mt0'>new FormatResult(ruleInfo: RuleInfo, message: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?, status: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, lintRes: Result?, fixRes: Result?)</div>
+  
+  
+    <p>
+      Extends
+      
+        <a href="#formatresultbase">FormatResultBase</a>
+      
+    </p>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleInfo</span> <code class='quiet'>(RuleInfo)</code>
+	    Information about the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    Message from the engine indicating why the rule may have been excluded. must be null if lintRes is present.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>status</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The "status" (error, ignored, ok) code, based on static values in FormatResult
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>lintRes</span> <code class='quiet'>(Result?)</code>
+	    The linter rule output
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fixRes</span> <code class='quiet'>(Result?)</code>
+	    The fixer rule output
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='repolinterformatresultgetallstatus'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getAllStatus()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Get a list of all possible status codes supported by FormatResult.</p>
+
+    <div class='pre p1 fill-light mt0'>getAllStatus(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+        A list of FormatResult.ERROR, FormatResult.IGNORED, and so on.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterformatresultcreateignored'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>CreateIgnored(ruleInfo, message)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Create a FormatResult for an ignored rule</p>
+
+    <div class='pre p1 fill-light mt0'>CreateIgnored(ruleInfo: RuleInfo, message: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): FormatResult</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleInfo</span> <code class='quiet'>(RuleInfo)</code>
+	    Information about the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    Why the rule was ignored
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>FormatResult</code>:
+        A FormatResult object
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterformatresultcreateerror'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>CreateError(ruleInfo, message)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Create a FormatResult for a rule that threw an error</p>
+
+    <div class='pre p1 fill-light mt0'>CreateError(ruleInfo: RuleInfo, message: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): FormatResult</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleInfo</span> <code class='quiet'>(RuleInfo)</code>
+	    Information about the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    Why the rule errored
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>FormatResult</code>:
+        A FormatResult object
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterformatresultcreatelintonly'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>CreateLintOnly(ruleInfo, lintRes)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Create a FormatResult for a rule that only contains
+output from a lint rule</p>
+
+    <div class='pre p1 fill-light mt0'>CreateLintOnly(ruleInfo: RuleInfo, lintRes: Result): FormatResult</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleInfo</span> <code class='quiet'>(RuleInfo)</code>
+	    Information about the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>lintRes</span> <code class='quiet'>(Result)</code>
+	    The result from the linter rule
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>FormatResult</code>:
+        A FormatResult object
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterformatresultcreatelintandfix'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>CreateLintAndFix(ruleInfo, lintRes, fixRes)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Create a FormatResult for a rule that contains output
+from both a lint and fix job.</p>
+
+    <div class='pre p1 fill-light mt0'>CreateLintAndFix(ruleInfo: RuleInfo, lintRes: Result, fixRes: Result): FormatResult</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleInfo</span> <code class='quiet'>(RuleInfo)</code>
+	    Information about the rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>lintRes</span> <code class='quiet'>(Result)</code>
+	    The result from the lint rule
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fixRes</span> <code class='quiet'>(Result)</code>
+	    The result from the fix rule
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>FormatResult</code>:
+        A FormatResult object
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystem'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>new FileSystem(targetDir, filterPaths)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Utility filesystem class that scopes operations to a given set of directories and a CWD</p>
+
+    <div class='pre p1 fill-light mt0'>new FileSystem(targetDir: any, filterPaths: any)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>targetDir</span> <code class='quiet'>(any
+            = <code>&#39;.&#39;</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>filterPaths</span> <code class='quiet'>(any
+            = <code>[]</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='repolinterfilesystemfileexists'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>fileExists(file)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Asynchronously checks if a file exists using fs.access</p>
+
+    <div class='pre p1 fill-light mt0'>fileExists(file: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>file</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    An absolute path to verify the existence of
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>></code>:
+        Whether or not the path exists
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='repolinterfilesystemrelativefileexists'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>relativeFileExists(file)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Asynchronously checks if a file exists using fs.access</p>
+
+    <div class='pre p1 fill-light mt0'>relativeFileExists(file: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>file</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    A path relative to targetDir to check the existence of
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>></code>:
+        Whether or not the path exists
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystemfindfirst'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>findFirst(globs, nocase)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Find the first file or directory matching a list of globs. Globs are
+searched from first to last. Returns the relative path of that file
+or directory, or undefined if none was found.</p>
+
+    <div class='pre p1 fill-light mt0'>findFirst(globs: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>), nocase: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>globs</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>))</code>
+	    The globs to search with
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>nocase</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    Whether or not to ignore case-sensitivity
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)></code>:
+        A path relative to this.targetDir, or undefined if no items were found
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystemfindfirstfile'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>findFirstFile(globs, nocase)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Find the first file matching a list of globs. Globs are
+searched from first to last. Returns the relative path of that file,
+or undefined if none was found.</p>
+
+    <div class='pre p1 fill-light mt0'>findFirstFile(globs: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>), nocase: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>globs</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>))</code>
+	    The globs to search with
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>nocase</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    Whether or not to ignore case-sensitivity
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)></code>:
+        A path relative to this.targetDir, or undefined if no items were found
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystemfindallfiles'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>findAllFiles(globs, nocase)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Find all files matching a list of globs. Globs are
+searched from first to last. Returns the relative path of all files,
+or undefined if none was found. Automatically removes symlinks
+from results.</p>
+
+    <div class='pre p1 fill-light mt0'>findAllFiles(globs: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>), nocase: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>globs</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>))</code>
+	    The globs to search with
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>nocase</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    Whether or not to ignore case-sensitivity
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>></code>:
+        A list of paths relative to this.targetDir
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystemfindall'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>findAll(globs, nocase = false)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Find all files or directories matching a list of globs. Globs are
+searched from first to last. Returns the relative path of all items,
+or undefined if none was found. Automatically removes symlinks
+from results.</p>
+
+    <div class='pre p1 fill-light mt0'>findAll(globs: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>), nocase: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>globs</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>))</code>
+	    The globs to search with
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>nocase</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+            = <code>false</code>)</code>
+	    Whether or not to ignore case-sensitivity
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>></code>:
+        A list of paths relative to this.targetDir
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystemgetfilecontents'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getFileContents(relativeFile)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Get the contents of a file in utf8 given a relative path</p>
+
+    <div class='pre p1 fill-light mt0'>getFileContents(relativeFile: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>relativeFile</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    A path relative to this.targetDir
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>)></code>:
+        A string with the file contents, or undefined if the file is not found.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystemsetfilecontents'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>setFileContents(relativeFile, contents)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Set the contents of a file in utf8 given a relative path and contents.</p>
+
+    <div class='pre p1 fill-light mt0'>setFileContents(relativeFile: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, contents: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;void></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>relativeFile</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    A path relative to this.targetDir
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>contents</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    A string with the file contents
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;void></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='repolinterfilesystemremovefile'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>removeFile(relativeFile)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Remove the file at the specified path.</p>
+
+    <div class='pre p1 fill-light mt0'>removeFile(relativeFile: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;void></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>relativeFile</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;void></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='formatter'>
+      Formatter
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>Formatter</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>formatOutput</span> <code class='quiet'>(function (<a href="#lintresult">LintResult</a>, <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          : A function to format the entire linter output.
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='lintresult'>
+      LintResult
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>LintResult</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>params</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+          : The parameters to the lint function call, including the found/supplied ruleset object.
+
+          
+            <ul>
+              
+                <li><code>params.targetDir</code> <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+                  
+                  <p>The target directory repolinter was called with. May also be a git URL.</p>
+</li>
+              
+                <li><code>params.filterPaths</code> <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>
+                  
+                  <p>The filter paths repolinter was called with.</p>
+</li>
+              
+                <li><code>params.rulesetPath</code> <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>??
+                  
+                  <p>The path to the ruleset configuration repolinter was called with.</p>
+</li>
+              
+                <li><code>params.ruleset</code> <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+                  
+                  <p>The deserialized ruleset that Repolinter ran.</p>
+</li>
+              
+            </ul>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>passed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+          : Whether or not all lint rules and fix rules succeeded. Will be false if an error occurred during linting.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>errored</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+          : Whether or not an error occurred during the linting process (ex. the configuration failed validation).
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>errMsg</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+          : A string indication error information, will be present if errored is true.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>results</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;FormatResult>)</code>
+          : The output of all the linter rules.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>targets</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, Result>)</code>
+          : An object representing axiom type: axiom targets.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>formatOptions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?)</code>
+          : Additional options to pass to the formatter, generated from the output or config.
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='numericaltargetsmap'>
+      numericalTargetsMap
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>numericalTargetsMap</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='resulttarget'>
+      ResultTarget
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>ResultTarget</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>path</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+          : The filepath or axiom value executed on.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>pattern</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+          : The file pattern used to search, can be present if path is not available.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>passed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+          : Whether or not this target passed the check.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+          : A message relating to this target.
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='formatresultbase'>
+      FormatResultBase
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>FormatResultBase</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>status</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          : status of the rule execution, either FormatResult.OK, FormatResult.IGNORED, or FormatResult.ERROR
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>runMessage</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>??)</code>
+          : a message why the rule was ignored or failed, or undefined if the rule ran successfully
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>lintResult</span> <code class='quiet'>(Result??)</code>
+          : the linter result object, or undefined if the rule was ignored
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>fixResult</span> <code class='quiet'>(Result??)</code>
+          : the fix result object, or undefined if no fix was present or the rule was ignored
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>ruleInfo</span> <code class='quiet'>(RuleInfo)</code>
+          : the rule metadata object
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='symbolformatter'>
+      SymbolFormatter
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The default CLI formatter. Exported as defaultFormatter and resultFormatter.</p>
+
+    <div class='pre p1 fill-light mt0'>new SymbolFormatter()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='symbolformatterformatresult'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>formatResult(result, ruleName, errorSymbol, okSymbol)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Format a FormatResult object into a line of human-readable text.</p>
+
+    <div class='pre p1 fill-light mt0'>formatResult(result: Result, ruleName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, errorSymbol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, okSymbol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>result</span> <code class='quiet'>(Result)</code>
+	    The result to format, must be valid
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>ruleName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The name of the rule this result is from
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>errorSymbol</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The symbol to use if the result did not pass
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>okSymbol</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+            = <code>logSymbols.success</code>)</code>
+	    The symbol to use if the result passed
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        The formatted string
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='symbolformattergetsymbol'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getSymbol(level)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Get the logsymbol associated with a log level (specified in the JSON configuration schema)</p>
+
+    <div class='pre p1 fill-light mt0'>getSymbol(level: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>level</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The log level string ("info", "warning", or "error"
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        A corresponding logsymbol
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='symbolformatterformatoutput'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>formatOutput(output, dryRun)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+    <div class='pre p1 fill-light mt0'>formatOutput(output: <a href="#lintresult">LintResult</a>, dryRun: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>output</span> <code class='quiet'>(<a href="#lintresult">LintResult</a>)</code>
+	    The linter output to format
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dryRun</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    Whether or not to generate in "report" format
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        The formatted output
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='jsonformatter'>
+      JsonFormatter
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>A JSON formatter for machines. Exported as jsonFormatter.</p>
+
+    <div class='pre p1 fill-light mt0'>new JsonFormatter()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='jsonformatterformatoutput'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>formatOutput(output, dryRun)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+    <div class='pre p1 fill-light mt0'>formatOutput(output: <a href="#lintresult">LintResult</a>, dryRun: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>output</span> <code class='quiet'>(<a href="#lintresult">LintResult</a>)</code>
+	    The linter output to format
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dryRun</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>)</code>
+	    (ignored)
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        The formatted output
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='markdownformatter'>
+      MarkdownFormatter
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>A markdown formatter for Repolinter output, designed to be used with GH issues.
+Exported as markdownFormatter.</p>
+
+    <div class='pre p1 fill-light mt0'>new MarkdownFormatter()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='markdownformatterformatresult'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>formatResult(result, symbol, dryRun?)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Format a FormatResult object into a line of human-readable text.</p>
+
+    <div class='pre p1 fill-light mt0'>formatResult(result: FormatResult, symbol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, dryRun: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>??): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>result</span> <code class='quiet'>(FormatResult)</code>
+	    The result to format, must be valid
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>symbol</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The symbol to use at the start of the log line (ex. ✅)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dryRun</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>??)</code>
+	    Whether or not to say the fix is "suggested" instead of "applied".
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        The formatted string
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='markdownformatterformatoutput'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>formatOutput(output, dryRun?)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+    <div class='pre p1 fill-light mt0'>formatOutput(output: <a href="#lintresult">LintResult</a>, dryRun: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>??): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>output</span> <code class='quiet'>(<a href="#lintresult">LintResult</a>)</code>
+	    The linter output to format
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dryRun</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>??)</code>
+	    Whether or not to print fix "suggested" or "applied"
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        The formatted output
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='slug'>
+      slug
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>A github markdown header slugger, based on the following fork of github-slugger: <a href="https://github.com/Flet/github-slugger/tree/25cdb15768737d7c1e5218d06d34a772faaf5851">https://github.com/Flet/github-slugger/tree/25cdb15768737d7c1e5218d06d34a772faaf5851</a>
+Parse a unicode string into a markdown anchor link using a GitHub-flavored algorithm.</p>
+
+    <div class='pre p1 fill-light mt0'>slug(string: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>string</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    The heading to parse.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        The slug to use in URLs.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+      </div>
+    </div>
+  <script src='assets/anchor.js'></script>
+  <script src='assets/split.js'></script>
+  <script src='assets/site.js'></script>
+</body>
+</html>
