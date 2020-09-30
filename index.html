@@ -382,10 +382,10 @@
   </h2>
 
   
-    <h1><img src="docs/images/P_RepoLinter01_logo_only.png" alt="Repo Linter"> <img src="https://github.com/todogroup/repolinter/workflows/Build/badge.svg" alt="Build Status"></h1>
+    <h1><img src="https://raw.githubusercontent.com/todogroup/repolinter/master/docs/images/P_RepoLinter01_logo_only.png" alt="Repo Linter"> <img src="https://github.com/todogroup/repolinter/workflows/Build/badge.svg" alt="Build Status"></h1>
 <p>Lint open source repositories for common issues.</p>
 <h2>Installation</h2>
-<p>Repolinter requires <a href="https://nodejs.org/en/">Node.JS</a> >= v10 to function properly. Once Node.JS is installed, you can install repolinter using <code>npm</code>:</p>
+<p>Repolinter requires <a href="https://nodejs.org/en/">Node.JS</a> >= v10 to function properly. Once Node.JS is installed, you can install Repolinter using <code>npm</code>:</p>
 <pre class='hljs'>npm install -g repolinter</pre>
 <h2>Linting a Local Repository</h2>
 <p>Once installed, run the following to lint a directory:</p>
@@ -495,10 +495,10 @@ This Repolinter run generated the following results:
 </span>  <span class="hljs-attr">policyUrl:</span> <span class="hljs-string">&gt;-</span>
     <span class="hljs-string">...</span></pre>
 <ul>
-<li><strong><code>rule</code></strong> - The check to perform. Repolinter can perform any check listed under the <a href="./docs/md/rules.md">rules documentation</a>. Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the <code>file-existence</code> check can be used in a <code>README-file-exists</code> rule and a <code>LICENSE-file-exists</code> rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.</li>
+<li><strong><code>rule</code></strong> - The check to perform. Repolinter can perform any check listed under the <a href="./docs/rules.md">rules documentation</a>. Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the <code>file-existence</code> check can be used in a <code>README-file-exists</code> rule and a <code>LICENSE-file-exists</code> rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.</li>
 <li><strong><code>level</code></strong> - The error level to notify if the check fails. <code>warning</code> will not change the exit code and <code>off</code> will not run the check.</li>
 <li><strong><code>where</code></strong> - Conditionally enable or disable this rule based off of <a href="#axioms">axioms</a>. Strings in this array follow the format of <code>&#x3C;axiom>=&#x3C;value></code>, where value is either an axiom output or <code>*</code> to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the <a href="./docs/rules/axioms">axioms documentation</a>.</li>
-<li><strong><code>fix</code></strong> <em>(optional)</em> - The action to perform if the check performed by <code>rule</code> fails. Repolinter can perform any action listed under <a href="./docs/md/fixes.md">fixes documentation</a>.</li>
+<li><strong><code>fix</code></strong> <em>(optional)</em> - The action to perform if the check performed by <code>rule</code> fails. Repolinter can perform any action listed under <a href="./docs/fixes.md">fixes documentation</a>.</li>
 <li><strong><code>policyInfo</code></strong>, <strong><code>policyUrl</code></strong> <em>(optional)</em> - Information used by the formatter to indicate why the check exists from a policy perspective. Note: <code>policyInfo</code> will automatically have a period appended to it for formatting purposes.</li>
 </ul>
 <p>A minimal example of a rule that checks for the existence of a <code>README</code>:</p>
@@ -564,7 +564,7 @@ This Repolinter run generated the following results:
 }</pre>
 <pre class='hljs'><span class="hljs-attr">axioms:</span>
   <span class="hljs-string">&lt;axiom-id&gt;:</span> <span class="hljs-string">axiom-target</span></pre>
-<p>Each axiom is configured as a key value pair in the <code>axioms</code> object, where <code>&#x3C;axiom-id></code> specifies the program to run and <code>&#x3C;axiom-target></code> specifies the target to be used in the <code>where</code> conditional. The available axiom IDs can be found in the <a href="./docs/md/axioms.md">axiom documentation</a>. It should be noted that some axioms require external packages to run.</p>
+<p>Each axiom is configured as a key value pair in the <code>axioms</code> object, where <code>&#x3C;axiom-id></code> specifies the program to run and <code>&#x3C;axiom-target></code> specifies the target to be used in the <code>where</code> conditional. The available axiom IDs can be found in the <a href="./docs/axioms.md">axiom documentation</a>. It should be noted that some axioms require external packages to run.</p>
 <p>An example configuration using an axiom to detect the packaging system for a project:</p>
 <pre class='hljs'>{
   <span class="hljs-string">"$schema"</span>: <span class="hljs-string">"https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json"</span>,
@@ -589,7 +589,7 @@ This Repolinter run generated the following results:
     <span class="hljs-attr">where:</span> <span class="hljs-string">[package-type=npm]</span>
     <span class="hljs-attr">rule:</span>
       <span class="hljs-string">...</span></pre>
-<p>Some axioms (ex. <a href="./docs/md/axioms.md#contributor-count"><code>contributor-count</code></a>) output numerical values instead of strings. For these axioms, numerical comparisons (<code>&#x3C;</code>, <code>></code>, <code>&#x3C;=</code>, <code>>=</code>) can be also be specified in the <code>where</code> conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.</p>
+<p>Some axioms (ex. <a href="./docs/axioms.md#contributor-count"><code>contributor-count</code></a>) output numerical values instead of strings. For these axioms, numerical comparisons (<code>&#x3C;</code>, <code>></code>, <code>&#x3C;=</code>, <code>>=</code>) can be also be specified in the <code>where</code> conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.</p>
 <pre class='hljs'>{
   <span class="hljs-string">"axioms"</span>: {
     <span class="hljs-string">"contributor-count"</span>: <span class="hljs-string">"contributors"</span>
@@ -614,14 +614,14 @@ This Repolinter run generated the following results:
 <p>Repolinter also includes an extensible JavaScript API:</p>
 <pre class='hljs'><span class="hljs-keyword">const</span> repolinter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'repolinter'</span>)
 <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> repolinter.lint(<span class="hljs-string">'.'</span>)</pre>
-<p>This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under <a href="https://newrelic-forks.github.io/repolinter/#api-reference">API Documentation</a>.</p>
+<p>This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under <a href="https://todogroup.github.io/repolinter/#api-reference">API Documentation</a>.</p>
 <h2>Going Further</h2>
 <ul>
-<li><a href="./docs/md/rules.md">Rule Reference</a></li>
-<li><a href="./docs/md/fixes.md">Fix Reference</a></li>
-<li><a href="./docs/md/axioms.md">Axiom Reference</a></li>
-<li><a href="https://newrelic-forks.github.io/repolinter/#api-reference">API Reference</a></li>
-<li><a href="./docs/md/development.md">Developer Guide</a></li>
+<li><a href="./docs/rules.md">Rule Reference</a></li>
+<li><a href="./docs/fixes.md">Fix Reference</a></li>
+<li><a href="./docs/axioms.md">Axiom Reference</a></li>
+<li><a href="https://todogroup.github.io/repolinter/#api-reference">API Reference</a></li>
+<li><a href="./docs/development.md">Developer Guide</a></li>
 </ul>
 <h2>License</h2>
 <p>This project is licensed under the <a href="LICENSE">Apache 2.0</a> license using <a href="https://reuse.software">https://reuse.software</a> best practice.</p>
