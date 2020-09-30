@@ -4,7 +4,7 @@ Lint open source repositories for common issues.
 
 ## Installation
 
-Repolinter requires [Node.JS](https://nodejs.org/en/) >= v10 to function properly. Once Node.JS is installed, you can install repolinter using `npm`:
+Repolinter requires [Node.JS](https://nodejs.org/en/) >= v10 to function properly. Once Node.JS is installed, you can install Repolinter using `npm`:
 ```sh
 npm install -g repolinter
 ```
