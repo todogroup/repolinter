@@ -5,7 +5,7 @@ repository:
   name: repolinter
 
   # A short description of the repository that will show up on GitHub
-  description: Repolinter: Open Source Repository Linter
+  description: Repolinter, The Open Source Repository Linter
 
   # A URL with more information about the repository
   homepage: https://todogroup.org
@@ -21,3 +21,7 @@ collaborators:
     
   - username: trevmex
     permission: admin
+ 
+  - username: prototypicalpro
+    permission: admin
+     
