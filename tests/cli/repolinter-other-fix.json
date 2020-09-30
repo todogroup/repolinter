@@ -1,0 +1,23 @@
+{
+  "$schema": "../../rulesets/schema.json",
+  "version": 2,
+  "axioms": {},
+  "rules": {
+    "test-file-exists": {
+      "level": "error",
+      "rule": {
+        "type": "file-existence",
+        "options": {
+          "globsAny": ["repolinter_tests.js"]
+        }
+      },
+      "fix": {
+        "type": "file-create",
+        "options": {
+          "file": "fixed.txt",
+          "text": "hello!"
+        }
+      }
+    }
+  }
+}

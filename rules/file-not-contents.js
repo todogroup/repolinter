@@ -1,30 +1,21 @@
 // Copyright 2017 TODO Group. All rights reserved.
-// Licensed under the Apache License, Version 2.0.
+// SPDX-License-Identifier: Apache-2.0
+
+// eslint-disable-next-line no-unused-vars
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
+const fileContents = require('./file-contents')
 
-// TODO: This is mostly a copy and paste of file-contents.js. Ideally it would be implemented as a NOT(file-contents.js)
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
-  const files = fs.findAllFiles(options.files)
-
-  if (files.length === 0 && options['succeed-on-non-existent']) {
-    const message = `not found: (${options.files.join(', ')})`
-    return [new Result(rule, message, null, true)]
-  }
-
-  const results = files.map(file => {
-    let fileContents = fs.getFileContents(file)
-    if (fileContents === undefined) {
-      fileContents = ''
-    }
-
-    const regexp = new RegExp(options.content, options.flags)
-    const passed = fileContents.search(regexp) === -1
-    const message = `File ${file} ${passed ? 'doesn\'t contain' : 'contains'} ${options.content}`
-
-    return new Result(rule, message, file, passed)
-  })
-
-  return results
+/**
+ * Check that a list of files does not contain a regular expression.
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Promise<Result>} The lint rule result
+ */
+function fileNotContents (fs, options) {
+  return fileContents(fs, options, true)
 }
+
+module.exports = fileNotContents

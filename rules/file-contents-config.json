@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-contents-config.json",
+    "type": "object",
+    "properties": {
+        "nocase": {
+            "type": "boolean",
+            "default": false
+        },
+        "globsAll": {
+            "type": "array",
+            "items": { "type": "string" }
+        },
+        "content": { "type": "string" },
+        "flags": { "type": "string" },
+        "human-readable-content": { "type": "string" },
+        "fail-on-non-exist": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "required": ["content"],
+    "oneOf": [
+        { "required": [ "globsAll" ] },
+        { "required": [ "files" ] }
+    ]
+}

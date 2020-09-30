@@ -3,10 +3,12 @@
 
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
 
 function grepLog (fileSystem, options) {
   const args = ['-C', fileSystem.targetDir, 'log', '--all', '--format=full', '-E']
-    .concat(options.blacklist.map(pattern => `--grep=${pattern}`))
+    .concat(options.denylist.map(pattern => `--grep=${pattern}`))
   if (options.ignoreCase) {
     args.push('-i')
   }
@@ -14,12 +16,18 @@ function grepLog (fileSystem, options) {
   return parseLog(log)
 }
 
+/**
+ * @param log
+ */
 function parseLog (log) {
   const logEntries = log.split('\ncommit ').filter(x => !!x)
 
   return logEntries.map(entry => extractInfo(entry))
 }
 
+/**
+ * @param commit
+ */
 function extractInfo (commit) {
   const [hash, , , ...message] = commit.split('\n')
   return {
@@ -28,30 +36,37 @@ function extractInfo (commit) {
   }
 }
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const commits = grepLog(fileSystem, options)
+/**
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function gitGrepLog (fs, options) {
+  // backwards compatibility with blacklist
+  options.denylist = options.denylist || options.blacklist
 
-  const results = commits.map(commit => {
+  const commits = grepLog(fs, options)
+
+  const targets = commits.map(commit => {
     const message = [
-      `The commit message for commit ${commit.hash.substr(0, 7)} contains blacklisted words.\n`,
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      `The commit message for commit ${commit.hash.substr(0, 7)} contains denylisted words.\n`,
+      `\tDenylist: ${options.denylist.join(', ')}`
     ].join('\n')
 
-    const result = new Result(rule, message, null, false)
-    result.data = { commit: commit }
-
-    return result
+    return {
+      passed: false,
+      message,
+      path: commit
+    }
   })
 
-  if (results.length === 0) {
-    results.push(new Result(
-      rule,
-      `No blacklisted words found in any commit messages.\n\tBlacklist: ${options.blacklist.join(', ')}`,
-      null,
-      true
-    ))
+  if (targets.length === 0) {
+    const message = `No denylisted words found in any commit messages.\n\tDenylist: ${options.denylist.join(', ')}`
+    return new Result(message, [], true)
   }
 
-  return results
+  return new Result('', targets, false)
 }
+
+module.exports = gitGrepLog

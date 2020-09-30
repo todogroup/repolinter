@@ -1,19 +1,36 @@
 {
+  "$schema": "./schema.json",
+  "version": 2,
+  "axioms": {},
   "rules": {
-    "all": {
-      "dir-is-managed-with-git:git-working-tree": ["warning", {"allowSubDir": false}],
-      "git-log-contains-no-blacklisted-words:git-grep-log": ["error", {
-        "blacklist": ["secret", "password"],
-        "ignoreCase": true
-      }],
-      "git-commits-contain-no-blacklisted-words:git-grep-commits": ["error", {
-        "blacklist": ["secret", "password"],
-        "ignoreCase": true
-      }],
-      "git-tree-contains-no-blacklisted-files:git-list-tree": ["error", {
-        "blacklist": ["secret", "password"],
-        "ignoreCase": true
-      }]
-    }
+      "dir-is-managed-with-git": {
+          "level": "warning",
+          "rule": {
+              "type": "git-working-tree",
+              "options": {
+                  "allowSubDir": false
+              }
+          }
+      },
+      "git-commits-contain-no-denylisted-words": {
+          "level": "error",
+          "rule": {
+              "type": "git-grep-commits",
+              "options": {
+                  "denylist": ["secret", "password"],
+                  "ignoreCase": true
+              }
+          }
+      },
+      "git-tree-contains-no-denylisted-files": {
+          "level": "error",
+          "rule": {
+              "type":"git-list-tree",
+              "options": {
+                  "denylist": ["secret", "password"],
+                  "ignoreCase": true
+              }
+          }
+      }
   }
 }

@@ -3,16 +3,24 @@
 
 const licensee = require('../lib/licensee')
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
 
-module.exports = function (fileSystem, rule) {
-  const result = new Result(rule, '', null, false)
+/**
+ * Check if the repository licence can be detected by the licensee tool
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @returns {Result} The lint rule result
+ */
+function licenceDetect (fs) {
+  const result = new Result('', [], false)
 
   let licenses = []
   try {
-    licenses = licensee.identifyLicensesSync(fileSystem.targetDir)
+    licenses = licensee.identifyLicensesSync(fs.targetDir)
   } catch (error) {
     result.message = error.message
-    return [result]
+    return result
   }
 
   result.passed = licenses.length > 0
@@ -26,5 +34,7 @@ module.exports = function (fileSystem, rule) {
     }
   })()
 
-  return [result]
+  return result
 }
+
+module.exports = licenceDetect

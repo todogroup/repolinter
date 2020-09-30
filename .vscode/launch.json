@@ -23,7 +23,9 @@
       "name": "Launch Program",
       "program": "${workspaceRoot}/bin/repolinter.js",
       "args":[
-        "."
+        "lint",
+        "--git",
+        "https://github.com/todogroup/repolinter.git"
       ]
     }
   ]

@@ -1,0 +1,42 @@
+name: Documentation
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  documentation:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache NPM
+        id: cache-node-modules
+        uses: actions/cache@v1
+        env:
+          cache-name: node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.cache-name }}-
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Build Documentation
+        run: npm run apidoc
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.5.9
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: apidoc # The folder the action should deploy.

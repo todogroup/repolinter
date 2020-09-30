@@ -3,21 +3,31 @@
 
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
 
 function gitAllCommits (targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']
   return spawnSync('git', args).stdout.toString().split('\n')
 }
 
+/**
+ * @param targetDir
+ * @param commit
+ */
 function gitFilesAtCommit (targetDir, commit) {
   const args = ['-C', targetDir, 'ls-tree', '-r', '--name-only', commit]
   return spawnSync('git', args).stdout.toString().split('\n')
 }
 
+/**
+ * @param fileSystem
+ * @param options
+ */
 function listFiles (fileSystem, options) {
   const files = []
 
-  const pattern = new RegExp('(' + options.blacklist.join('|') + ')', options.ignoreCase ? 'i' : '')
+  const pattern = new RegExp('(' + options.denylist.join('|') + ')', options.ignoreCase ? 'i' : '')
   const commits = gitAllCommits(fileSystem.targetDir)
   commits.forEach((commit) => {
     const includedFiles = gitFilesAtCommit(fileSystem.targetDir, commit)
@@ -36,32 +46,40 @@ function listFiles (fileSystem, options) {
   return files
 }
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const files = listFiles(fileSystem, options)
+/**
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function gitListTree (fs, options) {
+  // backwards compatibility with blacklist
+  options.denylist = options.denylist || options.blacklist
 
-  const results = files.map(file => {
+  const files = listFiles(fs, options)
+
+  const targets = files.map(file => {
     const [firstCommit, ...rest] = file.commits
     const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
     const message = [
-      `Blacklisted path (${file.path}) found in commit ${firstCommit.substr(0, 7)}${restMessage}.`,
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      `denylisted path (${file.path}) found in commit ${firstCommit.substr(0, 7)}${restMessage}.`,
+      `\tdenylist: ${options.denylist.join(', ')}`
     ].join('\n')
-    const result = new Result(rule, message, file.path, false)
-    result.data = { file: file }
 
-    return result
+    return {
+      passed: false,
+      path: file.path,
+      message
+    }
   })
 
-  if (results.length === 0) {
-    results.push(new Result(
-      rule,
-      `No blacklisted paths found in any commits.\n\tBlacklist: ${options.blacklist.join(', ')}`,
-      null,
-      true
-    ))
+  if (targets.length === 0) {
+    const message = `No denylisted paths found in any commits.\n\tdenylist: ${options.denylist.join(', ')}`
+    return new Result(message, [], true)
   }
 
-  return results
+  return new Result('', targets, false)
 }
+
+module.exports = gitListTree

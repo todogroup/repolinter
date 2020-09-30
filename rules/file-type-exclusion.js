@@ -2,22 +2,32 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
-  const files = fs.findAll(options.type)
+/**
+ * Check if a filetype extension is not present in a repository
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+async function fileTypeExclusion (fs, options) {
+  const files = await fs.findAll(options.type)
 
-  const results = files.map(file => {
-    const message = `Excluded file type exists (${file})`
-    return new Result(rule, message, file, false)
+  const targets = files.map(file => {
+    const message = 'Excluded file type exists'
+    return { passed: false, path: file, message }
   })
 
-  if (results.length === 0) {
-    const message = `Excluded file type doesn't exist (${options.type})`
+  if (targets.length === 0) {
+    const message = 'Excluded file type doesn\'t exist'
 
-    results.push(new Result(rule, message, null, true))
+    return new Result(message, [{ passed: true, pattern: options.type }], true)
   }
 
-  return results
+  const passed = !targets.find(t => !t.passed)
+  return new Result('', targets, passed)
 }
+
+module.exports = fileTypeExclusion

@@ -3,19 +3,25 @@
 
 const Result = require('../lib/result')
 const crypto = require('crypto')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
-  const file = fs.findFirstFile(options.file)
+/**
+ * Check if a file matches a certain cryptographic hash.
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Promise<Result>} The lint rule result
+ */
+async function fileHash (fs, options) {
+  const fileList = options.globsAny || options.files
+  const file = await fs.findFirstFile(options.globsAny, options.nocase)
 
   if (file === undefined) {
-    const message = `not found: ${options.file}`
-    let status = options['succeed-on-non-existent']
-    if (status === undefined) {
-      status = false
-    }
-    return [new Result(rule, message, null, status)]
+    return new Result(
+      'Did not find file matching the specified patterns',
+      fileList.map(f => { return { passed: false, pattern: f } }),
+      !!options['succeed-on-non-existent'])
   }
 
   let algorithm = options.algorithm
@@ -24,7 +30,7 @@ module.exports = function (fileSystem, rule) {
   }
   const digester = crypto.createHash(algorithm)
 
-  let fileContents = fs.getFileContents(file)
+  let fileContents = await fs.getFileContents(file)
   if (fileContents === undefined) {
     fileContents = ''
   }
@@ -32,7 +38,9 @@ module.exports = function (fileSystem, rule) {
   const hash = digester.digest('hex')
 
   const passed = hash === options.hash
-  const message = `File ${file} ${passed ? 'matches hash' : 'doesn\'t match hash'}`
+  const message = passed ? 'Matches hash' : 'Doesn\'t match hash'
 
-  return [new Result(rule, message, file, passed)]
+  return new Result('', [{ path: file, passed, message }], passed)
 }
+
+module.exports = fileHash

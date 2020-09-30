@@ -1,0 +1,12 @@
+---
+"$schema": "../../rulesets/schema.json"
+version: 2
+axioms: {}
+rules:
+  test-file-exists:
+    level: 'off'
+    rule:
+      type: file-existence
+      options:
+        globsAny:
+        - repolinter_tests.js

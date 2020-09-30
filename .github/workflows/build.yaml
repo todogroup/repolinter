@@ -3,16 +3,53 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version: ['12', '10']
-    name: Node ${{ matrix.node }} sample
+        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+    runs-on: ${{ matrix.os }}
+    name: Node ${{ matrix.node-version }} sample (${{ matrix.os }})
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup node
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm test
+
+      - name: Cache NPM
+        id: cache-node-modules
+        uses: actions/cache@v1
+        env:
+          cache-name: node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.cache-name }}-
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Setup Licensee and Linguist Dependencies (MacOS)
+        if: ${{ runner.os == 'macOS' }}
+        run: brew install cmake pkg-config icu4c
+
+      - name: Setup Licensee and Linguist Dependencies (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        run: sudo apt-get update && sudo apt-get install -y build-essential libicu-dev libcurl4-openssl-dev
+
+      - name: Setup Ruby
+        if: ${{ runner.os != 'Windows' }}
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+
+      - name: Install Licensee and Linguist
+        if: ${{ runner.os != 'Windows' }}
+        run: gem install --no-document licensee github-linguist
+
+      - name: Run Test
+        run: npm test

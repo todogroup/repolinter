@@ -3,9 +3,11 @@
 
 const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
 
 function listCommitsWithLines (fileSystem, options) {
-  const pattern = '(' + options.blacklist.join('|') + ')'
+  const pattern = '(' + options.denylist.join('|') + ')'
   const commits = gitAllCommits(fileSystem.targetDir)
   return commits.map((commit) => {
     return {
@@ -16,16 +18,31 @@ function listCommitsWithLines (fileSystem, options) {
   }).filter(commit => commit.lines.length > 0)
 }
 
+/**
+ * @param targetDir
+ */
 function gitAllCommits (targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']
   return spawnSync('git', args).stdout.toString().trim().split('\n')
 }
 
+/**
+ * @param targetDir
+ * @param pattern
+ * @param ignoreCase
+ * @param commit
+ */
 function gitGrep (targetDir, pattern, ignoreCase, commit) {
   const args = ['-C', targetDir, 'grep', '-E', ignoreCase ? '-i' : '', pattern, commit]
   return spawnSync('git', args).stdout.toString().split('\n').filter(x => !!x)
 }
 
+/**
+ * @param targetDir
+ * @param pattern
+ * @param ignoreCase
+ * @param commit
+ */
 function gitLinesAtCommit (targetDir, pattern, ignoreCase, commit) {
   const lines = gitGrep(targetDir, pattern, ignoreCase, commit)
     .map((entry) => {
@@ -36,6 +53,10 @@ function gitLinesAtCommit (targetDir, pattern, ignoreCase, commit) {
   return lines
 }
 
+/**
+ * @param fileSystem
+ * @param options
+ */
 function listFiles (fileSystem, options) {
   const files = []
 
@@ -61,35 +82,42 @@ function listFiles (fileSystem, options) {
   return files
 }
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const files = listFiles(fileSystem, options)
-  const results = files.map(file => {
+/**
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+function gitGrepCommits (fs, options) {
+  // backwards compatibility with blacklist
+  options.denylist = options.denylist || options.blacklist
+
+  const files = listFiles(fs, options)
+  const targets = files.map(file => {
     const [firstCommit, ...rest] = file.commits
     const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
     const message = [
-      `(${file.path}) contains blacklisted words in commit ${firstCommit.hash.substr(0, 7)}${restMessage}.`,
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      `(${file.path}) contains denylisted words in commit ${firstCommit.hash.substr(0, 7)}${restMessage}.`,
+      `\tdenylist: ${options.denylist.join(', ')}`
     ].join('\n')
-    const result = new Result(rule, message, file.path, false)
-    result.data = { file: file }
 
-    return result
+    return {
+      passed: false,
+      path: file.path,
+      message
+    }
   })
 
-  if (results.length === 0) {
+  if (targets.length === 0) {
     const message = [
-      'No blacklisted words found in any commits.',
-      `\tBlacklist: ${options.blacklist.join(', ')}`
+      'No denylisted words found in any commits.',
+      `\tdenylist: ${options.denylist.join(', ')}`
     ].join('\n')
-    results.push(new Result(
-      rule,
-      message,
-      null,
-      true
-    ))
+    return new Result(message, [], true)
   }
 
-  return results
+  return new Result('', targets, false)
 }
+
+module.exports = gitGrepCommits

@@ -3,123 +3,88 @@
 
 const chai = require('chai')
 const expect = chai.expect
-const Result = require('../../lib/result')
 
 describe('rule', () => {
   describe('files_existence', () => {
     const fileExistence = require('../../rules/file-existence')
 
-    it('returns a passed result if requested file exists', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-              return 'LICENSE.md'
-            },
-            targetDir: '.'
-          },
-          files: ['LICENSE*'],
-          name: 'License file'
-        }
+    it('returns a passed result if requested file exists', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return 'LICENSE.md'
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'found (LICENSE.md)',
-          'LICENSE.md',
-          true
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['LICENSE*']
+      }
 
-      const actual = fileExistence(null, rule)
+      const actual = await fileExistence(mockfs, ruleopts)
 
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'LICENSE.md' })
     })
 
-    it('returns a passed result if requested file exists case-insensitivly', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile (dontcare, nocase) {
-              expect(nocase).to.equal(true)
-              return 'LICENSE.md'
-            },
-            targetDir: '.'
-          },
-          files: ['lIcEnSe*'],
-          name: 'License file',
-          nocase: true
-        }
+    it('returns a passed result if requested file exists case-insensitivly', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return 'LICENSE.md'
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'found (LICENSE.md)',
-          'LICENSE.md',
-          true
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['lIcEnSe*'],
+        nocase: true
+      }
 
-      const actual = fileExistence(null, rule)
+      const actual = await fileExistence(mockfs, ruleopts)
 
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'LICENSE.md' })
     })
 
-    it('returns a failure result if requested file doesn\'t exist', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-            },
-            targetDir: '.'
-          },
-          files: ['LICENSE*'],
-          name: 'License file'
-        }
+    it('returns a failure result if requested file doesn\'t exist', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'not found: (LICENSE*)',
-          null,
-          false
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['LICENSE*']
+      }
 
-      const actual = fileExistence(null, rule)
+      const actual = await fileExistence(mockfs, ruleopts)
 
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(false)
     })
 
-    it('returns a failure result if requested file doesn\'t exist with a failure message', () => {
-      const rule = {
-        options: {
-          fs: {
-            findFirstFile () {
-            },
-            targetDir: '.'
-          },
-          files: ['LICENSE*'],
-          name: 'License file',
-          'fail-message': 'The license file should exist.'
-        }
+    it('returns a failure result if requested file doesn\'t exist with a failure message', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'not found: (LICENSE*) The license file should exist.',
-          null,
-          false
-        )
-      ]
+      const ruleopts = {
+        globsAny: ['LICENSE*'],
+        'fail-message': 'The license file should exist.'
+      }
 
-      const actual = fileExistence(null, rule)
+      const actual = await fileExistence(mockfs, ruleopts)
 
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].pattern).to.equal(ruleopts.globsAny[0])
+      expect(actual.message).to.contain(ruleopts['fail-message'])
     })
   })
 })

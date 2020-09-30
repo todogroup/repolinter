@@ -3,173 +3,142 @@
 
 const chai = require('chai')
 const expect = chai.expect
-const Result = require('../../lib/result')
 const FileSystem = require('../../lib/file_system')
 
 describe('rule', () => {
   describe('files_contents', () => {
     const fileContents = require('../../rules/file-contents')
 
-    it('returns passes if requested file contents exists', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAll () {
-              return ['README.md']
-            },
-            getFileContents () {
-              return 'foo'
-            },
-            targetDir: '.'
-          },
-          files: ['README*'],
-          content: 'foo'
-        }
+    it('returns passes if requested file contents exists', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return ['README.md']
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'File README.md contains foo',
-          'README.md',
-          true
-        )
-      ]
-
-      const actual = fileContents(null, rule)
-      expect(actual).to.deep.equal(expected)
-    })
-
-    it('returns passes if requested file contents exists with human-readable contents', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAll () {
-              return ['README.md']
-            },
-            getFileContents () {
-              return 'foo'
-            },
-            targetDir: '.'
-          },
-          files: ['README*'],
-          content: '[abcdef][oO0][^q]',
-          'human-readable-content': 'actually foo'
-        }
+      const ruleopts = {
+        globsAll: ['README*'],
+        content: 'foo'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'File README.md contains actually foo',
-          'README.md',
-          true
-        )
-      ]
-
-      const actual = fileContents(null, rule)
-      expect(actual).to.deep.equal(expected)
+      const actual = await fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
     })
 
-    it('returns fails if requested file contents does not exist', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAll () {
-              return ['README.md']
-            },
-            getFileContents () {
-              return 'foo'
-            },
-            targetDir: '.'
-          },
-          files: ['README*'],
-          content: 'bar'
-        }
+    it('returns passes if requested file contents exists with human-readable contents', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return ['README.md']
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
+      }
+      const ruleopts = {
+        globsAll: ['README*'],
+        content: '[abcdef][oO0][^q]',
+        'human-readable-content': 'actually foo'
       }
 
-      const expected = [
-        new Result(
-          rule,
-          'File README.md doesn\'t contain bar',
-          'README.md',
-          false
-        )
-      ]
-
-      const actual = fileContents(null, rule)
-
-      expect(actual).to.deep.equal(expected)
+      const actual = await fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
+      expect(actual.targets[0].message).to.contain(ruleopts['human-readable-content'])
     })
 
-    it('returns nothing if requested file does not exist', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAll () {
-              return []
-            },
-            getFileContents () {
-
-            },
-            targetDir: '.'
-          },
-          files: ['README.md'],
-          content: 'foo'
-        }
+    it('returns fails if requested file contents does not exist', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return ['README.md']
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
       }
 
-      const actual = fileContents(null, rule)
-      const expected = []
-      expect(actual).to.deep.equal(expected)
-    })
-
-    it('returns failure if file does not exist with failure flag', () => {
-      const rule = {
-        options: {
-          fs: {
-            findAll () {
-              return []
-            },
-            getFileContents () {
-
-            },
-            targetDir: '.'
-          },
-          files: ['README.md', 'READMOI.md'],
-          content: 'foo',
-          'fail-on-non-existent': true
-        }
+      const ruleopts = {
+        globsAll: ['README*'],
+        content: 'bar'
       }
 
-      const actual = fileContents(null, rule)
-      const expected = [
-        new Result(
-          rule,
-          'not found: (README.md, READMOI.md)',
-          null,
-          false
-        )
-      ]
+      const actual = await fileContents(mockfs, ruleopts)
 
-      expect(actual).to.deep.equal(expected)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: false, path: 'README.md' })
+      expect(actual.targets[0].message).to.contain(ruleopts.content)
     })
 
-    it('should handle broken symlinks', () => {
+    it('returns the pattern if requested file does not exist', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return []
+        },
+        getFileContents () {
+
+        },
+        targetDir: '.'
+      }
+      const ruleopts = {
+        globsAll: ['README.md'],
+        content: 'foo'
+      }
+
+      const actual = await fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0].passed).to.equal(false)
+      expect(actual.targets[0].pattern).to.equal(ruleopts.globsAll[0])
+    })
+
+    it('returns failure if file does not exist with failure flag', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles () {
+          return []
+        },
+        getFileContents () {
+
+        },
+        targetDir: '.'
+      }
+      const ruleopts = {
+        globsAll: ['README.md', 'READMOI.md'],
+        content: 'foo',
+        'fail-on-non-existent': true
+      }
+
+      const actual = await fileContents(mockfs, ruleopts)
+
+      expect(actual.passed).to.equal(false)
+    })
+
+    it('should handle broken symlinks', async () => {
       const brokenSymlink = './tests/rules/broken_symlink_for_test'
       const stat = require('fs').lstatSync(brokenSymlink)
       expect(stat.isSymbolicLink()).to.equal(true)
       const fs = new FileSystem(require('path').resolve('.'))
 
       const rule = {
-        options: {
-          files: [brokenSymlink],
-          lineCount: 1,
-          patterns: ['something']
-        }
+        globsAll: [brokenSymlink],
+        lineCount: 1,
+        patterns: ['something']
       }
-      const actual = fileContents(fs, rule)
-      expect(actual.length).to.equal(0)
+      const actual = await fileContents(fs, rule)
+      expect(actual.passed).to.equal(true)
     })
   })
 })

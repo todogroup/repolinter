@@ -1,0 +1,81 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/schema.json",
+    "type": "object",
+    "title": "RepoLinter JSON Configuration Schema",
+    "required": [
+        "rules",
+        "axioms"
+    ],
+    "properties": {},
+    "if": {
+        "properties": { "version": { "const": 2 } },
+        "required": ["version"]
+    },
+    "then": {
+        "additionalProperties": false,
+        "properties": {
+            "$schema": { "type": "string" },
+            "version": { "const": 2 },
+            "axioms": {
+                "type": "object",
+                "title": "The axioms schema",
+                "default": {},
+                "additionalProperties": false,
+                "properties": {
+                    "linguist": {
+                        "type": "string"
+                    },
+                    "licensee": {
+                        "type": "string"
+                    },
+                    "packagers": {
+                        "type": "string"
+                    }
+                }
+            },
+            "rules": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "level": { "enum": ["off", "warning", "error"] },
+                        "where": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                        },
+                        "rule": {
+                            "allOf": [
+                                { "if": { "properties": { "type": { "const": "apache-notice" } } },                   "then": { "properties": { "options": { "$ref": "../rules/apache-notice-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "directory-existence" } } },             "then": { "properties": { "options": { "$ref": "../rules/directory-existence-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-contents" } } },                   "then": { "properties": { "options": { "$ref": "../rules/file-contents-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-existence" } } },                  "then": { "properties": { "options": { "$ref": "../rules/file-existence-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-hash" } } },                       "then": { "properties": { "options": { "$ref": "../rules/file-hash-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-not-contents" } } },               "then": { "properties": { "options": { "$ref": "../rules/file-not-contents-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-starts-with" } } },                "then": { "properties": { "options": { "$ref": "../rules/file-starts-with-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-type-exclusion" } } },             "then": { "properties": { "options": { "$ref": "../rules/file-type-exclusion-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "git-grep-commits" } } },                "then": { "properties": { "options": { "$ref": "../rules/git-grep-commits-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "git-grep-log" } } },                    "then": { "properties": { "options": { "$ref": "../rules/git-grep-log-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "git-list-tree" } } },                   "then": { "properties": { "options": { "$ref": "../rules/git-list-tree-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "git-working-tree" } } },                "then": { "properties": { "options": { "$ref": "../rules/git-working-tree-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "license-detectable-by-licensee" } } },  "then": { "properties": { "options": { "$ref": "../rules/license-detectable-by-licensee-config.json" } } } }
+                            ]
+                        },
+                        "fix": {
+                            "default": {},
+                            "allOf": [
+                                { "if": { "properties": { "type": { "const": "file-modify" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-modify-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-create" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-create-config.json" } } } }
+                            ]
+                        },
+                        "policyInfo": { "type": "string" },
+                        "policyUrl": { "type": "string" }
+                    },
+                    "required": [ "level", "rule" ]
+                }
+            },
+            "formatOptions": { "type": "object" }
+        }
+    }
+}

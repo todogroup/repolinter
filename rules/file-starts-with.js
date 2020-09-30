@@ -2,11 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
+// eslint-disable-next-line no-unused-vars
+const FileSystem = require('../lib/file_system')
 
-module.exports = function (fileSystem, rule) {
-  const options = rule.options
-  const fs = options.fs || fileSystem
-  const files = fs.findAllFiles(options.files, options.nocase === true)
+/**
+ * Check that a list of files does not contain a regular expression.
+ *
+ * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
+ * @param {object} options The rule configuration
+ * @returns {Result} The lint rule result
+ */
+async function fileStartsWith (fs, options) {
+  const fileList = options.globsAll || options.files
+  const files = await fs.findAllFiles(fileList, options.nocase)
 
   let filteredFiles = files
   if (options['skip-binary-files']) {
@@ -34,32 +42,42 @@ module.exports = function (fileSystem, rule) {
     )
   }
 
-  const results = []
-  filteredFiles.forEach(file => {
-    const lines = fs.getFileLines(file, options.lineCount)
-    if (!lines) {
-      return
-    }
-    const misses = options.patterns.filter((pattern) => {
-      const regexp = new RegExp(pattern, options.flags)
-      return !lines.match(regexp)
-    })
+  const targetsUnfiltered = await Promise.all(filteredFiles
+    .map(async file => {
+      const lines = await fs.getFileLines(file, options.lineCount)
+      if (!lines) {
+        return null
+      }
+      const misses = options.patterns.filter((pattern) => {
+        const regexp = new RegExp(pattern, options.flags)
+        return !lines.match(regexp)
+      })
 
-    let message = `The first ${options.lineCount} lines of '${file}'`
-    const passed = misses.length === 0
-    if (passed) {
-      message += ' contain all of the requested patterns.'
-    } else {
-      message += ` do not contain the patterns:\n\t${misses.join('\n\t')}`
-    }
+      let message = `The first ${options.lineCount} lines`
+      const passed = misses.length === 0
+      if (passed) {
+        message += ' contain all of the requested patterns.'
+      } else {
+        message += ` do not contain the pattern(s): ${options['human-readable-pattern'] || misses.join(', ')}`
+      }
 
-    results.push(new Result(rule, message, file, passed))
-  })
+      return {
+        passed,
+        path: file,
+        message
+      }
+    }))
+  const targets = targetsUnfiltered.filter(t => t)
 
-  if (results.length === 0 && options['succeed-on-non-existent']) {
-    const message = `not found: (${options.files.join(', ')})`
-    return [new Result(rule, message, null, true)]
+  if (targets.length === 0) {
+    return new Result(
+      'Did not find file matching the specified patterns',
+      fileList.map(f => { return { passed: false, pattern: f } }),
+      !!options['succeed-on-non-existent'])
   }
 
-  return results
+  const passed = !targets.find(t => !t.passed)
+  return new Result('', targets, passed)
 }
+
+module.exports = fileStartsWith

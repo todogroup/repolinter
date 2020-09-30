@@ -1,0 +1,18 @@
+version: 2
+axioms: {}
+rules:
+  readme-file-exists:
+    level: error
+    rule:
+      type: file-existence
+      options:
+        globsAny:
+        - README*
+        nocase: true
+  test-file-exists:
+    level: error
+    rule:
+      type: file-existence
+      options:
+        globsAny:
+        - lint_tests.js
