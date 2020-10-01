@@ -1344,6 +1344,7 @@ a bit time consuming, depending on the size of the Git history.</p>
 <ul>
 <li><a href="#file-create"><code>file-create</code></a></li>
 <li><a href="#file-modify"><code>file-modify</code></a></li>
+<li><a href="#file-remove"><code>file-remove</code></a></li>
 </ul>
 </li>
 </ul>
@@ -1431,6 +1432,35 @@ a bit time consuming, depending on the size of the Git history.</p>
 <td><code>{ begin?: number, end?: number }</code></td>
 <td><code>{ begin: 0, end: 0 }</code></td>
 <td>How many newlines should be added to the start or end of <code>text</code>. This property allows formatters to print <code>text</code> without these newlines, creating a better user experience.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-remove</code></h3>
+<p>Removes a file or files.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td>No</td>
+<td><code>string[]</code></td>
+<td>Failing files specified by the rule</td>
+<td>The list of globs to remove files for. If this value is omitted, file-remove will instead target files that failed the rule.</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search with <code>globsAll</code>.</td>
 </tr>
 </tbody>
 </table>
