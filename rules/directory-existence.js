@@ -3,5 +3,5 @@
 
 const fileExistence = require('./file-existence')
 module.exports = function (fileSystem, opts) {
-  return fileExistence(fileSystem, Object.assign(opts, { dirs: true }))
+  return fileExistence(fileSystem, Object.assign({}, opts, { dirs: true }))
 }
