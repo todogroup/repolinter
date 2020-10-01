@@ -6,3 +6,4 @@ tmp/
 vendor/
 .bundle
 out
+.vscode/
