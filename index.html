@@ -776,6 +776,7 @@ This Repolinter run generated the following results:
 <li><a href="#file-existence"><code>file-existence</code></a></li>
 <li><a href="#file-hash"><code>file-hash</code></a></li>
 <li><a href="#file-not-contents"><code>file-not-contents</code></a></li>
+<li><a href="#file-not-exists"><code>file-not-exists</code></a></li>
 <li><a href="#file-starts-with"><code>file-starts-with</code></a></li>
 <li><a href="#file-type-exclusion"><code>file-type-exclusion</code></a></li>
 <li><a href="#git-grep-commits"><code>git-grep-commits</code></a></li>
@@ -915,6 +916,13 @@ This Repolinter run generated the following results:
 <td>Set to <code>true</code> to perform an case insensitive search.</td>
 </tr>
 <tr>
+<td><code>dirs</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to include directories in the search (equivalent to <code>directory-exists</code>)</td>
+</tr>
+<tr>
 <td><code>fail-message</code></td>
 <td>No</td>
 <td><code>string</code></td>
@@ -1027,6 +1035,49 @@ This Repolinter run generated the following results:
 <td><code>boolean</code></td>
 <td><code>false</code></td>
 <td>Set to <code>true</code> to disable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-not-exists</code></h3>
+<p>Checks that a file doesn't exist.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule fails if at least one glob returns a file.</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search.</td>
+</tr>
+<tr>
+<td><code>dirs</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to include directories in the search.</td>
+</tr>
+<tr>
+<td><code>pass-message</code></td>
+<td>No</td>
+<td><code>string</code></td>
+<td><code>""</code></td>
+<td>The string to print if the file does not exist, used to create human-readable error messages.</td>
 </tr>
 </tbody>
 </table>
