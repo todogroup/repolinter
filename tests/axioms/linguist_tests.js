@@ -15,9 +15,9 @@ describe('linguist', function () {
   } else {
     const linguistAxiom = require('../../axioms/linguist')
 
-    it('runs linguist', () => {
+    it('runs linguist', async () => {
       const mockFs = { targetDir: path.resolve(__dirname, '../../') }
-      const res = linguistAxiom(mockFs)
+      const res = await linguistAxiom(mockFs)
 
       expect(res.passed).to.equal(true)
       expect(res.targets).to.have.length.greaterThan(0)
