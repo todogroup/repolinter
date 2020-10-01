@@ -53,6 +53,7 @@
                                 { "if": { "properties": { "type": { "const": "file-existence" } } },                  "then": { "properties": { "options": { "$ref": "../rules/file-existence-config.json" } } } },
                                 { "if": { "properties": { "type": { "const": "file-hash" } } },                       "then": { "properties": { "options": { "$ref": "../rules/file-hash-config.json" } } } },
                                 { "if": { "properties": { "type": { "const": "file-not-contents" } } },               "then": { "properties": { "options": { "$ref": "../rules/file-not-contents-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-not-exists" } } },                 "then": { "properties": { "options": { "$ref": "../rules/file-not-exists-config.json" } } } },
                                 { "if": { "properties": { "type": { "const": "file-starts-with" } } },                "then": { "properties": { "options": { "$ref": "../rules/file-starts-with-config.json" } } } },
                                 { "if": { "properties": { "type": { "const": "file-type-exclusion" } } },             "then": { "properties": { "options": { "$ref": "../rules/file-type-exclusion-config.json" } } } },
                                 { "if": { "properties": { "type": { "const": "git-grep-commits" } } },                "then": { "properties": { "options": { "$ref": "../rules/git-grep-commits-config.json" } } } },
@@ -66,7 +67,8 @@
                             "default": {},
                             "allOf": [
                                 { "if": { "properties": { "type": { "const": "file-modify" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-modify-config.json" } } } },
-                                { "if": { "properties": { "type": { "const": "file-create" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-create-config.json" } } } }
+                                { "if": { "properties": { "type": { "const": "file-create" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-create-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-remove" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-remove-config.json" } } } }
                             ]
                         },
                         "policyInfo": { "type": "string" },

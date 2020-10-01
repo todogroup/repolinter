@@ -11,7 +11,11 @@
             "type": "array",
             "items": { "type": "string" }
         },
-        "fail-message": { "type": "string" }
+        "fail-message": { "type": "string" },
+        "dirs": {
+          "type": "boolean",
+          "default": false
+        }
     },
     "oneOf": [
         { "required": [ "globsAny" ] },
