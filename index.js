@@ -152,7 +152,7 @@ async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false
         errMsg: e && e.toString(),
         results: [],
         targets: {},
-        formatOptions: ruleset.formatOptions
+        formatOptions: ruleset && ruleset.formatOptions
       }
     }
   }
