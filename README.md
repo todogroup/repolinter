@@ -1,10 +1,10 @@
-# ![Repo Linter](docs/images/P_RepoLinter01_logo_only.png) ![Build Status](https://github.com/todogroup/repolinter/workflows/Build/badge.svg)
+# ![Repo Linter](https://raw.githubusercontent.com/todogroup/repolinter/master/docs/images/P_RepoLinter01_logo_only.png) ![Build Status](https://github.com/todogroup/repolinter/workflows/Build/badge.svg)
 
 Lint open source repositories for common issues.
 
 ## Installation
 
-Repolinter requires [Node.JS](https://nodejs.org/en/) >= v10 to function properly. Once Node.JS is installed, you can install repolinter using `npm`:
+Repolinter requires [Node.JS](https://nodejs.org/en/) >= v10 to function properly. Once Node.JS is installed, you can install Repolinter using `npm`:
 ```sh
 npm install -g repolinter
 ```
@@ -149,10 +149,10 @@ Rules are objects of the following format:
   policyUrl: >-
     ...
 ```
- * **`rule`** - The check to perform. Repolinter can perform any check listed under the [rules documentation](./docs/md/rules.md). Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the `file-existence` check can be used in a `README-file-exists` rule and a `LICENSE-file-exists` rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.
+ * **`rule`** - The check to perform. Repolinter can perform any check listed under the [rules documentation](./docs/rules.md). Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the `file-existence` check can be used in a `README-file-exists` rule and a `LICENSE-file-exists` rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.
  * **`level`** - The error level to notify if the check fails. `warning` will not change the exit code and `off` will not run the check.
  * **`where`** - Conditionally enable or disable this rule based off of [axioms](#axioms). Strings in this array follow the format of `<axiom>=<value>`, where value is either an axiom output or `*` to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the [axioms documentation](./docs/rules/axioms).
- * **`fix`** *(optional)* - The action to perform if the check performed by `rule` fails. Repolinter can perform any action listed under [fixes documentation](./docs/md/fixes.md).
+ * **`fix`** *(optional)* - The action to perform if the check performed by `rule` fails. Repolinter can perform any action listed under [fixes documentation](./docs/fixes.md).
  * **`policyInfo`**, **`policyUrl`** *(optional)* - Information used by the formatter to indicate why the check exists from a policy perspective. Note: `policyInfo` will automatically have a period appended to it for formatting purposes.
 
 A minimal example of a rule that checks for the existence of a `README`:
@@ -235,7 +235,7 @@ axioms:
   <axiom-id>: axiom-target
 ```
 
-Each axiom is configured as a key value pair in the `axioms` object, where `<axiom-id>` specifies the program to run and `<axiom-target>` specifies the target to be used in the `where` conditional. The available axiom IDs can be found in the [axiom documentation](./docs/md/axioms.md). It should be noted that some axioms require external packages to run.
+Each axiom is configured as a key value pair in the `axioms` object, where `<axiom-id>` specifies the program to run and `<axiom-target>` specifies the target to be used in the `where` conditional. The available axiom IDs can be found in the [axiom documentation](./docs/axioms.md). It should be noted that some axioms require external packages to run.
 
 An example configuration using an axiom to detect the packaging system for a project:
 ```JavaScript
@@ -266,7 +266,7 @@ rules:
       ...
 ```
 
-Some axioms (ex. [`contributor-count`](./docs/md/axioms.md#contributor-count)) output numerical values instead of strings. For these axioms, numerical comparisons (`<`, `>`, `<=`, `>=`) can be also be specified in the `where` conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.
+Some axioms (ex. [`contributor-count`](./docs/axioms.md#contributor-count)) output numerical values instead of strings. For these axioms, numerical comparisons (`<`, `>`, `<=`, `>=`) can be also be specified in the `where` conditional. Note that if a numerical comparison is used for a non-numerical axiom, the comparison will always fail.
 ```JavaScript
 {
   "axioms": {
@@ -299,15 +299,15 @@ const repolinter = require('repolinter')
 const result = await repolinter.lint('.')
 ```
 
-This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under [API Documentation](https://newrelic-forks.github.io/repolinter/#api-reference).
+This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under [API Documentation](https://todogroup.github.io/repolinter/#api-reference).
 
 ## Going Further
 
- * [Rule Reference](./docs/md/rules.md)
- * [Fix Reference](./docs/md/fixes.md)
- * [Axiom Reference](./docs/md/axioms.md)
- * [API Reference](https://newrelic-forks.github.io/repolinter/#api-reference)
- * [Developer Guide](./docs/md/development.md)
+ * [Rule Reference](./docs/rules.md)
+ * [Fix Reference](./docs/fixes.md)
+ * [Axiom Reference](./docs/axioms.md)
+ * [API Reference](https://todogroup.github.io/repolinter/#api-reference)
+ * [Developer Guide](./docs/development.md)
 
 ## License
 
