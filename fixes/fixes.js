@@ -3,5 +3,6 @@
 
 module.exports = [
   'file-create',
-  'file-modify'
+  'file-modify',
+  'file-remove'
 ]

@@ -66,7 +66,8 @@
                             "default": {},
                             "allOf": [
                                 { "if": { "properties": { "type": { "const": "file-modify" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-modify-config.json" } } } },
-                                { "if": { "properties": { "type": { "const": "file-create" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-create-config.json" } } } }
+                                { "if": { "properties": { "type": { "const": "file-create" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-create-config.json" } } } },
+                                { "if": { "properties": { "type": { "const": "file-remove" } } }, "then": { "properties": { "options": { "$ref": "../fixes/file-remove-config.json" } } } }
                             ]
                         },
                         "policyInfo": { "type": "string" },
