@@ -14,7 +14,7 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Promise<Result>} The lint rule result
  */
-async function fileExistence (fs, options) {
+async function fileNotExistence (fs, options) {
   const fileList = options.globsAll
   const file = options.dirs ? await fs.findAll(fileList, options.nocase) : await fs.findAllFiles(fileList, options.nocase)
 
@@ -26,4 +26,4 @@ async function fileExistence (fs, options) {
       true)
 }
 
-module.exports = fileExistence
+module.exports = fileNotExistence

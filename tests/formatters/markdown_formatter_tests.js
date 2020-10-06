@@ -94,7 +94,7 @@ describe('formatters', () => {
 
       // console.debug(actual)
       // console.debug(JSON.stringify(res))
-      expect(res.test).to.have.length(0)
+      expect(res.test).to.deep.equal([])
     })
 
     it('does not contain the string "undefined"', async function () {
