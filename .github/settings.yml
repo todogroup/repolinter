@@ -9,7 +9,7 @@ repository:
 
   # A URL with more information about the repository
   homepage: https://todogroup.org
-  
+
   # Collaborators: give specific users access to this repository.
   # see /governance/roles.md for details on write access policy
   # note that the permissions below may provide wider access than needed for
@@ -18,10 +18,16 @@ repository:
 collaborators:
   - username: caniszczyk
     permission: admin
-    
+
   - username: trevmex
     permission: admin
- 
+
   - username: prototypicalpro
     permission: admin
-     
+
+  - username: christian-bromann
+    permission: admin
+
+  - username: discombobulateme
+    permission: admin
+
