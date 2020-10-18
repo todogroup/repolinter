@@ -167,7 +167,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE/*"]
+                    "globsAny": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*"]
                 }
             }
         },
