@@ -166,6 +166,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
+                    "dirs": true,
                     "globsAny": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*"]
                 }
             }
@@ -175,6 +176,7 @@
             "rule": {
                 "type": "file-existence",
                 "options": {
+                    "dirs": true,
                     "globsAny": ["PULL_REQUEST_TEMPLATE*", ".github/PULL_REQUEST_TEMPLATE*"]
                 }
             }
