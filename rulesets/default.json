@@ -163,15 +163,17 @@
         },
         "github-issue-template-exists": {
             "level": "error",
+            "dirs": true,
             "rule": {
                 "type": "file-existence",
                 "options": {
-                    "globsAny": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*"]
+                    "globsAny": ["ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE*", ".github/ISSUE_TEMPLATE/*"]
                 }
             }
         },
         "github-pull-request-template-exists": {
             "level": "error",
+            "dirs": true,
             "rule": {
                 "type": "file-existence",
                 "options": {
