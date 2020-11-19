@@ -145,5 +145,28 @@ describe('rule', () => {
 
       expect(actual.passed).to.equal(true)
     })
+
+    it('respect the legacy configuration format', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findFirstFile () {
+          return 'README.md'
+        },
+        getFileContents () {
+          return 'foo'
+        },
+        targetDir: '.'
+      }
+
+      const ruleopts = {
+        files: ['README.md'],
+        hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
+      }
+
+      const actual = await fileContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
+    })
   })
 })
