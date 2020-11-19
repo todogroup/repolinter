@@ -15,7 +15,7 @@ const FileSystem = require('../lib/file_system')
  */
 async function fileHash (fs, options) {
   const fileList = options.globsAny || options.files
-  const file = await fs.findFirstFile(options.globsAny, options.nocase)
+  const file = await fs.findFirstFile(fileList, options.nocase)
 
   if (file === undefined) {
     return new Result(
