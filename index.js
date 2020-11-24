@@ -112,16 +112,24 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @param {boolean} [dryRun] If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<LintResult>} An object representing the output of the linter
  */
-async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false) {
+async function lint(
+  targetDir,
+  filterPaths = [],
+  ruleset = null,
+  dryRun = false
+) {
   const fileSystem = new FileSystem()
   fileSystem.targetDir = targetDir
-  if (filterPaths.length > 0) { fileSystem.filterPaths = filterPaths }
+  if (filterPaths.length > 0) {
+    fileSystem.filterPaths = filterPaths
+  }
 
   let rulesetPath = null
   if (typeof ruleset === 'string') {
     rulesetPath = path.resolve(targetDir, ruleset)
   } else if (!ruleset) {
-    rulesetPath = findConfig('repolint.json', { cwd: targetDir }) ||
+    rulesetPath =
+      findConfig('repolint.json', { cwd: targetDir }) ||
       findConfig('repolint.yaml', { cwd: targetDir }) ||
       findConfig('repolint.yml', { cwd: targetDir }) ||
       findConfig('repolinter.json', { cwd: targetDir }) ||
@@ -181,12 +189,18 @@ async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false
   /** @ignore @type {Object.<string, Result>} */
   let targetObj = {}
   // Identify axioms and execute them
-  if (ruleset.axioms) { targetObj = await determineTargets(ruleset.axioms, fileSystem) }
+  if (ruleset.axioms) {
+    targetObj = await determineTargets(ruleset.axioms, fileSystem)
+  }
   // execute ruleset
   const result = await runRuleset(configParsed, targetObj, fileSystem, dryRun)
-  const passed = !result.find(r =>
-    r.status === FormatResult.ERROR ||
-      (r.status !== FormatResult.IGNORED && r.ruleInfo.level === 'error' && !r.lintResult.passed))
+  const passed = !result.find(
+    r =>
+      r.status === FormatResult.ERROR ||
+      (r.status !== FormatResult.IGNORED &&
+        r.ruleInfo.level === 'error' &&
+        !r.lintResult.passed)
+  )
 
   // render all the results
   const allFormatInfo = {
@@ -220,11 +234,15 @@ async function lint (targetDir, filterPaths = [], ruleset = null, dryRun = false
  * @returns {Promise<Object.<string, Function>>}
  * An object containing JS file names associated with their appropriate require function
  */
-async function loadRules () {
+async function loadRules() {
   // convert the lists into a easily-loadable object
-  return Rules
-    .map(f => [f, () => require(path.resolve(__dirname, './rules/', f))])
-    .reduce((p, [name, require]) => { p[name] = require; return p }, {})
+  return Rules.map(f => [
+    f,
+    () => require(path.resolve(__dirname, './rules/', f))
+  ]).reduce((p, [name, require]) => {
+    p[name] = require
+    return p
+  }, {})
 }
 
 /**
@@ -241,11 +259,15 @@ async function loadRules () {
  * @returns {Promise<Object.<string, Function>>}
  * An object containing JS file names associated with their appropriate require function
  */
-async function loadFixes () {
+async function loadFixes() {
   // convert the lists into a easily-loadable object
-  return Fixes
-    .map(f => [f, () => require(path.resolve(__dirname, './fixes/', f))])
-    .reduce((p, [name, require]) => { p[name] = require; return p }, {})
+  return Fixes.map(f => [
+    f,
+    () => require(path.resolve(__dirname, './fixes/', f))
+  ]).reduce((p, [name, require]) => {
+    p[name] = require
+    return p
+  }, {})
 }
 
 /**
@@ -262,11 +284,15 @@ async function loadFixes () {
  * @returns {Promise<Object.<string, Function>>}
  * An object containing JS file names associated with their appropriate require function
  */
-async function loadAxioms () {
+async function loadAxioms() {
   // convert the lists into a easily-loadable object
-  return Axioms
-    .map(f => [f, () => require(path.resolve(__dirname, './axioms/', f))])
-    .reduce((p, [name, require]) => { p[name] = require; return p }, {})
+  return Axioms.map(f => [
+    f,
+    () => require(path.resolve(__dirname, './axioms/', f))
+  ]).reduce((p, [name, require]) => {
+    p[name] = require
+    return p
+  }, {})
 }
 
 /**
@@ -285,7 +311,7 @@ async function loadAxioms () {
  * @param {string[]} ruleAxioms The rule "where" specification to validate against.
  * @returns {string[]} The list pf unsatisfied axioms, if any. Empty array indicates the rule should run.
  */
-function shouldRuleRun (validTargets, ruleAxioms) {
+function shouldRuleRun(validTargets, ruleAxioms) {
   // parse out numerical axioms, splitting them by name, operand, and number
   const ruleRegex = /([\w-]+)((?:>|<)=?)(\d+)/i
   const numericalRuleAxioms = []
@@ -294,7 +320,12 @@ function shouldRuleRun (validTargets, ruleAxioms) {
     const match = ruleRegex.exec(ruleax)
     if (match !== null && match[1] && match[2] && !isNaN(parseInt(match[3]))) {
       // parse the numerical version
-      numericalRuleAxioms.push({ axiom: ruleax, name: match[1], operand: match[2], number: parseInt(match[3]) })
+      numericalRuleAxioms.push({
+        axiom: ruleax,
+        name: match[1],
+        operand: match[2],
+        number: parseInt(match[3])
+      })
     } else {
       // parse the non-numerical version
       regularRuleAxioms.push(ruleax)
@@ -319,10 +350,12 @@ function shouldRuleRun (validTargets, ruleAxioms) {
       const target = numericalTargetsMap.get(name)
       if (target === undefined) return true
       // test the number based on the operand
-      return !((operand === '<' && target < number) ||
+      return !(
+        (operand === '<' && target < number) ||
         (operand === '<=' && target <= number) ||
         (operand === '>' && target > number) ||
-        (operand === '>=' && target >= number))
+        (operand === '>=' && target >= number)
+      )
     })
     .map(({ axiom }) => axiom)
     .concat(failedRuleAxioms)
@@ -339,7 +372,7 @@ function shouldRuleRun (validTargets, ruleAxioms) {
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<FormatResult[]>} Objects indicating the result of the linter rules
  */
-async function runRuleset (ruleset, targets, fileSystem, dryRun) {
+async function runRuleset(ruleset, targets, fileSystem, dryRun) {
   // generate a flat array of axiom string identifiers
   /** @ignore @type {string[]} */
   let targetArray = []
@@ -350,7 +383,9 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
       // pair the axiom ID with the axiom target array
       .map(([axiomId, res]) => [axiomId, res.targets.map(t => t.path)])
       // join the target arrays together into one array of all the targets
-      .map(([axiomId, paths]) => [`${axiomId}=*`].concat(paths.map(p => `${axiomId}=${p}`)))
+      .map(([axiomId, paths]) =>
+        [`${axiomId}=*`].concat(paths.map(p => `${axiomId}=${p}`))
+      )
       .reduce((a, c) => a.concat(c), [])
   }
   // load the rules
@@ -360,14 +395,25 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
   // run the ruleset
   const results = ruleset.map(async r => {
     // check axioms and enable appropriately
-    if (r.level === 'off') { return FormatResult.CreateIgnored(r, 'ignored because level is "off"') }
+    if (r.level === 'off') {
+      return FormatResult.CreateIgnored(r, 'ignored because level is "off"')
+    }
     // filter to only targets with no matches
     if (typeof targets !== 'boolean' && r.where && r.where.length) {
       const ignoreReasons = shouldRuleRun(targetArray, r.where)
-      if (ignoreReasons.length > 0) { return FormatResult.CreateIgnored(r, `ignored due to unsatisfied condition(s): "${ignoreReasons.join('", "')}"`) }
+      if (ignoreReasons.length > 0) {
+        return FormatResult.CreateIgnored(
+          r,
+          `ignored due to unsatisfied condition(s): "${ignoreReasons.join(
+            '", "'
+          )}"`
+        )
+      }
     }
     // check if the rule file exists
-    if (!Object.prototype.hasOwnProperty.call(allRules, r.ruleType)) { return FormatResult.CreateError(r, `${r.ruleType} is not a valid rule`) }
+    if (!Object.prototype.hasOwnProperty.call(allRules, r.ruleType)) {
+      return FormatResult.CreateError(r, `${r.ruleType} is not a valid rule`)
+    }
     let result
     try {
       // load the rule
@@ -375,21 +421,33 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
       // run the rule!
       result = await ruleFunc(fileSystem, r.ruleConfig)
     } catch (e) {
-      return FormatResult.CreateError(r, `${r.ruleType} threw an error: ${e.message}`)
+      return FormatResult.CreateError(
+        r,
+        `${r.ruleType} threw an error: ${e.message}`
+      )
     }
     // generate fix targets
-    const fixTargets = !result.passed ? result.targets.filter(t => !t.passed && t.path).map(t => t.path) : []
+    const fixTargets = !result.passed
+      ? result.targets.filter(t => !t.passed && t.path).map(t => t.path)
+      : []
     // if there's no fix or the rule passed, we're done
-    if (!r.fixType || result.passed) { return FormatResult.CreateLintOnly(r, result) }
+    if (!r.fixType || result.passed) {
+      return FormatResult.CreateLintOnly(r, result)
+    }
     // else run the fix
     // check if the rule file exists
-    if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) { return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`) }
+    if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) {
+      return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`)
+    }
     let fixresult
     try {
       const fixFunc = allFixes[r.fixType]()
       fixresult = await fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
     } catch (e) {
-      return FormatResult.CreateError(r, `${r.fixType} threw an error: ${e.message}`)
+      return FormatResult.CreateError(
+        r,
+        `${r.fixType} threw an error: ${e.message}`
+      )
     }
     // all done! return the final format object
     return FormatResult.CreateLintAndFix(r, result, fixresult)
@@ -407,18 +465,27 @@ async function runRuleset (ruleset, targets, fileSystem, dryRun) {
  * @param {FileSystem} fs The filesystem to run axioms against
  * @returns {Promise<Object.<string, Result>>} An object representing axiom name: axiom results. The array will be null if the axiom could not run.
  */
-async function determineTargets (axiomconfig, fs) {
+async function determineTargets(axiomconfig, fs) {
   // load axioms
   const allAxioms = await loadAxioms()
-  const ruleresults = await Promise.all(Object.entries(axiomconfig)
-    .map(async ([axiomId, axiomName]) => {
+  const ruleresults = await Promise.all(
+    Object.entries(axiomconfig).map(async ([axiomId, axiomName]) => {
       // Execute axiom if it exists
-      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) { return [axiomName, new Result(`invalid axiom name ${axiomId}`, [], false)] }
+      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) {
+        return [
+          axiomName,
+          new Result(`invalid axiom name ${axiomId}`, [], false)
+        ]
+      }
       const axiomFunction = allAxioms[axiomId]()
       return [axiomName, await axiomFunction(fs)]
-    }))
+    })
+  )
   // flatten result
-  return ruleresults.reduce((a, [k, v]) => { a[k] = v; return a }, {})
+  return ruleresults.reduce((a, [k, v]) => {
+    a[k] = v
+    return a
+  }, {})
 }
 
 /**
@@ -430,29 +497,42 @@ async function determineTargets (axiomconfig, fs) {
  * A object representing or not the config validation succeeded (passed)
  * an an error message if not (error)
  */
-async function validateConfig (config) {
+async function validateConfig(config) {
   // compile the json schema
   const ajvProps = new Ajv()
   // find all json schemas
-  const parsedRuleSchemas = Promise.all(Rules
-    .map(rs => jsonfile.readFile(path.resolve(__dirname, 'rules', `${rs}-config.json`))))
-  const parsedFixSchemas = Promise.all(Fixes
-    .map(f => jsonfile.readFile(path.resolve(__dirname, 'fixes', `${f}-config.json`))))
-  const allSchemas = (await Promise.all([parsedFixSchemas, parsedRuleSchemas]))
-    .reduce((a, c) => a.concat(c), [])
+  const parsedRuleSchemas = Promise.all(
+    Rules.map(rs =>
+      jsonfile.readFile(path.resolve(__dirname, 'rules', `${rs}-config.json`))
+    )
+  )
+  const parsedFixSchemas = Promise.all(
+    Fixes.map(f =>
+      jsonfile.readFile(path.resolve(__dirname, 'fixes', `${f}-config.json`))
+    )
+  )
+  const allSchemas = (
+    await Promise.all([parsedFixSchemas, parsedRuleSchemas])
+  ).reduce((a, c) => a.concat(c), [])
   // load them into the validator
   for (const schema of allSchemas) {
     ajvProps.addSchema(schema)
   }
-  const validator = ajvProps.compile(await jsonfile.readFile(require.resolve('./rulesets/schema.json')))
+  const validator = ajvProps.compile(
+    await jsonfile.readFile(require.resolve('./rulesets/schema.json'))
+  )
 
   // validate it against the supplied ruleset
   if (!validator(config)) {
     return {
       passed: false,
-      error: `Configuration validation failed with errors: \n${validator.errors.map(e => `\tconfiguration${e.dataPath} ${e.message}`).join('\n')}`
+      error: `Configuration validation failed with errors: \n${validator.errors
+        .map(e => `\tconfiguration${e.dataPath} ${e.message}`)
+        .join('\n')}`
     }
-  } else { return { passed: true } }
+  } else {
+    return { passed: true }
+  }
 }
 
 /**
@@ -463,12 +543,12 @@ async function validateConfig (config) {
  * @param {Object} config The repolinter.json config
  * @returns {RuleInfo[]} The parsed rule data
  */
-function parseConfig (config) {
+function parseConfig(config) {
   // check to see if the config has a version marker
   // parse modern config
   if (config.version === 2) {
-    return Object.entries(config.rules)
-      .map(([name, cfg]) =>
+    return Object.entries(config.rules).map(
+      ([name, cfg]) =>
         new RuleInfo(
           name,
           cfg.level,
@@ -479,16 +559,17 @@ function parseConfig (config) {
           cfg.fix && cfg.fix.options,
           cfg.policyInfo,
           cfg.policyUrl
-        ))
+        )
+    )
   }
   // parse legacy config
   // old format of "axiom": { "rule-name:rule-type": ["level", { "configvalue": false }]}
-  return Object.entries(config.rules)
-    // get axioms
-    .map(([where, rules]) => {
-      // get the rules in each axiom
-      return Object.entries(rules)
-        .map(([rulename, configray]) => {
+  return (
+    Object.entries(config.rules)
+      // get axioms
+      .map(([where, rules]) => {
+        // get the rules in each axiom
+        return Object.entries(rules).map(([rulename, configray]) => {
           const [name, type] = rulename.split(':')
           return new RuleInfo(
             name,
@@ -498,8 +579,9 @@ function parseConfig (config) {
             configray[1] || {}
           )
         })
-    })
-    .reduce((a, c) => a.concat(c))
+      })
+      .reduce((a, c) => a.concat(c))
+  )
 }
 
 module.exports.runRuleset = runRuleset

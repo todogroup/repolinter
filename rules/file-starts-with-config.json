@@ -1,51 +1,48 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-starts-with-config.json",
-    "type": "object",
-    "properties": {
-        "nocase": { "type": "boolean" },
-        "globsAll": {
-            "type": "array",
-            "items": { "type": "string" }
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-starts-with-config.json",
+  "type": "object",
+  "properties": {
+    "nocase": { "type": "boolean" },
+    "globsAll": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "patterns": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "human-readable-pattern": { "type": "string" },
+    "flags": { "type": "string" },
+    "lineCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "succeed-on-non-existent": {
+      "type": "boolean",
+      "default": false
+    },
+    "skip-binary-files": {
+      "type": "boolean",
+      "default": false
+    },
+    "skip-paths-matching": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "extensions": {
+          "type": "array",
+          "items": { "type": "string" }
         },
         "patterns": {
-            "type": "array",
-            "items": { "type": "string" }
+          "type": "array",
+          "items": { "type": "string" }
         },
-        "human-readable-pattern": { "type": "string" },
-        "flags": { "type": "string" },
-        "lineCount": {
-            "type": "integer",
-            "minimum": 1
-        },
-        "succeed-on-non-existent": {
-            "type": "boolean",
-            "default": false
-        },
-        "skip-binary-files": {
-            "type": "boolean",
-            "default": false
-        },
-        "skip-paths-matching": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "extensions": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "patterns": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "flags": { "type": "string" }
-            },
-            "required": ["patterns"]
-        }
-    },
-    "required": ["lineCount", "patterns"],
-    "oneOf": [
-        { "required": [ "globsAll" ] },
-        { "required": [ "files" ] }
-    ]
+        "flags": { "type": "string" }
+      },
+      "required": ["patterns"]
+    }
+  },
+  "required": ["lineCount", "patterns"],
+  "oneOf": [{ "required": ["globsAll"] }, { "required": ["files"] }]
 }

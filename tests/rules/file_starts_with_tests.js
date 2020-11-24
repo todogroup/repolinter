@@ -24,13 +24,13 @@ describe('rule', () => {
       expect(actual.targets[0].path).to.equal(ruleopts.globsAll[0])
     })
 
-    it('returns a failure result if requested file doesn\'t match all the patterns', async () => {
+    it("returns a failure result if requested file doesn't match all the patterns", async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['somefile.js']
         },
-        getFileLines () {
+        getFileLines() {
           return 'some javascript code'
         },
         targetDir: '.'
@@ -70,7 +70,7 @@ describe('rule', () => {
     it('returns a single result when glob has no matches and has succeed-on-non-existent option', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return []
         },
         targetDir: '.'
@@ -93,10 +93,10 @@ describe('rule', () => {
     it('skips files with the `skip-paths-matching` option', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['Skip/paBle-path.js', 'afile.js', 'badextension.sVg']
         },
-        getFileLines () {
+        getFileLines() {
           return 'some javascript code'
         },
         targetDir: '.'
@@ -121,10 +121,10 @@ describe('rule', () => {
       expect(actual.targets[0].path).to.equal('afile.js')
     })
 
-    it('returns failure if the requested files don\'t exist', async () => {
+    it("returns failure if the requested files don't exist", async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return []
         },
         targetDir: '.'

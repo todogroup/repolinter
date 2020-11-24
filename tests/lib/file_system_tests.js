@@ -15,17 +15,23 @@ describe('lib', () => {
     describe('fileExists', () => {
       it('should return pass if the file exists', async () => {
         const index = 'text_file_for_test.txt'
-        expect(await FileSystem.fileExists(path.resolve(__dirname, index))).to.equals(true)
+        expect(
+          await FileSystem.fileExists(path.resolve(__dirname, index))
+        ).to.equals(true)
       })
 
       it('should return pass if the directory exists', async () => {
         const dir = '../lib'
-        expect(await FileSystem.fileExists(path.resolve(__dirname, dir))).to.equals(true)
+        expect(
+          await FileSystem.fileExists(path.resolve(__dirname, dir))
+        ).to.equals(true)
       })
 
       it('should return fail if the file does not exist', async () => {
         const file = 'notAFile'
-        expect(await FileSystem.fileExists(path.resolve(__dirname, file))).to.equals(false)
+        expect(
+          await FileSystem.fileExists(path.resolve(__dirname, file))
+        ).to.equals(false)
       })
     })
 
@@ -34,17 +40,23 @@ describe('lib', () => {
 
       it('should return pass if the file exists', async () => {
         const index = 'text_file_for_test.txt'
-        expect(await fs.relativeFileExists(path.resolve(__dirname, index))).to.equals(true)
+        expect(
+          await fs.relativeFileExists(path.resolve(__dirname, index))
+        ).to.equals(true)
       })
 
       it('should return pass if the directory exists', async () => {
         const dir = '../lib'
-        expect(await fs.relativeFileExists(path.resolve(__dirname, dir))).to.equals(true)
+        expect(
+          await fs.relativeFileExists(path.resolve(__dirname, dir))
+        ).to.equals(true)
       })
 
       it('should return fail if the file does not exist', async () => {
         const file = 'notAFile'
-        expect(await fs.relativeFileExists(path.resolve(__dirname, file))).to.equals(false)
+        expect(
+          await fs.relativeFileExists(path.resolve(__dirname, file))
+        ).to.equals(false)
       })
     })
 
@@ -174,7 +186,9 @@ describe('lib', () => {
         const raw = await fs.getFileContents('text_file_for_test.txt')
         // replace newlines to prevent compatibility issues
         const actual = raw.replace(/\r/g, '')
-        expect(actual).to.equal('The contents of this file\nwill be monitored for quality assurance purposes\n')
+        expect(actual).to.equal(
+          'The contents of this file\nwill be monitored for quality assurance purposes\n'
+        )
       })
     })
 
@@ -201,8 +215,6 @@ describe('lib', () => {
       })
     })
 
-    describe('getFileLines', () => {
-
-    })
+    describe('getFileLines', () => {})
   })
 })

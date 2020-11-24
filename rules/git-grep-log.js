@@ -6,9 +6,15 @@ const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 
-function grepLog (fileSystem, options) {
-  const args = ['-C', fileSystem.targetDir, 'log', '--all', '--format=full', '-E']
-    .concat(options.denylist.map(pattern => `--grep=${pattern}`))
+function grepLog(fileSystem, options) {
+  const args = [
+    '-C',
+    fileSystem.targetDir,
+    'log',
+    '--all',
+    '--format=full',
+    '-E'
+  ].concat(options.denylist.map(pattern => `--grep=${pattern}`))
   if (options.ignoreCase) {
     args.push('-i')
   }
@@ -19,7 +25,7 @@ function grepLog (fileSystem, options) {
 /**
  * @param log
  */
-function parseLog (log) {
+function parseLog(log) {
   const logEntries = log.split('\ncommit ').filter(x => !!x)
 
   return logEntries.map(entry => extractInfo(entry))
@@ -28,7 +34,7 @@ function parseLog (log) {
 /**
  * @param commit
  */
-function extractInfo (commit) {
+function extractInfo(commit) {
   const [hash, , , ...message] = commit.split('\n')
   return {
     hash: hash.split(' ')[1],
@@ -42,7 +48,7 @@ function extractInfo (commit) {
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function gitGrepLog (fs, options) {
+function gitGrepLog(fs, options) {
   // backwards compatibility with blacklist
   options.denylist = options.denylist || options.blacklist
 
@@ -50,7 +56,10 @@ function gitGrepLog (fs, options) {
 
   const targets = commits.map(commit => {
     const message = [
-      `The commit message for commit ${commit.hash.substr(0, 7)} contains denylisted words.\n`,
+      `The commit message for commit ${commit.hash.substr(
+        0,
+        7
+      )} contains denylisted words.\n`,
       `\tDenylist: ${options.denylist.join(', ')}`
     ].join('\n')
 
@@ -62,7 +71,9 @@ function gitGrepLog (fs, options) {
   })
 
   if (targets.length === 0) {
-    const message = `No denylisted words found in any commit messages.\n\tDenylist: ${options.denylist.join(', ')}`
+    const message = `No denylisted words found in any commit messages.\n\tDenylist: ${options.denylist.join(
+      ', '
+    )}`
     return new Result(message, [], true)
   }
 

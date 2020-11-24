@@ -11,7 +11,7 @@ describe('rule', () => {
     it('returns a passed result if requested file exists', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'LICENSE.md'
         },
         targetDir: '.'
@@ -25,13 +25,16 @@ describe('rule', () => {
 
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'LICENSE.md' })
+      expect(actual.targets[0]).to.deep.include({
+        passed: true,
+        path: 'LICENSE.md'
+      })
     })
 
     it('returns a passed result if requested file exists case-insensitivly', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'LICENSE.md'
         },
         targetDir: '.'
@@ -46,14 +49,16 @@ describe('rule', () => {
 
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'LICENSE.md' })
+      expect(actual.targets[0]).to.deep.include({
+        passed: true,
+        path: 'LICENSE.md'
+      })
     })
 
-    it('returns a failure result if requested file doesn\'t exist', async () => {
+    it("returns a failure result if requested file doesn't exist", async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
-        },
+        findFirstFile() {},
         targetDir: '.'
       }
 
@@ -66,11 +71,10 @@ describe('rule', () => {
       expect(actual.passed).to.equal(false)
     })
 
-    it('returns a failure result if requested file doesn\'t exist with a failure message', async () => {
+    it("returns a failure result if requested file doesn't exist with a failure message", async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
-        },
+        findFirstFile() {},
         targetDir: '.'
       }
 

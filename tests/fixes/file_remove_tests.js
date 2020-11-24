@@ -12,7 +12,7 @@ describe('fixes', () => {
       const removePaths = []
       /** @type {any} */
       const mockFs = {
-        removeFile (path) {
+        removeFile(path) {
           removePaths.push(path)
         }
       }
@@ -29,7 +29,7 @@ describe('fixes', () => {
       const removePaths = []
       /** @type {any} */
       const mockFs = {
-        removeFile (path) {
+        removeFile(path) {
           removePaths.push(path)
         }
       }
@@ -46,7 +46,7 @@ describe('fixes', () => {
       const removePaths = []
       /** @type {any} */
       const mockFs = {
-        removeFile (path) {
+        removeFile(path) {
           removePaths.push(path)
         }
       }
@@ -65,10 +65,10 @@ describe('fixes', () => {
       const removePaths = []
       /** @type {any} */
       const mockFs = {
-        removeFile (path) {
+        removeFile(path) {
           removePaths.push(path)
         },
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile.txt']
         }
       }
@@ -85,15 +85,20 @@ describe('fixes', () => {
       const removePaths = []
       /** @type {any} */
       const mockFs = {
-        removeFile (path) {
+        removeFile(path) {
           removePaths.push(path)
         },
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile.txt']
         }
       }
 
-      const res = await fileRemove(mockFs, { globsAll: ['myfile'] }, ['otherfile'], false)
+      const res = await fileRemove(
+        mockFs,
+        { globsAll: ['myfile'] },
+        ['otherfile'],
+        false
+      )
       expect(res.passed).to.equal(true)
       expect(res.targets).to.have.length(1)
       expect(res.targets[0].passed).to.equal(true)

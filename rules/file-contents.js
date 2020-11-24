@@ -6,8 +6,10 @@ const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 
-function getContent (options) {
-  return options['human-readable-content'] !== undefined ? options['human-readable-content'] : options.content
+function getContent(options) {
+  return options['human-readable-content'] !== undefined
+    ? options['human-readable-content']
+    : options.content
 }
 
 /**
@@ -16,9 +18,9 @@ function getContent (options) {
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
- * @returns {Result} The lint rule result
+ * @returns {Promise<Result>} The lint rule result
  */
-async function fileContents (fs, options, not = false) {
+async function fileContents(fs, options, not = false) {
   // support legacy configuration keys
   const fileList = options.globsAll || options.files
   const files = await fs.findAllFiles(fileList, !!options.nocase)
@@ -26,33 +28,35 @@ async function fileContents (fs, options, not = false) {
   if (files.length === 0) {
     return new Result(
       'Did not find file matching the specified patterns',
-      fileList.map(f => { return { passed: false, pattern: f } }),
-      !options['fail-on-non-existent'])
+      fileList.map(f => {
+        return { passed: false, pattern: f }
+      }),
+      !options['fail-on-non-existent']
+    )
   }
 
-  const results = await Promise.all(files.map(async file => {
-    const fileContents = await fs.getFileContents(file)
-    if (fileContents === undefined) {
-      return new Result(
-        'Did not find file matching the specified patterns',
-        fileList.map(f => { return { passed: false, pattern: f } }),
-        !options['fail-on-non-existent'])
-    }
-    const regexp = new RegExp(options.content, options.flags)
+  const results = await Promise.all(
+    files.map(async file => {
+      const fileContents = await fs.getFileContents(file)
+      if (!fileContents) return null
 
-    const passed = fileContents.search(regexp) >= 0
-    const message = `${passed ? 'Contains' : 'Doesn\'t contain'} ${getContent(options)}`
+      const regexp = new RegExp(options.content, options.flags)
+      const passed = fileContents.search(regexp) >= 0
+      const message = `${passed ? 'Contains' : "Doesn't contain"} ${getContent(
+        options
+      )}`
 
-    return {
-      passed: not ? !passed : passed,
-      path: file,
-      message
-    }
-  }))
+      return {
+        passed: not ? !passed : passed,
+        path: file,
+        message
+      }
+    })
+  )
 
-  const passed = !results.find(r => !r.passed)
-
-  return new Result('', results, passed)
+  const filteredResults = results.filter(r => r !== null)
+  const passed = !filteredResults.find(r => !r.passed)
+  return new Result('', filteredResults, passed)
 }
 
 module.exports = fileContents

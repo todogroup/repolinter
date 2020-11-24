@@ -3,15 +3,15 @@
   "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-not-exists-config.json",
   "type": "object",
   "properties": {
-      "nocase": {
-          "type": "boolean",
-          "default": false
-      },
-      "globsAll": {
-          "type": "array",
-          "items": { "type": "string" }
-      },
-      "pass-message": { "type": "string" }
+    "nocase": {
+      "type": "boolean",
+      "default": false
+    },
+    "globsAll": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pass-message": { "type": "string" }
   },
   "required": ["globsAll"]
 }

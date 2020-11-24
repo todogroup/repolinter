@@ -14,7 +14,7 @@ const FileSystem = require('../lib/file_system')
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<Result>} The fix result
  */
-async function fileRemove (fs, options, targets, dryRun = false) {
+async function fileRemove(fs, options, targets, dryRun = false) {
   // overwrite the targets with the files specified by options
   if (options.globsAll && options.globsAll.length) {
     targets = await fs.findAllFiles(options.globsAll, !!options.nocase)
@@ -28,7 +28,9 @@ async function fileRemove (fs, options, targets, dryRun = false) {
     await Promise.all(targets.map(async t => fs.removeFile(t)))
   }
   // create a result
-  const removeTargets = targets.map(t => { return { passed: true, path: t, message: 'Remove file' } })
+  const removeTargets = targets.map(t => {
+    return { passed: true, path: t, message: 'Remove file' }
+  })
   return new Result('', removeTargets, true)
 }
 

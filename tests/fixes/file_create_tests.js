@@ -17,10 +17,10 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        relativeFileExists () {
+        relativeFileExists() {
           return false
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -42,10 +42,10 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        relativeFileExists () {
+        relativeFileExists() {
           return false
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -67,10 +67,10 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        relativeFileExists () {
+        relativeFileExists() {
           return false
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -89,10 +89,10 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        relativeFileExists () {
+        relativeFileExists() {
           return true
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -111,16 +111,16 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'sourcefile'
         },
-        getFileContents () {
+        getFileContents() {
           return 'this is text'
         },
-        relativeFileExists () {
+        relativeFileExists() {
           return false
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -142,10 +142,10 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        relativeFileExists () {
+        relativeFileExists() {
           return false
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -174,13 +174,13 @@ describe('fixes', () => {
       let mockRemove = null
       /** @type {any} */
       const mockFs = {
-        relativeFileExists () {
+        relativeFileExists() {
           return false
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         },
-        removeFile (file) {
+        removeFile(file) {
           mockRemove = file
         }
       }

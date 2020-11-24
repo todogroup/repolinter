@@ -16,13 +16,21 @@ describe('formatters', () => {
       const symbolFormatter = require('../../formatters/symbol_formatter')
 
       const result = new Result('a message', [], true)
-      const successResult = symbolFormatter.formatResult(result, 'myrule', logSymbols.error)
+      const successResult = symbolFormatter.formatResult(
+        result,
+        'myrule',
+        logSymbols.error
+      )
       expect(successResult).to.contain(logSymbols.success)
       expect(successResult).to.contain(result.message)
       expect(successResult).to.contain('myrule')
 
       result.passed = false
-      const errorResult = symbolFormatter.formatResult(result, 'myrule', logSymbols.error)
+      const errorResult = symbolFormatter.formatResult(
+        result,
+        'myrule',
+        logSymbols.error
+      )
       expect(errorResult).to.contain(logSymbols.error)
       expect(successResult).to.contain(result.message)
       expect(successResult).to.contain('myrule')
@@ -41,9 +49,18 @@ describe('formatters', () => {
         errored: false,
         targets: [],
         results: [
-          FormatResult.CreateLintOnly(new RuleInfo('rule1', 'error', [], 'file-existence', {}), new Result('did it', [], true)),
-          FormatResult.CreateIgnored(new RuleInfo('rule2', 'error', [], 'file-existence', {}), 'ignored'),
-          FormatResult.CreateError(new RuleInfo('rule3', 'error', [], 'file-existence', {}), 'errored')
+          FormatResult.CreateLintOnly(
+            new RuleInfo('rule1', 'error', [], 'file-existence', {}),
+            new Result('did it', [], true)
+          ),
+          FormatResult.CreateIgnored(
+            new RuleInfo('rule2', 'error', [], 'file-existence', {}),
+            'ignored'
+          ),
+          FormatResult.CreateError(
+            new RuleInfo('rule3', 'error', [], 'file-existence', {}),
+            'errored'
+          )
         ]
       }
 

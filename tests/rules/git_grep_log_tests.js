@@ -12,7 +12,8 @@ describe('rule', () => {
     this.timeout(30000) // Calling external Git might take some time.
 
     const gitGrepLog = require('../../rules/git-grep-log')
-    const LOG_WRONG_CASE = 'THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES'
+    const LOG_WRONG_CASE =
+      'THE GIT RULESET CONTAINS TWO NEW RULES THAT SEARCH THE COMMIT MESSAGES'
 
     it('passes if the denylist pattern does not match any commit message', () => {
       const ruleopts = {

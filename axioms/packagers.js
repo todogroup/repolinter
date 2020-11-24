@@ -21,8 +21,18 @@ module.exports = async function (fileSystem) {
     'build.gradle': 'gradle'
   }
 
-  const packagers = (await Promise.all(Object.entries(packageManagerPatterns)
-    .map(async ([pattern, packager]) => (await fileSystem.findFirst(pattern)) ? packager : null)))
-    .filter(p => p !== null)
-  return new Result('', packagers.map(p => { return { passed: true, path: p } }), true)
+  const packagers = (
+    await Promise.all(
+      Object.entries(packageManagerPatterns).map(async ([pattern, packager]) =>
+        (await fileSystem.findFirst(pattern)) ? packager : null
+      )
+    )
+  ).filter(p => p !== null)
+  return new Result(
+    '',
+    packagers.map(p => {
+      return { passed: true, path: p }
+    }),
+    true
+  )
 }

@@ -12,10 +12,10 @@ describe('rule', () => {
     it('returns passes if requested file matches the schema', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'README.md'
         },
-        getFileContents () {
+        getFileContents() {
           return '{ "thing": "hello" }'
         },
         targetDir: '.'
@@ -43,10 +43,10 @@ describe('rule', () => {
     it('returns fail if requested file does not match the schema', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'README.md'
         },
-        getFileContents () {
+        getFileContents() {
           return '{ "thing": "nothello" }'
         },
         targetDir: '.'
@@ -74,10 +74,10 @@ describe('rule', () => {
     it('throws if the schema is invalid', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'README.md'
         },
-        getFileContents () {
+        getFileContents() {
           return '{ "thing": "hello" }'
         },
         targetDir: '.'
@@ -93,16 +93,18 @@ describe('rule', () => {
         }
       }
 
-      await expect(jsonSchemaPasses(mockfs, ruleopts)).to.eventually.be.rejectedWith(Error)
+      await expect(
+        jsonSchemaPasses(mockfs, ruleopts)
+      ).to.eventually.be.rejectedWith(Error)
     })
 
     it('returns fail if the file had invalid JSON', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'README.md'
         },
-        getFileContents () {
+        getFileContents() {
           return '{ "thing": "hello"'
         },
         targetDir: '.'
@@ -130,10 +132,10 @@ describe('rule', () => {
     it('succeeds if the file does not exist and succeed-on-non-existent is set', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return undefined
         },
-        getFileContents () {
+        getFileContents() {
           return undefined
         },
         targetDir: '.'
@@ -161,10 +163,10 @@ describe('rule', () => {
     it('returns fail if the file does not exist', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return undefined
         },
-        getFileContents () {
+        getFileContents() {
           return undefined
         },
         targetDir: '.'
@@ -191,10 +193,10 @@ describe('rule', () => {
     it('includes human-readable-message in the output', async () => {
       /** @type {any} */
       const mockfs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'README.md'
         },
-        getFileContents () {
+        getFileContents() {
           return '{ "thing": "nothello" }'
         },
         targetDir: '.'
@@ -218,7 +220,9 @@ describe('rule', () => {
       expect(actual.targets[0].passed).to.equal(false)
       expect(actual.targets[0].path).to.equal(mockfs.findFirstFile())
       expect(actual.targets[0].pattern).to.equal(ruleopts.glob)
-      expect(actual.targets[0].message).to.contain(ruleopts['human-readable-message'])
+      expect(actual.targets[0].message).to.contain(
+        ruleopts['human-readable-message']
+      )
     })
   })
 })

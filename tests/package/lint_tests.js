@@ -35,11 +35,17 @@ describe('package', () => {
       expect(res.results[1].lintResult.passed).to.equal(true)
       expect(res.results[1].lintResult.targets).to.have.length(1)
       expect(res.results[1].lintResult.targets[0].passed).to.equal(true)
-      expect(res.results[1].lintResult.targets[0].path).to.equal('lint_tests.js')
+      expect(res.results[1].lintResult.targets[0].path).to.equal(
+        'lint_tests.js'
+      )
     })
 
     it('returns the correct results for a YAML config', async () => {
-      const res = await repolinter.lint(path.resolve('tests/package'), undefined, path.resolve('tests/package/repolinter-yaml.yml'))
+      const res = await repolinter.lint(
+        path.resolve('tests/package'),
+        undefined,
+        path.resolve('tests/package/repolinter-yaml.yml')
+      )
 
       expect(res.results).to.have.length(2)
       // readme-file-exists rule
@@ -54,12 +60,22 @@ describe('package', () => {
       expect(res.results[1].lintResult.passed).to.equal(true)
       expect(res.results[1].lintResult.targets).to.have.length(1)
       expect(res.results[1].lintResult.targets[0].passed).to.equal(true)
-      expect(res.results[1].lintResult.targets[0].path).to.equal('lint_tests.js')
+      expect(res.results[1].lintResult.targets[0].path).to.equal(
+        'lint_tests.js'
+      )
     })
 
     it('outputs the same results for new and old-style config', async function () {
-      const expected = await repolinter.lint(path.resolve('tests/package'), [], path.resolve('tests/package/default.json'))
-      const actual = await repolinter.lint(path.resolve('tests/package'), [], path.resolve('tests/package/default-legacy.json'))
+      const expected = await repolinter.lint(
+        path.resolve('tests/package'),
+        [],
+        path.resolve('tests/package/default.json')
+      )
+      const actual = await repolinter.lint(
+        path.resolve('tests/package'),
+        [],
+        path.resolve('tests/package/default-legacy.json')
+      )
 
       expect(expected.errored).to.equal(false)
       expect(actual.errored).to.equal(false)
@@ -68,15 +84,21 @@ describe('package', () => {
     })
 
     it('ignores failed axioms', async () => {
-      const actual = await repolinter.runRuleset([
-        new RuleInfo('myrule', 'error', ['myAxiom=true'], 'fix-dohicky', {})
-      ], { myAxiom: new Result('', [], false) }, false)
+      const actual = await repolinter.runRuleset(
+        [new RuleInfo('myrule', 'error', ['myAxiom=true'], 'fix-dohicky', {})],
+        { myAxiom: new Result('', [], false) },
+        false
+      )
       expect(actual).to.have.length(1)
       expect(actual[0].status).to.equal('IGNORED')
     })
 
     it('passes through formatOptions', async function () {
-      const actual = await repolinter.lint(path.resolve('tests/package'), [], path.resolve('tests/package/repolinter-formatter-opts.json'))
+      const actual = await repolinter.lint(
+        path.resolve('tests/package'),
+        [],
+        path.resolve('tests/package/repolinter-formatter-opts.json')
+      )
       expect(actual.formatOptions).to.deep.equal({ hello: 'world' })
     })
   })

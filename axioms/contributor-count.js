@@ -11,11 +11,19 @@ module.exports = async function (fileSystem) {
     number: 10000 // Fetch the last 10000 commits
   })
   if (!commits) {
-    return new Result('GitLog axiom failed to run, is this project a git repository?', [], false)
+    return new Result(
+      'GitLog axiom failed to run, is this project a git repository?',
+      [],
+      false
+    )
   }
   // Get commit authors and filter unique values
   const contributors = commits
-    .map((commit) => commit.authorName.toLowerCase())
+    .map(commit => commit.authorName.toLowerCase())
     .filter((value, index, self) => self.indexOf(value) === index)
-  return new Result('', [{ path: contributors.length.toString(), passed: true }], true)
+  return new Result(
+    '',
+    [{ path: contributors.length.toString(), passed: true }],
+    true
+  )
 }

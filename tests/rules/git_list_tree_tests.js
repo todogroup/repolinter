@@ -51,7 +51,9 @@ describe('rule', () => {
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.not.have.length(0)
       actual.targets.should.each.have.property('passed').that.equals(false)
-      actual.targets.should.each.have.property('message').that.contains(ruleopts.denylist[0])
+      actual.targets.should.each.have
+        .property('message')
+        .that.contains(ruleopts.denylist[0])
     })
   })
 })

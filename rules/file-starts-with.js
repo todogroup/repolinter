@@ -12,7 +12,7 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-async function fileStartsWith (fs, options) {
+async function fileStartsWith(fs, options) {
   const fileList = options.globsAll || options.files
   const files = await fs.findAllFiles(fileList, options.nocase)
 
@@ -27,7 +27,7 @@ async function fileStartsWith (fs, options) {
     if (extensions && extensions.length > 0) {
       const extJoined = extensions.join('|')
       // \.(svg|png|exe)$
-      regexes.push(new RegExp('\.(' + extJoined + ')$', 'i')) // eslint-disable-line no-useless-escape
+      regexes.push(new RegExp('.(' + extJoined + ')$', 'i')) // eslint-disable-line no-useless-escape
     }
 
     const patterns = options['skip-paths-matching'].patterns
@@ -37,18 +37,18 @@ async function fileStartsWith (fs, options) {
         .map(p => new RegExp(p, options['skip-paths-matching'].flags))
       regexes = regexes.concat(filteredPatterns)
     }
-    filteredFiles = filteredFiles.filter(file =>
-      !regexes.some(regex => file.match(regex))
+    filteredFiles = filteredFiles.filter(
+      file => !regexes.some(regex => file.match(regex))
     )
   }
 
-  const targetsUnfiltered = await Promise.all(filteredFiles
-    .map(async file => {
+  const targetsUnfiltered = await Promise.all(
+    filteredFiles.map(async file => {
       const lines = await fs.getFileLines(file, options.lineCount)
       if (!lines) {
         return null
       }
-      const misses = options.patterns.filter((pattern) => {
+      const misses = options.patterns.filter(pattern => {
         const regexp = new RegExp(pattern, options.flags)
         return !lines.match(regexp)
       })
@@ -58,7 +58,9 @@ async function fileStartsWith (fs, options) {
       if (passed) {
         message += ' contain all of the requested patterns.'
       } else {
-        message += ` do not contain the pattern(s): ${options['human-readable-pattern'] || misses.join(', ')}`
+        message += ` do not contain the pattern(s): ${
+          options['human-readable-pattern'] || misses.join(', ')
+        }`
       }
 
       return {
@@ -66,14 +68,18 @@ async function fileStartsWith (fs, options) {
         path: file,
         message
       }
-    }))
+    })
+  )
   const targets = targetsUnfiltered.filter(t => t)
 
   if (targets.length === 0) {
     return new Result(
       'Did not find file matching the specified patterns',
-      fileList.map(f => { return { passed: false, pattern: f } }),
-      !!options['succeed-on-non-existent'])
+      fileList.map(f => {
+        return { passed: false, pattern: f }
+      }),
+      !!options['succeed-on-non-existent']
+    )
   }
 
   const passed = !targets.find(t => !t.passed)

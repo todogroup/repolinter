@@ -12,7 +12,7 @@ describe('lib', () => {
       expect(res).to.equal('ssh')
     })
 
-    it('should detect a command doesn\'t exists', async () => {
+    it("should detect a command doesn't exists", async () => {
       const res = await commandExists('notacommand')
       expect(res).to.equal(null)
     })

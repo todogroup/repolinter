@@ -1,5 +1,5 @@
 ---
-"$schema": "../../rulesets/schema.json"
+'$schema': '../../rulesets/schema.json'
 version: 2
 axioms: {}
 rules:
@@ -9,4 +9,4 @@ rules:
       type: file-existence
       options:
         globsAny:
-        - repolinter_tests.js
+          - repolinter_tests.js

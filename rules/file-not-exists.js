@@ -14,16 +14,31 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Promise<Result>} The lint rule result
  */
-async function fileNotExistence (fs, options) {
+async function fileNotExistence(fs, options) {
   const fileList = options.globsAll
-  const file = options.dirs ? await fs.findAll(fileList, options.nocase) : await fs.findAllFiles(fileList, options.nocase)
+  const file = options.dirs
+    ? await fs.findAll(fileList, options.nocase)
+    : await fs.findAllFiles(fileList, options.nocase)
 
   return file.length !== 0
-    ? new Result('Found files', file.map(f => { return { passed: false, path: f } }), false)
+    ? new Result(
+        'Found files',
+        file.map(f => {
+          return { passed: false, path: f }
+        }),
+        false
+      )
     : new Result(
-      `${options['pass-message'] !== undefined ? options['pass-message'] + '. ' : ''}Did not find a file matching the specified patterns`,
-      fileList.map(f => { return { pattern: f, passed: true } }),
-      true)
+        `${
+          options['pass-message'] !== undefined
+            ? options['pass-message'] + '. '
+            : ''
+        }Did not find a file matching the specified patterns`,
+        fileList.map(f => {
+          return { pattern: f, passed: true }
+        }),
+        true
+      )
 }
 
 module.exports = fileNotExistence

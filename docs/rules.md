@@ -27,6 +27,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
 ### `apache-notice`
 
 No inputs. Checks for the presense of a `NOTICE` file in the root of the repository. This rule is equivalent to the following:
+
 ```JSON
 {
   "type": "file-existence",
@@ -148,6 +149,7 @@ a bit time consuming, depending on the size of the Git history.
 | `ignoreCase` | No       | `boolean`  | `false` | Set to true to make `denylist` case insensitive. |
 
 ### `git-list-tree`
+
 Check for blacklisted filepaths in Git.
 
 | Input        | Required | Type       | Default | Description                                                        |
@@ -177,4 +179,4 @@ Checks if a given file matches a provided [JSON schema](https://json-schema.org/
 
 ### `license-detectable-by-licensee`
 
-Fails if Licensee doesn't detect the repository's license. This rule takes no inputs, but requires ```licensee``` in the path, see [command line dependencies](#command-line-dependencies) for details.
+Fails if Licensee doesn't detect the repository's license. This rule takes no inputs, but requires `licensee` in the path, see [command line dependencies](#command-line-dependencies) for details.

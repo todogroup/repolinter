@@ -39,6 +39,7 @@ This axiom uses [licensee](https://github.com/licensee/licensee) to detect the l
 This axiom will return a list of [license identifiers](https://spdx.org/licenses/) associated with the current repository.
 
 An example of using this axiom:
+
 ```JavaScript
 {
   "axioms": {
@@ -58,6 +59,7 @@ An example of using this axiom:
 This axiom uses GitHub's [linguist](https://github.com/github/linguist) to detect programming languages in the current repository. To use this axiom, linguist must be installed in the system `PATH` or in the same directory as Repolinter. This axiom will return a lowercase list of programming languages from [this list of supported languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
 An example of using this axiom:
+
 ```JavaScript
 {
   "axioms": {

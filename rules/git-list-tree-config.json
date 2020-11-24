@@ -1,16 +1,16 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/git-list-tree-config.json",
-    "type": "object",
-    "properties": {
-        "denylist": {
-            "type": "array",
-            "items": { "type": "string" }
-        },
-        "ignoreCase": {
-            "type": "boolean",
-            "default": false
-        }
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/git-list-tree-config.json",
+  "type": "object",
+  "properties": {
+    "denylist": {
+      "type": "array",
+      "items": { "type": "string" }
     },
-    "required": ["denylist"]
+    "ignoreCase": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": ["denylist"]
 }

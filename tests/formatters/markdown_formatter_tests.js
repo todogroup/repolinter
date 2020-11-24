@@ -22,8 +22,14 @@ describe('formatters', () => {
       errored: false,
       errMsg: 'this is an error message',
       results: [
-        FormatResult.CreateLintOnly(new RuleInfo('myrule', 'error', [], 'file-existence', {}), new Result('Did it!', [], true)),
-        FormatResult.CreateIgnored(new RuleInfo('myrule-other-rule', 'error', [], 'file-existence', {}), 'whoops')
+        FormatResult.CreateLintOnly(
+          new RuleInfo('myrule', 'error', [], 'file-existence', {}),
+          new Result('Did it!', [], true)
+        ),
+        FormatResult.CreateIgnored(
+          new RuleInfo('myrule-other-rule', 'error', [], 'file-existence', {}),
+          'whoops'
+        )
       ],
       targets: {
         language: new Result('No language?', [], false)
@@ -50,13 +56,18 @@ describe('formatters', () => {
       const actual = formatter.formatOutput(result, false)
       const opts = Object.assign(lintOpts, { strings: { test: actual } })
 
-      const res = await new Promise((resolve, reject) => markdownlint(opts, (err, result) => err ? reject(err) : resolve(result)))
+      const res = await new Promise((resolve, reject) =>
+        markdownlint(opts, (err, result) =>
+          err ? reject(err) : resolve(result)
+        )
+      )
       expect(res.test).to.have.length(0)
     })
 
     it('generates the correct sections with sample output', () => {
       const output = formatter.formatOutput(result, false)
-      const sections = toc(output, { slugify: slugger.slug, firsth1: true }).json
+      const sections = toc(output, { slugify: slugger.slug, firsth1: true })
+        .json
       const filteredSections = sections.filter(s => s.lvl !== 1)
       // console.debug(JSON.stringify(sections))
       // console.debug(JSON.stringify(`"${output}"`))
@@ -90,7 +101,11 @@ describe('formatters', () => {
       const actual = formatter.formatOutput(lintres, false)
       const opts = Object.assign(lintOpts, { strings: { test: actual } })
 
-      const res = await new Promise((resolve, reject) => markdownlint(opts, (err, result) => err ? reject(err) : resolve(result)))
+      const res = await new Promise((resolve, reject) =>
+        markdownlint(opts, (err, result) =>
+          err ? reject(err) : resolve(result)
+        )
+      )
 
       // console.debug(actual)
       // console.debug(JSON.stringify(res))
