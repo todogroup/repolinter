@@ -8,15 +8,12 @@
     "repolinter": "bin/repolinter.js"
   },
   "scripts": {
-    "test": "standard --env mocha && mocha tests/**/*.js",
+    "pretest": "npm run lint",
+    "test": "mocha tests/**/*.js",
     "coverage": "nyc npm test",
-    "fix": "eslint --fix",
+    "lint": "eslint ./",
+    "fix": "eslint ./ --fix",
     "apidoc": "documentation build index.js -f html -o apidoc -c documentation.yml"
-  },
-  "standard": {
-    "env": [
-      "mocha"
-    ]
   },
   "keywords": [
     "lint",
