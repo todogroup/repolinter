@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+# Modified github_markup utility which checks first that the file can be rendered before rendering
+
+$LOAD_PATH.unshift File.dirname(File.realpath(__FILE__)) + "/../lib"
+require 'github/markup'
+
+if ARGV.size < 1
+  print "usage: #{File.basename($0)} FILE\n"
+  exit 1
+end
+
+name = ARGV.first
+file_contents = nil
+
+begin
+  file = File.open( name, "r" )
+  file_contents = file.read
+  file.close
+rescue Exception => e
+  $stderr.print "error: #{e.message}\n"
+  exit 1
+ensure
+end
+
+
+if GitHub::Markup.can_render?( name, file_contents )
+  print GitHub::Markup.render( name, file_contents )
+  exit 0
+else
+  print "File '#{name}' cannot be rendered.\n"
+  exit 1
+end
