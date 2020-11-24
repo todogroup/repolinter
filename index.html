@@ -437,10 +437,12 @@ This Repolinter run generated the following results:
 </ul>
 <p>These combined capabilities give you fine-grained control over the checks Repolinter runs.</p>
 <h3>Providing a Ruleset</h3>
-<p>Repolinter will pull its configuration from the following sources in order of priority:
-1. A ruleset specified with <code>--rulesetFile</code> or <code>--rulesetUrl</code>
-2. A <code>repolint.json</code>, <code>repolinter.json</code>, <code>repolint.yaml</code>, or <code>repolinter.yaml</code> file at the root of the project being linted
-3. The <a href="./rulesets/default.json">default ruleset</a></p>
+<p>Repolinter will pull its configuration from the following sources in order of priority:</p>
+<ol>
+<li>A ruleset specified with <code>--rulesetFile</code> or <code>--rulesetUrl</code></li>
+<li>A <code>repolint.json</code>, <code>repolinter.json</code>, <code>repolint.yaml</code>, or <code>repolinter.yaml</code> file at the root of the project being linted</li>
+<li>The <a href="./rulesets/default.json">default ruleset</a></li>
+</ol>
 <h3>Creating a Ruleset</h3>
 <p>Any ruleset starts with the following base, shown in both JSON and YAML format:</p>
 <pre class='hljs'>{
@@ -617,7 +619,7 @@ This Repolinter run generated the following results:
 <p>This API allows the developer to have complete control over the configuration and formatting Repolinter should use. Documentation for this library can be found under <a href="https://todogroup.github.io/repolinter/#api-reference">API Documentation</a>.</p>
 <h2>Going Further</h2>
 <ul>
-<li><a href="./docs/rules.md">Rule Reference</a></li>
+<li><a href="../docs/rules.md">Rule Reference</a></li>
 <li><a href="./docs/fixes.md">Fix Reference</a></li>
 <li><a href="./docs/axioms.md">Axiom Reference</a></li>
 <li><a href="https://todogroup.github.io/repolinter/#api-reference">API Reference</a></li>
