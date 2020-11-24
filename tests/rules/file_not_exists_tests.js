@@ -11,7 +11,7 @@ describe('rule', () => {
     it('returns a passed result if no files exist', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return []
         },
         targetDir: '.'
@@ -31,7 +31,7 @@ describe('rule', () => {
     it('returns a passed result if no directories or files exist', async () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAll() {
           return []
         },
         targetDir: '.'
@@ -52,7 +52,7 @@ describe('rule', () => {
     it('returns a failure result if requested file exists', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['somefile']
         },
         targetDir: '.'
@@ -66,13 +66,16 @@ describe('rule', () => {
 
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0]).to.deep.include({ passed: false, path: 'somefile' })
+      expect(actual.targets[0]).to.deep.include({
+        passed: false,
+        path: 'somefile'
+      })
     })
 
-    it('returns a pass result if requested file doesn\'t exist with a pass message', async () => {
+    it("returns a pass result if requested file doesn't exist with a pass message", async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return []
         },
         targetDir: '.'

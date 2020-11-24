@@ -13,7 +13,7 @@ class JsonFormatter {
    * @param {boolean} dryRun (ignored)
    * @returns {string} The formatted output
    */
-  static formatOutput (output, dryRun) {
+  static formatOutput(output, dryRun) {
     return JSON.stringify(output)
   }
 }

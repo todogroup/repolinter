@@ -14,7 +14,7 @@ const fileContents = require('./file-contents')
  * @param {object} options The rule configuration
  * @returns {Promise<Result>} The lint rule result
  */
-function fileNotContents (fs, options) {
+function fileNotContents(fs, options) {
   return fileContents(fs, options, true)
 }
 

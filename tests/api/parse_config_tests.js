@@ -146,8 +146,12 @@ describe('api', () => {
       const parsed = repolinter.parseConfig(mockConfig)
 
       expect(parsed).to.have.length(1)
-      expect(parsed[0].policyInfo).to.equal(mockConfig.rules['my-rule'].policyInfo)
-      expect(parsed[0].policyUrl).to.equal(mockConfig.rules['my-rule'].policyUrl)
+      expect(parsed[0].policyInfo).to.equal(
+        mockConfig.rules['my-rule'].policyInfo
+      )
+      expect(parsed[0].policyUrl).to.equal(
+        mockConfig.rules['my-rule'].policyUrl
+      )
     })
   })
 })

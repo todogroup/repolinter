@@ -20,7 +20,13 @@ describe('api', () => {
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, false)
       expect(res).to.have.length(1)
-      expect(res[0].ruleInfo).to.deep.equal({ level: 'error', name: 'my-rule', ruleConfig: {}, ruleType: 'apache-notice', where: [] })
+      expect(res[0].ruleInfo).to.deep.equal({
+        level: 'error',
+        name: 'my-rule',
+        ruleConfig: {},
+        ruleType: 'apache-notice',
+        where: []
+      })
       expect(res[0].status).to.equal(FormatResult.RULE_PASSED)
       expect(res[0].lintResult.passed).to.equal(true)
       expect(res[0].fixResult).to.equal(undefined)
@@ -28,11 +34,19 @@ describe('api', () => {
 
     it('runs a failing rule', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'error', [], 'file-existence', { globsAny: ['notafile'] })
+        new RuleInfo('my-rule', 'error', [], 'file-existence', {
+          globsAny: ['notafile']
+        })
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, false)
       expect(res).to.have.length(1)
-      expect(res[0].ruleInfo).to.deep.equal({ level: 'error', name: 'my-rule', ruleConfig: { globsAny: ['notafile'] }, ruleType: 'file-existence', where: [] })
+      expect(res[0].ruleInfo).to.deep.equal({
+        level: 'error',
+        name: 'my-rule',
+        ruleConfig: { globsAny: ['notafile'] },
+        ruleType: 'file-existence',
+        where: []
+      })
       expect(res[0].status).to.equal(FormatResult.RULE_NOT_PASSED_ERROR)
       expect(res[0].lintResult.passed).to.equal(false)
       expect(res[0].fixResult).to.equal(undefined)
@@ -40,11 +54,19 @@ describe('api', () => {
 
     it('runs a failing rule with level warning', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'warning', [], 'file-existence', { globsAny: ['notafile'] })
+        new RuleInfo('my-rule', 'warning', [], 'file-existence', {
+          globsAny: ['notafile']
+        })
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, false)
       expect(res).to.have.length(1)
-      expect(res[0].ruleInfo).to.deep.equal({ level: 'warning', name: 'my-rule', ruleConfig: { globsAny: ['notafile'] }, ruleType: 'file-existence', where: [] })
+      expect(res[0].ruleInfo).to.deep.equal({
+        level: 'warning',
+        name: 'my-rule',
+        ruleConfig: { globsAny: ['notafile'] },
+        ruleType: 'file-existence',
+        where: []
+      })
       expect(res[0].status).to.equal(FormatResult.RULE_NOT_PASSED_WARN)
       expect(res[0].lintResult.passed).to.equal(false)
       expect(res[0].fixResult).to.equal(undefined)
@@ -52,7 +74,9 @@ describe('api', () => {
 
     it('disables a rule with level off', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'off', [], 'file-existence', { globsAny: ['notafile'] })
+        new RuleInfo('my-rule', 'off', [], 'file-existence', {
+          globsAny: ['notafile']
+        })
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, false)
       expect(res).to.have.length(1)
@@ -63,9 +87,22 @@ describe('api', () => {
 
     it('runs a rule conditionally with axioms', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'error', ['language=javascript'], 'apache-notice', {})
+        new RuleInfo(
+          'my-rule',
+          'error',
+          ['language=javascript'],
+          'apache-notice',
+          {}
+        )
       ]
-      const res = await repolinter.runRuleset(mockconfig, { language: new Result('', [{ passed: true, path: 'javascript' }], true) }, realFs, false)
+      const res = await repolinter.runRuleset(
+        mockconfig,
+        {
+          language: new Result('', [{ passed: true, path: 'javascript' }], true)
+        },
+        realFs,
+        false
+      )
       expect(res).to.have.length(1)
       expect(res[0].status).to.equal(FormatResult.RULE_PASSED)
       expect(res[0].lintResult.passed).to.equal(true)
@@ -76,7 +113,14 @@ describe('api', () => {
       const mockconfig = [
         new RuleInfo('my-rule', 'error', ['language=*'], 'apache-notice', {})
       ]
-      const res = await repolinter.runRuleset(mockconfig, { language: new Result('', [{ passed: true, path: 'javascript' }], true) }, realFs, false)
+      const res = await repolinter.runRuleset(
+        mockconfig,
+        {
+          language: new Result('', [{ passed: true, path: 'javascript' }], true)
+        },
+        realFs,
+        false
+      )
       expect(res).to.have.length(1)
       expect(res[0].status).to.equal(FormatResult.RULE_PASSED)
       expect(res[0].lintResult.passed).to.equal(true)
@@ -85,9 +129,26 @@ describe('api', () => {
 
     it('ignores a rule conditionally with axioms', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'error', ['language=javascript'], 'apache-notice', {})
+        new RuleInfo(
+          'my-rule',
+          'error',
+          ['language=javascript'],
+          'apache-notice',
+          {}
+        )
       ]
-      const res = await repolinter.runRuleset(mockconfig, { language: new Result('', [{ passed: true, path: 'not-javascript' }], true) }, realFs, false)
+      const res = await repolinter.runRuleset(
+        mockconfig,
+        {
+          language: new Result(
+            '',
+            [{ passed: true, path: 'not-javascript' }],
+            true
+          )
+        },
+        realFs,
+        false
+      )
       expect(res).to.have.length(1)
       expect(res[0].status).to.equal(FormatResult.IGNORED)
       expect(res[0].lintResult).to.equal(undefined)
@@ -98,7 +159,12 @@ describe('api', () => {
       const mockconfig = [
         new RuleInfo('my-rule', 'error', ['number>3'], 'apache-notice', {})
       ]
-      const res = await repolinter.runRuleset(mockconfig, { number: new Result('', [{ passed: true, path: '4' }], true) }, realFs, false)
+      const res = await repolinter.runRuleset(
+        mockconfig,
+        { number: new Result('', [{ passed: true, path: '4' }], true) },
+        realFs,
+        false
+      )
       expect(res).to.have.length(1)
       expect(res[0].status).to.equal(FormatResult.RULE_PASSED)
       expect(res[0].lintResult.passed).to.equal(true)
@@ -109,7 +175,12 @@ describe('api', () => {
       const mockconfig = [
         new RuleInfo('my-rule', 'error', ['number>4'], 'apache-notice', {})
       ]
-      const res = await repolinter.runRuleset(mockconfig, { number: new Result('', [{ passed: true, path: '4' }], true) }, realFs, false)
+      const res = await repolinter.runRuleset(
+        mockconfig,
+        { number: new Result('', [{ passed: true, path: '4' }], true) },
+        realFs,
+        false
+      )
       expect(res).to.have.length(1)
       expect(res[0].status).to.equal(FormatResult.IGNORED)
       expect(res[0].lintResult).to.equal(undefined)
@@ -118,7 +189,15 @@ describe('api', () => {
 
     it('ignores a fix if the rule passes', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'error', [], 'file-existence', { globsAny: ['README*'] }, 'garbage-fix', {})
+        new RuleInfo(
+          'my-rule',
+          'error',
+          [],
+          'file-existence',
+          { globsAny: ['README*'] },
+          'garbage-fix',
+          {}
+        )
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, false)
       expect(res).to.have.length(1)
@@ -129,7 +208,15 @@ describe('api', () => {
 
     it('runs a fix if the rule fails', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'error', [], 'file-existence', { globsAny: ['notafile'] }, 'file-create', { file: 'myfile', text: 'hello!' })
+        new RuleInfo(
+          'my-rule',
+          'error',
+          [],
+          'file-existence',
+          { globsAny: ['notafile'] },
+          'file-create',
+          { file: 'myfile', text: 'hello!' }
+        )
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, true)
       expect(res).to.have.length(1)
@@ -149,7 +236,9 @@ describe('api', () => {
 
     it('returns a failing result with an invalid rule', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'error', [], 'garbage-rule', { globsAny: ['notafile'] })
+        new RuleInfo('my-rule', 'error', [], 'garbage-rule', {
+          globsAny: ['notafile']
+        })
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, false)
       expect(res).to.have.length(1)
@@ -160,7 +249,15 @@ describe('api', () => {
 
     it('returns a failing result with an invalid fix', async () => {
       const mockconfig = [
-        new RuleInfo('my-rule', 'error', [], 'file-existence', { globsAny: ['notafile'] }, 'garbage-fix', {})
+        new RuleInfo(
+          'my-rule',
+          'error',
+          [],
+          'file-existence',
+          { globsAny: ['notafile'] },
+          'garbage-fix',
+          {}
+        )
       ]
       const res = await repolinter.runRuleset(mockconfig, false, realFs, false)
       expect(res).to.have.length(1)

@@ -6,7 +6,7 @@ const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 
-function gitAllCommits (targetDir) {
+function gitAllCommits(targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']
   return spawnSync('git', args).stdout.toString().split('\n')
 }
@@ -15,7 +15,7 @@ function gitAllCommits (targetDir) {
  * @param targetDir
  * @param commit
  */
-function gitFilesAtCommit (targetDir, commit) {
+function gitFilesAtCommit(targetDir, commit) {
   const args = ['-C', targetDir, 'ls-tree', '-r', '--name-only', commit]
   return spawnSync('git', args).stdout.toString().split('\n')
 }
@@ -24,12 +24,15 @@ function gitFilesAtCommit (targetDir, commit) {
  * @param fileSystem
  * @param options
  */
-function listFiles (fileSystem, options) {
+function listFiles(fileSystem, options) {
   const files = []
 
-  const pattern = new RegExp('(' + options.denylist.join('|') + ')', options.ignoreCase ? 'i' : '')
+  const pattern = new RegExp(
+    '(' + options.denylist.join('|') + ')',
+    options.ignoreCase ? 'i' : ''
+  )
   const commits = gitAllCommits(fileSystem.targetDir)
-  commits.forEach((commit) => {
+  commits.forEach(commit => {
     const includedFiles = gitFilesAtCommit(fileSystem.targetDir, commit)
       .filter(file => file.match(pattern))
       .filter(file => fileSystem.shouldInclude(file))
@@ -52,7 +55,7 @@ function listFiles (fileSystem, options) {
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
  */
-function gitListTree (fs, options) {
+function gitListTree(fs, options) {
   // backwards compatibility with blacklist
   options.denylist = options.denylist || options.blacklist
 
@@ -60,10 +63,14 @@ function gitListTree (fs, options) {
 
   const targets = files.map(file => {
     const [firstCommit, ...rest] = file.commits
-    const restMessage = rest.length > 0 ? `, and ${rest.length} more commits` : ''
+    const restMessage =
+      rest.length > 0 ? `, and ${rest.length} more commits` : ''
 
     const message = [
-      `denylisted path (${file.path}) found in commit ${firstCommit.substr(0, 7)}${restMessage}.`,
+      `denylisted path (${file.path}) found in commit ${firstCommit.substr(
+        0,
+        7
+      )}${restMessage}.`,
       `\tdenylist: ${options.denylist.join(', ')}`
     ].join('\n')
 
@@ -75,7 +82,9 @@ function gitListTree (fs, options) {
   })
 
   if (targets.length === 0) {
-    const message = `No denylisted paths found in any commits.\n\tdenylist: ${options.denylist.join(', ')}`
+    const message = `No denylisted paths found in any commits.\n\tdenylist: ${options.denylist.join(
+      ', '
+    )}`
     return new Result(message, [], true)
   }
 

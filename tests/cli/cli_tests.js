@@ -17,30 +17,35 @@ const expect = chai.expect
  * @param {import('child_process').ExecOptions} [opts] Options to execute against.
  * @returns {Promise<{out: string, err: string, code: number}>} The command output
  */
-async function execAsync (
-  command,
-  opts = {}
-) {
+async function execAsync(command, opts = {}) {
   return new Promise((resolve, reject) => {
     cp.exec(command, opts, (err, outstd, errstd) =>
       err !== null && err.code === undefined
         ? reject(err)
         : resolve({
-          out: outstd,
-          err: errstd,
-          code: err !== null ? (err.code) : 0
-        })
+            out: outstd,
+            err: errstd,
+            code: err !== null ? err.code : 0
+          })
     )
   })
 }
 
 describe('cli', function () {
-  const repolinterPath = process.platform === 'win32' ? path.resolve('bin/repolinter.bat') : path.resolve('bin/repolinter.js')
+  const repolinterPath =
+    process.platform === 'win32'
+      ? path.resolve('bin/repolinter.bat')
+      : path.resolve('bin/repolinter.js')
   const selfPath = path.resolve('tests/cli')
   this.timeout(30000)
 
   it('runs repolinter from the CLI', async () => {
-    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath), false))
+    const expected = stripAnsi(
+      repolinter.defaultFormatter.formatOutput(
+        await repolinter.lint(selfPath),
+        false
+      )
+    )
     const actual = await execAsync(`${repolinterPath} lint ${selfPath}`)
 
     expect(actual.code).to.equal(0)
@@ -60,31 +65,52 @@ describe('cli', function () {
   })
 
   it('fixes a problem with dryRun disabled', async () => {
-    const actual = await execAsync(`${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other-fix.json`)
+    const actual = await execAsync(
+      `${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other-fix.json`
+    )
 
     expect(actual.code).to.not.equal(0)
-    const fileExists = await fs.promises.access(path.resolve('tests/cli/fixed.txt')).then(() => true).catch(() => false)
+    const fileExists = await fs.promises
+      .access(path.resolve('tests/cli/fixed.txt'))
+      .then(() => true)
+      .catch(() => false)
     expect(fileExists).to.equal(true)
   })
 
-  it('doesn\'t make any changes with dryRun enabled', async () => {
+  it("doesn't make any changes with dryRun enabled", async () => {
     const [actual, actual2] = await Promise.all([
-      execAsync(`${repolinterPath} lint ${selfPath} -d --rulesetFile repolinter-other-fix.json`),
-      execAsync(`${repolinterPath} lint ${selfPath} --dryRun --rulesetFile repolinter-other-fix.json`)
+      execAsync(
+        `${repolinterPath} lint ${selfPath} -d --rulesetFile repolinter-other-fix.json`
+      ),
+      execAsync(
+        `${repolinterPath} lint ${selfPath} --dryRun --rulesetFile repolinter-other-fix.json`
+      )
     ])
 
     expect(actual.code).to.not.equal(0)
     expect(actual2.code).to.not.equal(0)
-    const fileExists = await fs.promises.access(path.resolve('tests/cli/fixed.txt')).then(() => true).catch(() => false)
+    const fileExists = await fs.promises
+      .access(path.resolve('tests/cli/fixed.txt'))
+      .then(() => true)
+      .catch(() => false)
     expect(fileExists).to.equal(false)
   })
 
   it('runs repolinter from the CLI using a config file', async () => {
-    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, undefined, 'repolinter-other.json'), false))
+    const expected = stripAnsi(
+      repolinter.defaultFormatter.formatOutput(
+        await repolinter.lint(selfPath, undefined, 'repolinter-other.json'),
+        false
+      )
+    )
     const [actual, actual2, actual3] = await Promise.all([
       execAsync(`${repolinterPath} lint ${selfPath} -r repolinter-other.json`),
-      execAsync(`${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other.json`),
-      execAsync(`${repolinterPath} lint ${selfPath} --ruleset-file repolinter-other.json`)
+      execAsync(
+        `${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other.json`
+      ),
+      execAsync(
+        `${repolinterPath} lint ${selfPath} --ruleset-file repolinter-other.json`
+      )
     ])
 
     expect(actual.code).to.equal(0)
@@ -96,11 +122,20 @@ describe('cli', function () {
   })
 
   it('runs repolinter from the CLI using a YAML config file', async () => {
-    const expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, undefined, 'repolinter-other.yml'), false))
+    const expected = stripAnsi(
+      repolinter.defaultFormatter.formatOutput(
+        await repolinter.lint(selfPath, undefined, 'repolinter-other.yml'),
+        false
+      )
+    )
     const [actual, actual2, actual3] = await Promise.all([
       execAsync(`${repolinterPath} lint ${selfPath} -r repolinter-other.yml`),
-      execAsync(`${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other.yml`),
-      execAsync(`${repolinterPath} lint ${selfPath} --ruleset-file repolinter-other.yml`)
+      execAsync(
+        `${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other.yml`
+      ),
+      execAsync(
+        `${repolinterPath} lint ${selfPath} --ruleset-file repolinter-other.yml`
+      )
     ])
 
     expect(actual.code).to.equal(0)
@@ -113,8 +148,12 @@ describe('cli', function () {
 
   it('runs repolinter on a remote git repository', async () => {
     const [actual, actual2] = await Promise.all([
-      execAsync(`${repolinterPath} lint --git https://github.com/todogroup/repolinter.git`),
-      execAsync(`${repolinterPath} lint -g https://github.com/todogroup/repolinter.git`)
+      execAsync(
+        `${repolinterPath} lint --git https://github.com/todogroup/repolinter.git`
+      ),
+      execAsync(
+        `${repolinterPath} lint -g https://github.com/todogroup/repolinter.git`
+      )
     ])
 
     expect(actual.code).to.equal(0)
@@ -132,17 +171,31 @@ describe('cli', function () {
       reply: {
         status: 200,
         headers: { 'content-type': 'application/json' },
-        body: await fs.promises.readFile(path.resolve(__dirname, 'repolinter-other.json'), 'utf-8')
+        body: await fs.promises.readFile(
+          path.resolve(__dirname, 'repolinter-other.json'),
+          'utf-8'
+        )
       }
     })
 
     let expected, actual, actual2, actual3
     try {
-      expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], 'repolinter-other.json'), false))
+      expected = stripAnsi(
+        repolinter.defaultFormatter.formatOutput(
+          await repolinter.lint(selfPath, [], 'repolinter-other.json'),
+          false
+        )
+      )
       const [act1, act2, act3] = await Promise.all([
-        execAsync(`${repolinterPath} lint ${selfPath} --rulesetUrl http://localhost:9000/repolinter-other.json`),
-        execAsync(`${repolinterPath} lint ${selfPath} --ruleset-url http://localhost:9000/repolinter-other.json`),
-        execAsync(`${repolinterPath} lint ${selfPath} -u http://localhost:9000/repolinter-other.json`)
+        execAsync(
+          `${repolinterPath} lint ${selfPath} --rulesetUrl http://localhost:9000/repolinter-other.json`
+        ),
+        execAsync(
+          `${repolinterPath} lint ${selfPath} --ruleset-url http://localhost:9000/repolinter-other.json`
+        ),
+        execAsync(
+          `${repolinterPath} lint ${selfPath} -u http://localhost:9000/repolinter-other.json`
+        )
       ])
       actual = act1
       actual2 = act2
@@ -168,17 +221,31 @@ describe('cli', function () {
       reply: {
         status: 200,
         headers: { 'content-type': 'application/json' },
-        body: await fs.promises.readFile(path.resolve(__dirname, 'repolinter-other.yml'), 'utf-8')
+        body: await fs.promises.readFile(
+          path.resolve(__dirname, 'repolinter-other.yml'),
+          'utf-8'
+        )
       }
     })
 
     let expected, actual, actual2, actual3
     try {
-      expected = stripAnsi(repolinter.defaultFormatter.formatOutput(await repolinter.lint(selfPath, [], 'repolinter-other.yml'), false))
+      expected = stripAnsi(
+        repolinter.defaultFormatter.formatOutput(
+          await repolinter.lint(selfPath, [], 'repolinter-other.yml'),
+          false
+        )
+      )
       const [act1, act2, act3] = await Promise.all([
-        execAsync(`${repolinterPath} lint ${selfPath} --rulesetUrl http://localhost:9000/repolinter-other.yml`),
-        execAsync(`${repolinterPath} lint ${selfPath} --ruleset-url http://localhost:9000/repolinter-other.yml`),
-        execAsync(`${repolinterPath} lint ${selfPath} -u http://localhost:9000/repolinter-other.yml`)
+        execAsync(
+          `${repolinterPath} lint ${selfPath} --rulesetUrl http://localhost:9000/repolinter-other.yml`
+        ),
+        execAsync(
+          `${repolinterPath} lint ${selfPath} --ruleset-url http://localhost:9000/repolinter-other.yml`
+        ),
+        execAsync(
+          `${repolinterPath} lint ${selfPath} -u http://localhost:9000/repolinter-other.yml`
+        )
       ])
       actual = act1
       actual2 = act2
@@ -196,6 +263,8 @@ describe('cli', function () {
   })
 
   afterEach(async () => {
-    return fs.promises.unlink(path.resolve('tests/cli/fixed.txt')).catch(() => {})
+    return fs.promises
+      .unlink(path.resolve('tests/cli/fixed.txt'))
+      .catch(() => {})
   })
 })

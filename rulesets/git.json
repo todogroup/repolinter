@@ -3,34 +3,34 @@
   "version": 2,
   "axioms": {},
   "rules": {
-      "dir-is-managed-with-git": {
-          "level": "warning",
-          "rule": {
-              "type": "git-working-tree",
-              "options": {
-                  "allowSubDir": false
-              }
-          }
-      },
-      "git-commits-contain-no-denylisted-words": {
-          "level": "error",
-          "rule": {
-              "type": "git-grep-commits",
-              "options": {
-                  "denylist": ["secret", "password"],
-                  "ignoreCase": true
-              }
-          }
-      },
-      "git-tree-contains-no-denylisted-files": {
-          "level": "error",
-          "rule": {
-              "type":"git-list-tree",
-              "options": {
-                  "denylist": ["secret", "password"],
-                  "ignoreCase": true
-              }
-          }
+    "dir-is-managed-with-git": {
+      "level": "warning",
+      "rule": {
+        "type": "git-working-tree",
+        "options": {
+          "allowSubDir": false
+        }
       }
+    },
+    "git-commits-contain-no-denylisted-words": {
+      "level": "error",
+      "rule": {
+        "type": "git-grep-commits",
+        "options": {
+          "denylist": ["secret", "password"],
+          "ignoreCase": true
+        }
+      }
+    },
+    "git-tree-contains-no-denylisted-files": {
+      "level": "error",
+      "rule": {
+        "type": "git-list-tree",
+        "options": {
+          "denylist": ["secret", "password"],
+          "ignoreCase": true
+        }
+      }
+    }
   }
 }

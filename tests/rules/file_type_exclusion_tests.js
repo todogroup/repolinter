@@ -8,10 +8,10 @@ describe('rule', () => {
   describe('file_type_exclusion', () => {
     const fileTypeExclusion = require('../../rules/file-type-exclusion')
 
-    it('returns passed result if requested file type doesn\'t exist', async () => {
+    it("returns passed result if requested file type doesn't exist", async () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAll() {
           return []
         },
         targetDir: '.'
@@ -29,7 +29,7 @@ describe('rule', () => {
     it('returns failed result if requested file type exists', async () => {
       /** @type {any} */
       const mockfs = {
-        findAll () {
+        findAll() {
           return ['foo.dll']
         },
         targetDir: '.'

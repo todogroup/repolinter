@@ -12,10 +12,10 @@ describe('rule', () => {
     it('returns passes if requested file contents exists', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['README.md']
         },
-        getFileContents () {
+        getFileContents() {
           return 'foo'
         },
         targetDir: '.'
@@ -29,16 +29,19 @@ describe('rule', () => {
       const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
+      expect(actual.targets[0]).to.deep.include({
+        passed: true,
+        path: 'README.md'
+      })
     })
 
     it('returns passes if requested file contents exists with human-readable contents', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['README.md']
         },
-        getFileContents () {
+        getFileContents() {
           return 'foo'
         },
         targetDir: '.'
@@ -52,17 +55,22 @@ describe('rule', () => {
       const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0]).to.deep.include({ passed: true, path: 'README.md' })
-      expect(actual.targets[0].message).to.contain(ruleopts['human-readable-content'])
+      expect(actual.targets[0]).to.deep.include({
+        passed: true,
+        path: 'README.md'
+      })
+      expect(actual.targets[0].message).to.contain(
+        ruleopts['human-readable-content']
+      )
     })
 
     it('returns fails if requested file contents does not exist', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['README.md']
         },
-        getFileContents () {
+        getFileContents() {
           return 'foo'
         },
         targetDir: '.'
@@ -77,19 +85,20 @@ describe('rule', () => {
 
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0]).to.deep.include({ passed: false, path: 'README.md' })
+      expect(actual.targets[0]).to.deep.include({
+        passed: false,
+        path: 'README.md'
+      })
       expect(actual.targets[0].message).to.contain(ruleopts.content)
     })
 
     it('returns the pattern if requested file does not exist', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return []
         },
-        getFileContents () {
-
-        },
+        getFileContents() {},
         targetDir: '.'
       }
       const ruleopts = {
@@ -107,12 +116,10 @@ describe('rule', () => {
     it('returns failure if file does not exist with failure flag', async () => {
       /** @type {any} */
       const mockfs = {
-        findAllFiles () {
+        findAllFiles() {
           return []
         },
-        getFileContents () {
-
-        },
+        getFileContents() {},
         targetDir: '.'
       }
       const ruleopts = {

@@ -17,13 +17,13 @@ describe('fixes', () => {
       let mockContents = ''
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile']
         },
-        getFileContents () {
+        getFileContents() {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -46,13 +46,13 @@ describe('fixes', () => {
       let mockContents = ''
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile']
         },
-        getFileContents () {
+        getFileContents() {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -74,13 +74,13 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile']
         },
-        getFileContents () {
+        getFileContents() {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -101,13 +101,13 @@ describe('fixes', () => {
       let mockContents = ''
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile']
         },
-        getFileContents () {
+        getFileContents() {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -142,13 +142,13 @@ describe('fixes', () => {
       let mockFile = null
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile.exe', 'otherfile']
         },
-        getFileContents () {
+        getFileContents() {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockFile = file
         }
       }
@@ -170,13 +170,13 @@ describe('fixes', () => {
       let mockFile = null
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile.exe', 'otherfile']
         },
-        getFileContents () {
+        getFileContents() {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockFile = file
         }
       }
@@ -198,16 +198,16 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        findFirstFile () {
+        findFirstFile() {
           return 'sourcefile'
         },
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile']
         },
-        getFileContents (file) {
+        getFileContents(file) {
           return file === 'myfile' ? 'the file contents' : 'this is text'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -229,13 +229,13 @@ describe('fixes', () => {
       let mockContents = null
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile']
         },
-        getFileContents (file) {
+        getFileContents(file) {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -263,13 +263,13 @@ describe('fixes', () => {
       let mockContents = ''
       /** @type {any} */
       const mockFs = {
-        findAllFiles () {
+        findAllFiles() {
           return ['myfile']
         },
-        getFileContents () {
+        getFileContents() {
           return 'the file contents'
         },
-        setFileContents (file, contents) {
+        setFileContents(file, contents) {
           mockContents = contents
         }
       }
@@ -277,7 +277,9 @@ describe('fixes', () => {
       const res = await fileModify(mockFs, opts, [], false)
 
       expect(res.passed).to.equal(true)
-      expect(mockContents).to.equal('the file contents\n\n\nthis is text\n\n\n\n')
+      expect(mockContents).to.equal(
+        'the file contents\n\n\nthis is text\n\n\n\n'
+      )
     })
   })
 })

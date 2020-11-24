@@ -14,5 +14,11 @@ module.exports = async function (fileSystem) {
   } catch (error) {
     return new Result(error.message, [], false)
   }
-  return new Result('', languages.map(l => { return { passed: true, path: l } }), true)
+  return new Result(
+    '',
+    languages.map(l => {
+      return { passed: true, path: l }
+    }),
+    true
+  )
 }

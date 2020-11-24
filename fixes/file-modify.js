@@ -16,9 +16,15 @@ const fetch = require('node-fetch')
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<Result>} The lint rule result
  */
-async function fileModify (fs, options, targets, dryRun = false) {
+async function fileModify(fs, options, targets, dryRun = false) {
   const realTargets = options.files || targets
-  if (realTargets.length === 0) { return new Result('No files to modify, did you configure this fix correctly?', [], false) }
+  if (realTargets.length === 0) {
+    return new Result(
+      'No files to modify, did you configure this fix correctly?',
+      [],
+      false
+    )
+  }
 
   // find all files matching the regular expressions specified
   let files = await fs.findAllFiles(realTargets, options.nocase)
@@ -30,7 +36,7 @@ async function fileModify (fs, options, targets, dryRun = false) {
     if (extensions && extensions.length > 0) {
       const extJoined = extensions.join('|')
       // \.(svg|png|exe)$
-      regexes.push(new RegExp('\.(' + extJoined + ')$', 'i')) // eslint-disable-line no-useless-escape
+      regexes.push(new RegExp('.(' + extJoined + ')$', 'i')) // eslint-disable-line no-useless-escape
     }
 
     const patterns = options['skip-paths-matching'].patterns
@@ -40,49 +46,90 @@ async function fileModify (fs, options, targets, dryRun = false) {
         .map(p => new RegExp(p, options['skip-paths-matching'].flags))
       regexes = regexes.concat(filteredPatterns)
     }
-    files = files.filter(file =>
-      !regexes.some(regex => file.match(regex))
-    )
+    files = files.filter(file => !regexes.some(regex => file.match(regex)))
   }
 
   // read the text from the source, if necessary
   let content
-  if (typeof options.text === 'string') { content = options.text } else if (typeof options.text === 'object') {
+  if (typeof options.text === 'string') {
+    content = options.text
+  } else if (typeof options.text === 'object') {
     if (options.text.url) {
       const req = await fetch(options.text.url)
-      if (!req.ok) { return new Result(`Could not fetch from ${options.text.url}, received status code ${req.status}`, [], false) }
+      if (!req.ok) {
+        return new Result(
+          `Could not fetch from ${options.text.url}, received status code ${req.status}`,
+          [],
+          false
+        )
+      }
       content = await req.text()
     } else if (options.text.file) {
-      const file = await fs.findFirstFile([options.text.file], options.text.nocase === true)
-      if (!file) { return new Result(`Could not find file matching pattern ${options.text.file} for file-modify.`, [], false) }
+      const file = await fs.findFirstFile(
+        [options.text.file],
+        options.text.nocase === true
+      )
+      if (!file) {
+        return new Result(
+          `Could not find file matching pattern ${options.text.file} for file-modify.`,
+          [],
+          false
+        )
+      }
       content = await fs.getFileContents(file)
     }
   }
-  if (!content) { return new Result('Text was not specified for file-modify! Did you configure the ruleset correctly?', [], false) }
+  if (!content) {
+    return new Result(
+      'Text was not specified for file-modify! Did you configure the ruleset correctly?',
+      [],
+      false
+    )
+  }
 
   // write it to the file
-  const resTargets = await Promise.all(files.map(async file => {
-    // do file operation
-    if (!dryRun) {
-      const startNewlines = (options.newlines && options.newlines.begin ? new Array(options.newlines.begin).fill('\n').join('') : '')
-      const endNewlines = (options.newlines && options.newlines.end ? new Array(options.newlines.end).fill('\n').join('') : '')
-      const fileContent = startNewlines + content + endNewlines
-      if (options.write_mode === 'prepend') {
-        await fs.setFileContents(file, fileContent + await fs.getFileContents(file))
-      } else {
-        await fs.setFileContents(file, await fs.getFileContents(file) + fileContent)
+  const resTargets = await Promise.all(
+    files.map(async file => {
+      // do file operation
+      if (!dryRun) {
+        const startNewlines =
+          options.newlines && options.newlines.begin
+            ? new Array(options.newlines.begin).fill('\n').join('')
+            : ''
+        const endNewlines =
+          options.newlines && options.newlines.end
+            ? new Array(options.newlines.end).fill('\n').join('')
+            : ''
+        const fileContent = startNewlines + content + endNewlines
+        if (options.write_mode === 'prepend') {
+          await fs.setFileContents(
+            file,
+            fileContent + (await fs.getFileContents(file))
+          )
+        } else {
+          await fs.setFileContents(
+            file,
+            (await fs.getFileContents(file)) + fileContent
+          )
+        }
       }
-    }
-    // return the target information
-    const message = typeof options.text === 'object'
-      ? `${options.write_mode} text from ${options.text.file || options.text.url} to file`
-      : `${options.write_mode} \`${JSON.stringify(content).slice(1, -1)}\` to file`
-    return {
-      message,
-      passed: true,
-      path: file
-    }
-  }))
+      // return the target information
+      const message =
+        typeof options.text === 'object'
+          ? `${options.write_mode} text from ${
+              options.text.file || options.text.url
+            } to file`
+          : `${options.write_mode} \`${JSON.stringify(content).slice(
+              1,
+              -1
+            )}\` to file`
+      return {
+        message,
+        passed: true,
+        path: file
+      }
+    })
+  )
 
   return new Result('', resTargets, true)
 }

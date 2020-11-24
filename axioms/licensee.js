@@ -11,5 +11,11 @@ module.exports = async function (fileSystem) {
   } catch (error) {
     return new Result(error.message, [], false)
   }
-  return new Result('', licenses.map(l => { return { passed: true, path: l } }), true)
+  return new Result(
+    '',
+    licenses.map(l => {
+      return { passed: true, path: l }
+    }),
+    true
+  )
 }

@@ -13,12 +13,14 @@ describe('api', () => {
         packagers: 'package'
       }
       const mockFs = {
-        findFirst (pattern) {
+        findFirst(pattern) {
           return pattern === 'package.json' ? 'package.json' : null
         }
       }
       const actual = await repolinter.determineTargets(mockconfig, mockFs)
-      expect(actual).to.deep.equal({ package: { passed: true, targets: [{ passed: true, path: 'npm' }] } })
+      expect(actual).to.deep.equal({
+        package: { passed: true, targets: [{ passed: true, path: 'npm' }] }
+      })
     })
 
     it('does nothing if no axioms are specified', async () => {
@@ -34,7 +36,13 @@ describe('api', () => {
       }
       const mockFs = {}
       const actual = await repolinter.determineTargets(mockconfig, mockFs)
-      expect(actual).to.deep.equal({ banana: { passed: false, message: 'invalid axiom name notanaxiom', targets: [] } })
+      expect(actual).to.deep.equal({
+        banana: {
+          passed: false,
+          message: 'invalid axiom name notanaxiom',
+          targets: []
+        }
+      })
     })
   })
 })

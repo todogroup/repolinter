@@ -16,8 +16,10 @@ describe('rule', () => {
     this.timeout(30000) // Calling external Git might take some time.
 
     const gitGrepCommits = require('../../rules/git-grep-commits')
-    const DIFF_CORRECT_CASE = 'Copyright 2017 TODO Group\\. All rights reserved\\.'
-    const DIFF_WRONG_CASE = 'COPYRIGHT 2017 TODO GROUP\\. ALL RIGHTS RESERVED\\.'
+    const DIFF_CORRECT_CASE =
+      'Copyright 2017 TODO Group\\. All rights reserved\\.'
+    const DIFF_WRONG_CASE =
+      'COPYRIGHT 2017 TODO GROUP\\. ALL RIGHTS RESERVED\\.'
 
     it('passes if the denylist pattern does not match any commit', () => {
       const ruleopts = {
@@ -54,7 +56,9 @@ describe('rule', () => {
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.not.have.length(0)
       actual.targets.should.each.have.property('passed').that.equals(false)
-      actual.targets.should.each.have.property('message').that.contains(ruleopts.denylist[0])
+      actual.targets.should.each.have
+        .property('message')
+        .that.contains(ruleopts.denylist[0])
     })
   })
 })

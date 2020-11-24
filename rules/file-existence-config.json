@@ -1,24 +1,21 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-existence-config.json",
-    "type": "object",
-    "properties": {
-        "nocase": {
-            "type": "boolean",
-            "default": false
-        },
-        "globsAny": {
-            "type": "array",
-            "items": { "type": "string" }
-        },
-        "fail-message": { "type": "string" },
-        "dirs": {
-          "type": "boolean",
-          "default": false
-        }
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-existence-config.json",
+  "type": "object",
+  "properties": {
+    "nocase": {
+      "type": "boolean",
+      "default": false
     },
-    "oneOf": [
-        { "required": [ "globsAny" ] },
-        { "required": [ "files" ] }
-    ]
+    "globsAny": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "fail-message": { "type": "string" },
+    "dirs": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "oneOf": [{ "required": ["globsAny"] }, { "required": ["files"] }]
 }

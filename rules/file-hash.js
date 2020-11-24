@@ -13,15 +13,18 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Promise<Result>} The lint rule result
  */
-async function fileHash (fs, options) {
+async function fileHash(fs, options) {
   const fileList = options.globsAny || options.files
   const file = await fs.findFirstFile(fileList, options.nocase)
 
   if (file === undefined) {
     return new Result(
       'Did not find file matching the specified patterns',
-      fileList.map(f => { return { passed: false, pattern: f } }),
-      !!options['succeed-on-non-existent'])
+      fileList.map(f => {
+        return { passed: false, pattern: f }
+      }),
+      !!options['succeed-on-non-existent']
+    )
   }
 
   let algorithm = options.algorithm
@@ -38,7 +41,7 @@ async function fileHash (fs, options) {
   const hash = digester.digest('hex')
 
   const passed = hash === options.hash
-  const message = passed ? 'Matches hash' : 'Doesn\'t match hash'
+  const message = passed ? 'Matches hash' : "Doesn't match hash"
 
   return new Result('', [{ path: file, passed, message }], passed)
 }

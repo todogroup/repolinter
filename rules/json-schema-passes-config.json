@@ -8,12 +8,12 @@
     },
     "glob": { "type": "string" },
     "nocase": {
-        "type": "boolean",
-        "default": false
+      "type": "boolean",
+      "default": false
     },
     "succeed-on-non-existent": {
-        "type": "boolean",
-        "default": false
+      "type": "boolean",
+      "default": false
     },
     "human-readable-message": { "type": "string" }
   },
