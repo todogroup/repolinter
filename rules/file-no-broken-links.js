@@ -1,12 +1,14 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-const { HtmlChecker, BLC_INVALID } = require('broken-link-checker')
+const { HtmlChecker, reasons } = require('broken-link-checker')
 const path = require('path')
+const { URL } = require('url')
 const GitHubMarkup = require('../lib/github_markup')
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
+const { link } = require('fs')
 
 // TODO: how to autoprefix domains with http or https?
 /**
@@ -45,25 +47,21 @@ async function fileNoBrokenLinks(fs, options) {
       }
 
       // scan the rendered HTML for broken links
-      const linkRes = await new Promise((resolve, reject) => {
-        const results = []
-        const htmlChecker = new HtmlChecker(options, {
-          link: res => results.push(res),
-          complete: () => resolve(results),
-          acceptedSchemes: ['http', 'https', '']
-        })
-        if (!htmlChecker.scan(rendered)) {
-          reject(new Error(`Unable to scan file ${f}`))
-        }
-      })
-
+      const linkRes = []
+      const htmlChecker = new HtmlChecker({
+        ...options,
+        autoPrefix: [{ pattern: /^[\w_-]+\.[^\s]+$/i, prefix: 'https://' }], // autoprefix domain-only links
+        includeLink: (link) => !link.get('originalURL').startsWith('#') // exclude local section links
+      }).on('link', res => linkRes.push(Object.fromEntries(res.entries())))
+      await htmlChecker.scan(rendered, new URL(`file://${fs.targetDir}`))
       // find all relative links, and double check the filesystem for their existence
       // filter down to broken links
-      const brokenLinks = linkRes.filter(({ broken }) => broken)
+      console.log(JSON.stringify(linkRes))
+      const brokenLinks = linkRes.filter(({ isBroken }) => isBroken)
       // split into invalid and otherwise failing
       const { failing, invalid } = brokenLinks.reduce(
         (res, linkRes) => {
-          linkRes.brokenReason === BLC_INVALID
+          linkRes.brokenReason === reasons.BLC_INVALID
             ? res.invalid.push(linkRes)
             : res.failing.push(linkRes)
           return res
@@ -74,14 +72,12 @@ async function fileNoBrokenLinks(fs, options) {
       const failingMessages = failing.map(
         ({
           brokenReason,
-          url: { original },
-          http: {
-            response: { statusCode = null }
-          }
+          originalURL,
+          http,
         }) =>
-          `${original} (${
+          `${originalURL} (${
             brokenReason.includes('HTTP')
-              ? `status code ${statusCode}`
+              ? `status code ${http?.response?.statusCode}`
               : `unknown error ${brokenReason}`
           })`
       )
@@ -90,22 +86,28 @@ async function fileNoBrokenLinks(fs, options) {
       const failingInvalidMessagesWithNulls = await Promise.all(
         invalid.map(async b => {
           const {
-            url: { original }
+            resolvedURL,
+            originalURL
           } = b
+          let url;
+          // parse the URL, and if it fails to parse it's invalid
+          try {
+            url = new URL(resolvedURL);
+            if (url.protocol !== 'file:' || !url.pathname)
+              return `${resolvedURL} (invalid URL)`;
+          } catch { return `${originalURL} (invalid path)`; }
           // verify the path is relative, else the path is invalid
-          if (path.posix.isAbsolute(original))
-            return `${original} (invalid path)`
-          // strip any #thing specifiers from the path, since it's too hard to check
-          const strippedPath = original.replace(/#(?:[.!/\\\w]*)$/, '')
-          if (!strippedPath) return null
+          if (path.posix.isAbsolute(originalURL))
+            return `${originalURL} (invalid path)`
           // verify the path doesn't traverse outside the project, else the path is excluded
           const targetDir = path.posix.resolve(fs.targetDir)
-          const absPath = path.posix.resolve(targetDir, strippedPath)
+          const filePath = path.posix.join('/', url.host, url.pathname);
+          const absPath = path.posix.resolve(targetDir, filePath)
           const relPath = path.posix.relative(targetDir, absPath)
           if (relPath.startsWith('..')) return null
           // verify the file exists (or at least that we have access to it)
           if (!(await fs.relativeFileExists(relPath)))
-            return `${original} (file does not exist)`
+            return `${originalURL} (file does not exist)`
           return null
         })
       )

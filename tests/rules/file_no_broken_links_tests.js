@@ -35,8 +35,8 @@ describe('rule', () => {
       })
 
       it('returns true if a valid link is present in a markdown file', async () => {
-        const scope = nock('www.example.com')
-          .get('/something/somethingelse')
+        const scope = nock('https://www.example.com')
+          .head('/something/somethingelse')
           .reply(200)
 
         const ruleopts = {
@@ -56,8 +56,8 @@ describe('rule', () => {
       })
 
       it('returns false if an invalid link is present in a markdown file', async () => {
-        const scope = nock('www.example.com')
-          .get('/something/somethingelse')
+        const scope = nock('https://www.example.com')
+          .head('/something/somethingelse')
           .replyWithError('nxdomain or something')
 
         const ruleopts = {
@@ -77,8 +77,8 @@ describe('rule', () => {
       })
 
       it('returns false if a private link is present in a markdown file', async () => {
-        const scope = nock('www.example.com')
-          .get('/something/somethingelse')
+        const scope = nock('https://www.example.com')
+          .head('/something/somethingelse')
           .reply(404)
 
         const ruleopts = {
@@ -98,8 +98,8 @@ describe('rule', () => {
       })
 
       it('returns true if a valid link is present in an rst file', async () => {
-        const scope = nock('www.example.com')
-          .get('/something/somethingelse')
+        const scope = nock('https://www.example.com')
+          .head('/something/somethingelse')
           .reply(200)
 
         const ruleopts = {
@@ -119,8 +119,8 @@ describe('rule', () => {
       })
 
       it('returns false if an invalid link is present in an rst file', async () => {
-        const scope = nock('www.example.com')
-          .get('/something/somethingelse')
+        const scope = nock('https://www.example.com')
+          .head('/something/somethingelse')
           .replyWithError('nxdomain or something')
 
         const ruleopts = {
@@ -245,10 +245,10 @@ describe('rule', () => {
       })
 
       it('checks multiple links in markdown', async () => {
-        const scope = nock('www.example.com')
-          .get('/something/somethingelse')
+        const scope = nock('https://www.example.com')
+          .head('/something/somethingelse')
           .reply(200)
-        const scope2 = nock('www.example.com').get('/something').reply(200)
+        const scope2 = nock('www.example.com').head('/something').reply(200)
 
         const ruleopts = {
           globsAll: ['multiple_links.md']
@@ -268,10 +268,12 @@ describe('rule', () => {
       })
 
       it('checks multiple files', async () => {
-        const scope = nock('www.example.com')
-          .get('/something/somethingelse')
+        const scope = nock('https://www.example.com')
+          .head('/something/somethingelse')
           .reply(200)
-        const scope2 = nock('www.example.com').get('/something').reply(200)
+        const scope2 = nock('https://www.example.com')
+          .head('/something')
+          .reply(200)
 
         const ruleopts = {
           globsAll: ['link.md', 'link.rst']
