@@ -4,7 +4,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const GitHubMarkup = require('../../lib/github_markup')
-const { commandExists } = require('../../lib/command_exists')
+const commandExists = require('command-exists').sync
 
 describe('lib', () => {
   describe('github_markup', function () {

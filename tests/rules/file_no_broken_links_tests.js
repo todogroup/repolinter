@@ -5,7 +5,7 @@ const chai = require('chai')
 const nock = require('nock')
 const expect = chai.expect
 const FileSystem = require('../../lib/file_system')
-const { commandExists } = require('../../lib/command_exists')
+const commandExists = require('command-exists').sync
 
 describe('rule', () => {
   describe('files_no_broken_links', function () {
