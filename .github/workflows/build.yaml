@@ -77,9 +77,6 @@ jobs:
           gem install --no-document bundler
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-          ls -lah vendor/bundle
-          ls -lah vendor/bundle/ruby
-          ls -lah vendor/bundle/ruby/2.6.0
           echo "$(pwd)/vendor/bundle/ruby/2.6.0/bin" >> $GITHUB_PATH
 
       - name: Run Test
