@@ -64,6 +64,7 @@ jobs:
           ruby-version: '2.6'
 
       - name: Cache Ruby Gems
+        if: ${{ runner.os != 'Windows' }}
         uses: actions/cache@v2
         with:
           path: vendor/bundle
