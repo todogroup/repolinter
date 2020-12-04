@@ -63,6 +63,14 @@ jobs:
         with:
           ruby-version: '2.6'
 
+      - name: Cache Ruby Gems
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: Install Ruby Dependencies
         if: ${{ runner.os != 'Windows' }}
         run: |
