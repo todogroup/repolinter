@@ -1,1 +1,1 @@
-[my file](./apath/toafile#thing)
+[my file](./link.md#section)

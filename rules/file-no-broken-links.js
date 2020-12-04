@@ -1,16 +1,14 @@
 // Copyright 2017 TODO Group. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-const { HtmlChecker, reasons } = require('broken-link-checker')
+const { HtmlChecker } = require('broken-link-checker')
 const path = require('path')
 const { URL } = require('url')
 const GitHubMarkup = require('../lib/github_markup')
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
-const { link } = require('fs')
 
-// TODO: how to autoprefix domains with http or https?
 /**
  * Searches for a renderable markup document, renders it, and then
  * checks for broken links by scanning the html.
@@ -51,17 +49,19 @@ async function fileNoBrokenLinks(fs, options) {
       const htmlChecker = new HtmlChecker({
         ...options,
         autoPrefix: [{ pattern: /^[\w_-]+\.[^\s]+$/i, prefix: 'https://' }], // autoprefix domain-only links
-        includeLink: (link) => !link.get('originalURL').startsWith('#') // exclude local section links
+        includeLink: link => !link.get('originalURL').startsWith('#') // exclude local section links
       }).on('link', res => linkRes.push(Object.fromEntries(res.entries())))
-      await htmlChecker.scan(rendered, new URL(`file://${fs.targetDir}`))
+      await htmlChecker.scan(
+        rendered,
+        new URL(`file://${path.posix.join(fs.targetDir, '/')}`)
+      )
       // find all relative links, and double check the filesystem for their existence
       // filter down to broken links
-      console.log(JSON.stringify(linkRes))
       const brokenLinks = linkRes.filter(({ isBroken }) => isBroken)
       // split into invalid and otherwise failing
       const { failing, invalid } = brokenLinks.reduce(
         (res, linkRes) => {
-          linkRes.brokenReason === reasons.BLC_INVALID
+          linkRes.brokenReason === 'BLC_INVALID'
             ? res.invalid.push(linkRes)
             : res.failing.push(linkRes)
           return res
@@ -70,14 +70,12 @@ async function fileNoBrokenLinks(fs, options) {
       )
       // make the messages for the failing URLs
       const failingMessages = failing.map(
-        ({
-          brokenReason,
-          originalURL,
-          http,
-        }) =>
+        ({ brokenReason, originalURL, http }) =>
           `${originalURL} (${
             brokenReason.includes('HTTP')
-              ? `status code ${http?.response?.statusCode}`
+              ? `status code ${
+                  http && http.response && http.response.statusCode
+                }`
               : `unknown error ${brokenReason}`
           })`
       )
@@ -85,23 +83,22 @@ async function fileNoBrokenLinks(fs, options) {
       // returning the message for invalid URLs
       const failingInvalidMessagesWithNulls = await Promise.all(
         invalid.map(async b => {
-          const {
-            resolvedURL,
-            originalURL
-          } = b
-          let url;
+          const { resolvedURL, originalURL } = b
+          let url
           // parse the URL, and if it fails to parse it's invalid
           try {
-            url = new URL(resolvedURL);
+            url = new URL(resolvedURL)
             if (url.protocol !== 'file:' || !url.pathname)
-              return `${resolvedURL} (invalid URL)`;
-          } catch { return `${originalURL} (invalid path)`; }
+              return `${resolvedURL} (invalid URL)`
+          } catch (e) {
+            return `${originalURL} (invalid path)`
+          }
           // verify the path is relative, else the path is invalid
           if (path.posix.isAbsolute(originalURL))
             return `${originalURL} (invalid path)`
           // verify the path doesn't traverse outside the project, else the path is excluded
           const targetDir = path.posix.resolve(fs.targetDir)
-          const filePath = path.posix.join('/', url.host, url.pathname);
+          const filePath = path.posix.join('/', url.host, url.pathname)
           const absPath = path.posix.resolve(targetDir, filePath)
           const relPath = path.posix.relative(targetDir, absPath)
           if (relPath.startsWith('..')) return null

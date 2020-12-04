@@ -248,7 +248,9 @@ describe('rule', () => {
         const scope = nock('https://www.example.com')
           .head('/something/somethingelse')
           .reply(200)
-        const scope2 = nock('www.example.com').head('/something').reply(200)
+        const scope2 = nock('https://www.example.com')
+          .head('/something')
+          .reply(200)
 
         const ruleopts = {
           globsAll: ['multiple_links.md']
@@ -271,9 +273,7 @@ describe('rule', () => {
         const scope = nock('https://www.example.com')
           .head('/something/somethingelse')
           .reply(200)
-        const scope2 = nock('https://www.example.com')
-          .head('/something')
-          .reply(200)
+          .persist()
 
         const ruleopts = {
           globsAll: ['link.md', 'link.rst']
@@ -293,7 +293,6 @@ describe('rule', () => {
         })
 
         scope.done()
-        scope2.done()
       })
 
       it('fails if no files are found', async () => {
@@ -304,7 +303,11 @@ describe('rule', () => {
         const actual = await fileNoBrokenLinks(testFs, ruleopts)
 
         expect(actual.passed).to.equal(false)
-        expect(actual.targets).to.have.length(0)
+        expect(actual.targets).to.have.length(1)
+        expect(actual.targets[0]).to.deep.include({
+          passed: false,
+          pattern: 'notafile'
+        })
       })
 
       it('succeeds if no files are found and succeed-on-non-existent is true', async () => {
@@ -316,7 +319,11 @@ describe('rule', () => {
         const actual = await fileNoBrokenLinks(testFs, ruleopts)
 
         expect(actual.passed).to.equal(true)
-        expect(actual.targets).to.have.length(0)
+        expect(actual.targets).to.have.length(1)
+        expect(actual.targets[0]).to.deep.include({
+          passed: false,
+          pattern: 'notafile'
+        })
       })
     }
   })
