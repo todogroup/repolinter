@@ -35,13 +35,27 @@ jobs:
       - name: Install NPM Dependencies
         run: npm ci
 
+      - name: Setup Python for Github-Markup
+        if: ${{ runner.os != 'Windows' }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: '2.x'
+
+      - name: Install docutils for Github-Markup
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install docutils
+
       - name: Setup Licensee and Linguist Dependencies (MacOS)
         if: ${{ runner.os == 'macOS' }}
-        run: brew install cmake pkg-config icu4c
+        run: brew install cmake pkg-config icu4c libidn
 
       - name: Setup Licensee and Linguist Dependencies (Linux)
         if: ${{ runner.os == 'Linux' }}
-        run: sudo apt-get update && sudo apt-get install -y build-essential libicu-dev libcurl4-openssl-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libicu-dev libcurl4-openssl-dev libidn11
 
       - name: Setup Ruby
         if: ${{ runner.os != 'Windows' }}
@@ -49,9 +63,12 @@ jobs:
         with:
           ruby-version: '2.6'
 
-      - name: Install Licensee and Linguist
+      - name: Install Ruby Dependencies
         if: ${{ runner.os != 'Windows' }}
-        run: gem install --no-document licensee github-linguist
+        run: |
+          gem install --no-document bundler
+          bundle config set system 'true'
+          bundle install --jobs 4 --retry 3
 
       - name: Run Test
         run: npm test
