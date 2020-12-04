@@ -50,7 +50,14 @@ async function fileNoBrokenLinks(fs, options) {
         ...options,
         autoPrefix: [{ pattern: /^[\w_-]+\.[^\s]+$/i, prefix: 'https://' }], // autoprefix domain-only links
         includeLink: link => !link.get('originalURL').startsWith('#') // exclude local section links
-      }).on('link', res => linkRes.push(Object.fromEntries(res.entries())))
+      }).on('link', res =>
+        linkRes.push(
+          Array.from(res.entries()).reduce((a, [key, value]) => {
+            a[key] = value
+            return a
+          }, {})
+        )
+      )
       await htmlChecker.scan(
         rendered,
         new URL(`file://${path.posix.join(fs.targetDir, '/')}`)

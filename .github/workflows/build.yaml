@@ -47,15 +47,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install docutils
 
-      - name: Setup Licensee and Linguist Dependencies (MacOS)
+      - name: Setup Licensee, Linguist, and Github-Markup Dependencies (MacOS)
         if: ${{ runner.os == 'macOS' }}
         run: brew install cmake pkg-config icu4c libidn
 
-      - name: Setup Licensee and Linguist Dependencies (Linux)
+      - name: Setup Licensee, Linguist, and Github-Markup Dependencies (Linux)
         if: ${{ runner.os == 'Linux' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libicu-dev libcurl4-openssl-dev libidn11
+          sudo apt-get install -y build-essential libicu-dev libcurl4-openssl-dev idn
 
       - name: Setup Ruby
         if: ${{ runner.os != 'Windows' }}
@@ -67,8 +67,9 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         run: |
           gem install --no-document bundler
-          bundle config set system 'true'
+          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
+          echo "$(pwd)/vendor/bundle/ruby/2.6.0/bin" >> $GITHUB_PATH
 
       - name: Run Test
         run: npm test
