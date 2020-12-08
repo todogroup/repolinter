@@ -11,7 +11,7 @@
 #   docker run -t repolinter --git https://github.com/username/repo.git
 #
 
-ARG RUNTIME_DEPS="git libicu-dev"
+ARG RUNTIME_DEPS="git libicu-dev perl"
 ARG BUILD_DEPS="make build-essential cmake pkg-config zlib1g-dev libcurl4-openssl-dev libssl-dev libldap2-dev libidn11-dev"
 
 FROM ruby:2.6-slim as ruby-deps
@@ -37,10 +37,17 @@ RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
+FROM python:2.7-slim as python-deps
+
+# docutils for github-markup
+RUN python -m pip install --upgrade pip && \
+    pip install docutils
+
 FROM node:lts-slim
 
 # Copy Ruby dependencies
 COPY --from=ruby-deps . .
+COPY --from=python-deps . .
 
 # Install node_modules
 WORKDIR /app
