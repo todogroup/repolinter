@@ -10,32 +10,41 @@
 #
 #   docker run -t repolinter --git https://github.com/username/repo.git
 #
-FROM ruby:2.5.1-slim as ruby-deps
 
-ENV RUNTIME_DEPS git libicu57
-ENV BUILD_DEPS make build-essential cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev
+ARG RUNTIME_DEPS="git libicu-dev"
+ARG BUILD_DEPS="make build-essential cmake pkg-config zlib1g-dev libcurl4-openssl-dev libssl-dev libldap2-dev libidn11-dev"
 
+FROM ruby:2.6-slim as ruby-deps
+ARG RUNTIME_DEPS
+ARG BUILD_DEPS
+
+# Install build deps
 RUN apt-get update && \
     apt-get install --no-install-recommends -y $RUNTIME_DEPS $BUILD_DEPS && \
-    gem install --no-document licensee github-linguist && \
-    apt-get remove -y $BUILD_DEPS && \
+    gem update --system --silent
+
+# Install ruby gems
+WORKDIR /app
+COPY Gemfile* ./
+RUN bundle config path vendor/bundle && \
+    bundle install --jobs 4 --retry 3
+
+# cleanup
+RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-
-FROM node:10-slim
+FROM node:lts-slim
 
 # Copy Ruby dependencies
 COPY --from=ruby-deps . .
 
-# Copy ENV from Ruby image
-ENV GEM_HOME /usr/local/bundle
-ENV BUNDLE_PATH="$GEM_HOME"
-ENV PATH $GEM_HOME/bin:$BUNDLE_PATH/gems/bin:$PATH
-
+# Install node_modules
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
+
+# move the rest of the project over
 COPY . .
 
-ENTRYPOINT ["node", "/app/bin/repolinter.js"]
+ENTRYPOINT ["bundle", "exec", "/app/bin/repolinter.js"]
