@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem "licensee", ">= 9.9.0"
-gem "github-linguist"
+gem "github-linguist", ">= 7.12.1"
 gem "commonmarker", "~> 0.21.0"
 gem "RedCloth", "~> 4.3"
 gem "rdoc", "3.6.1"
