@@ -101,6 +101,14 @@
                   }
                 },
                 {
+                  "if": { "properties": { "type": { "const": "file-no-broken-links" } } },
+                  "then": {
+                    "properties": {
+                      "options": { "$ref": "../rules/file-no-broken-links-config.json" }
+                    }
+                  }
+                },
+                {
                   "if": {
                     "properties": { "type": { "const": "file-not-contents" } }
                   },

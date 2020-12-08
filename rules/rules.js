@@ -7,6 +7,7 @@ module.exports = [
   'file-contents',
   'file-existence',
   'file-hash',
+  'file-no-broken-links',
   'file-not-contents',
   'file-not-exists',
   'file-starts-with',

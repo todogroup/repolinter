@@ -11,6 +11,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`file-contents`](#file-contents)
   - [`file-existence`](#file-existence)
   - [`file-hash`](#file-hash)
+  - [`file-no-broken-links`](#file-no-broken-links)
   - [`file-not-contents`](#file-not-contents)
   - [`file-not-exists`](#file-not-exists)
   - [`file-starts-with`](#file-starts-with)
@@ -80,6 +81,20 @@ Checks that a given file matches a provided hash.
 | `algorithm`            | No       | `string`   | `sha256` | The hash algorithm to use. Repolinter supports any algorithm supported by [crypto.createHash](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options) |
 | `nocase`               | No       | `boolean`  | `false`  | Set to `true` to perform an case insensitive search.                                                                                                                         |
 | `succeed-on-non-exist` | No       | `boolean`  | `false`  | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                       |
+
+### `file-no-broken-links`
+
+Scans a set of markup files for broken links. Links are tested by first rendering the markup file to HTML using [github-markup](https://github.com/github/markup), then each `<a>` tag in the HTML is extracted and tested using [broken-link-checker](https://github.com/prototypicalpro/broken-link-checker)--as a result, this rule only supports checking markup formats supported by [github-markup](https://github.com/github/markup). Absolute URLs are checked using a HTTP request, and relative URLs are checked by accessing the file specified.
+
+[github-markup](https://github.com/github/markup) and its dependencies must be installed and available in `PATH` to use this rule.
+
+| Input                  | Required | Type       | Default  | Description                                                                                                                                                                  |
+| ---------------------- | -------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `globsAny`             | **Yes**  | `string[]` |          | A list of globs to search for. This rule passes if at least one file found matches the provided hash, and fails if no files are found.                                       |
+| `nocase`               | No       | `boolean`  | `false`  | Set to `true` to perform an case insensitive search.                                                                                                                         |
+| `succeed-on-non-exist` | No       | `boolean`  | `false`  | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                       |
+| `pass-external-relative-links` | No       | `boolean`  | `false`  | Set to `true` to allow relative URLs outside of the target directory. As there is no good way to check these URLs, they will automatically pass if this setting is true.                                                                                     |
+
 
 ### `file-not-contents`
 
