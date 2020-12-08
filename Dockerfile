@@ -18,6 +18,9 @@ FROM ruby:2.6-slim as ruby-deps
 ARG RUNTIME_DEPS
 ARG BUILD_DEPS
 
+# set to always UTF8
+ENV LANG=C.UTF-8
+
 # Install build deps
 RUN apt-get update && \
     apt-get install --no-install-recommends -y $RUNTIME_DEPS $BUILD_DEPS && \

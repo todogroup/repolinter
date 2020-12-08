@@ -77,12 +77,10 @@ async function fileNoBrokenLinks(fs, options) {
       )
       // make the messages for the failing URLs
       const failingMessages = failing.map(
-        ({ brokenReason, originalURL, http }) =>
+        ({ brokenReason, originalURL, httpResponse }) =>
           `${originalURL} (${
             brokenReason.includes('HTTP')
-              ? `status code ${
-                  http && http.response && http.response.statusCode
-                }`
+              ? `status code ${httpResponse && httpResponse.status}`
               : `unknown error ${brokenReason}`
           })`
       )
@@ -130,13 +128,13 @@ async function fileNoBrokenLinks(fs, options) {
         message:
           allMessages.length === 0
             ? 'All links are valid'
-            : allMessages.concat(', ')
+            : allMessages.join(', ')
       }
     })
   )
   // return the final result
   const passed = results.every(({ passed }) => passed)
-  return new Result('', results, passed)
+  return new Result(passed ? '' : 'Found broken links', results, passed)
 }
 
 module.exports = fileNoBrokenLinks

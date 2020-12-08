@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
+# encoding: UTF-8
 # Modified github_markup utility which checks first that the file can be rendered before rendering
 
 $LOAD_PATH.unshift File.dirname(File.realpath(__FILE__)) + "/../lib"
 require 'github/markup'
+require 'charlock_holmes'
 
 if ARGV.size < 1
   print "usage: #{File.basename($0)} FILE\n"
@@ -14,8 +16,10 @@ file_contents = nil
 
 begin
   file = File.open( name, "r" )
-  file_contents = file.read
+  encoded_contents = file.read
   file.close
+  detection = CharlockHolmes::EncodingDetector.detect(encoded_contents)
+  file_contents = encoded_contents.encode("UTF-8", detection[:encoding], invalid: :replace, replace: "")
 rescue Exception => e
   $stderr.print "error: #{e.message}\n"
   exit 1
