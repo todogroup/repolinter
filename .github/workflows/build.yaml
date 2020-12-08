@@ -78,7 +78,7 @@ jobs:
           gem install --no-document bundler
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-          bundle binstubs --all
+          bundle binstubs --all --path ~/bin
 
       - name: Run Test
         run: npm test
