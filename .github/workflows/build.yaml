@@ -77,7 +77,8 @@ jobs:
         run: |
           gem install --no-document bundler
           bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3 --binstubs
+          bundle install --jobs 4 --retry 3
+          bundle binstubs licensee github-linguist github-markup
 
       - name: Run Test
         run: npm test
