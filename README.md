@@ -333,7 +333,7 @@ This API allows the developer to have complete control over the configuration an
 
 ## Going Further
 
-- [Rule Reference](../docs/rules.md)
+- [Rule Reference](./docs/rules.md)
 - [Fix Reference](./docs/fixes.md)
 - [Axiom Reference](./docs/axioms.md)
 - [API Reference](https://todogroup.github.io/repolinter/#api-reference)
