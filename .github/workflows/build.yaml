@@ -80,4 +80,9 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Run Test
+        if: ${{ runner.os != 'Windows' }}
         run: bundle exec npm test
+
+      - name: Run Test (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        run: npm test
