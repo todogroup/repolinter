@@ -199,9 +199,25 @@ describe('rule', () => {
         })
       })
 
-      it('returns true with a relative link to a file in markdown outside the working directory', async () => {
+      it('returns false with a relative link to a file in markdown outside the working directory', async () => {
         const ruleopts = {
           globsAll: ['relative_link_outside_dir.md']
+        }
+
+        const actual = await fileNoBrokenLinks(testFs, ruleopts)
+
+        expect(actual.passed).to.equal(false)
+        expect(actual.targets).to.have.length(1)
+        expect(actual.targets[0]).to.deep.include({
+          passed: false,
+          path: 'relative_link_outside_dir.md'
+        })
+      })
+
+      it('returns true with a relative link to a file in markdown outside the working directory and pass-external-relative-links', async () => {
+        const ruleopts = {
+          globsAll: ['relative_link_outside_dir.md'],
+          'pass-external-relative-links': true
         }
 
         const actual = await fileNoBrokenLinks(testFs, ruleopts)
