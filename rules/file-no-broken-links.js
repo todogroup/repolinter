@@ -34,7 +34,7 @@ async function fileNoBrokenLinks(fs, options) {
   const results = await Promise.all(
     files.map(async f => {
       // render it, if possible
-      const absMdPath = path.resolve(fs.targetDir, f)
+      const absMdPath = path.posix.resolve(fs.targetDir, f)
       const rendered = await GitHubMarkup.renderMarkup(absMdPath)
       if (rendered === null) {
         return {
@@ -60,7 +60,7 @@ async function fileNoBrokenLinks(fs, options) {
       )
       await htmlChecker.scan(
         rendered,
-        new URL(`file://${path.posix.join(fs.targetDir, '/')}`)
+        new URL(`file://${path.posix.join(fs.targetDir, f)}`)
       )
       // find all relative links, and double check the filesystem for their existence
       // filter down to broken links
