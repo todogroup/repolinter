@@ -78,7 +78,7 @@ async function fileNoBrokenLinks(fs, options) {
       // make the messages for the failing URLs
       const failingMessages = failing.map(
         ({ brokenReason, originalURL, httpResponse }) =>
-          `${originalURL} (${
+          `\`${originalURL}\` (${
             brokenReason.includes('HTTP')
               ? `status code ${httpResponse && httpResponse.status}`
               : `unknown error ${brokenReason}`
