@@ -57,4 +57,8 @@ RUN npm install --production
 # move the rest of the project over
 COPY . .
 
+# Configure bundler
+ENV BUNDLE_GEMFILE=/app/Gemfile
+ENV BUNDLE_PATH=/app/vendor/bundle
+
 ENTRYPOINT ["bundle", "exec", "/app/bin/repolinter.js"]
