@@ -94,13 +94,13 @@ async function fileNoBrokenLinks(fs, options) {
           try {
             url = new URL(resolvedURL)
             if (url.protocol !== 'file:' || !url.pathname)
-              return `${resolvedURL} (invalid URL)`
+              return `\`${resolvedURL}\` (invalid URL)`
           } catch (e) {
-            return `${originalURL} (invalid path)`
+            return `\`${originalURL}\` (invalid path)`
           }
           // verify the path is relative, else the path is invalid
           if (path.posix.isAbsolute(originalURL))
-            return `${originalURL} (invalid path)`
+            return `\`${originalURL}\` (invalid path)`
           // verify the path doesn't traverse outside the project, else the path is excluded
           const targetDir = path.posix.resolve(fs.targetDir)
           const filePath = path.posix.join('/', url.host, url.pathname)
@@ -108,11 +108,11 @@ async function fileNoBrokenLinks(fs, options) {
           const relPath = path.posix.relative(targetDir, absPath)
           if (relPath.startsWith('..')) {
             if (options['pass-external-relative-links']) return null
-            else return `${originalURL} (relative link outside project)`
+            else return `\`${originalURL}\` (relative link outside project)`
           }
           // verify the file exists (or at least that we have access to it)
           if (!(await fs.relativeFileExists(relPath)))
-            return `${originalURL} (file does not exist)`
+            return `\`${originalURL}\` (file does not exist)`
           return null
         })
       )
