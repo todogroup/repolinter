@@ -88,12 +88,12 @@ Scans a set of markup files for broken links. Links are tested by first renderin
 
 [github-markup](https://github.com/github/markup) and its dependencies must be installed and available in `PATH` to use this rule.
 
-| Input                  | Required | Type       | Default  | Description                                                                                                                                                                  |
-| ---------------------- | -------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `globsAny`             | **Yes**  | `string[]` |          | A list of globs to search for. This rule passes if at least one file found matches the provided hash, and fails if no files are found.                                       |
-| `nocase`               | No       | `boolean`  | `false`  | Set to `true` to perform an case insensitive search.                                                                                                                         |
-| `succeed-on-non-exist` | No       | `boolean`  | `false`  | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                       |
-| `pass-external-relative-links` | No       | `boolean`  | `false`  | Set to `true` to allow relative URLs outside of the target directory. As there is no good way to check these URLs, they will automatically pass if this setting is true.                                                                                     |
+| Input                          | Required | Type       | Default | Description                                                                                                                                                              |
+| ------------------------------ | -------- | ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `globsAll`                     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if all of the markup files found do not contain broken links.                                                            |
+| `nocase`                       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                                                                                                     |
+| `succeed-on-non-exist`         | No       | `boolean`  | `false` | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                   |
+| `pass-external-relative-links` | No       | `boolean`  | `false` | Set to `true` to allow relative URLs outside of the target directory. As there is no good way to check these URLs, they will automatically pass if this setting is true. |
 
 
 ### `file-not-contents`
