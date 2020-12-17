@@ -27,6 +27,7 @@ GEM
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     idn-ruby (0.1.0)
+    json (1.8.6)
     licensee (9.14.1)
       dotenv (~> 2.0)
       octokit (~> 4.17)
@@ -44,7 +45,8 @@ GEM
     org-ruby (0.9.12)
       rubypants (~> 0.2)
     public_suffix (4.0.6)
-    rdoc (3.6.1)
+    rdoc (3.12.1)
+      json (~> 1.4)
     reverse_markdown (1.4.0)
       nokogiri
     ruby-enum (0.8.0)
@@ -81,7 +83,7 @@ DEPENDENCIES
   github-markup (~> 3.0)
   licensee (>= 9.9.0)
   org-ruby (~> 0.9.12)
-  rdoc (= 3.6.1)
+  rdoc (= 3.12.1)
   wikicloth (~> 0.8.3)
 
 BUNDLED WITH
