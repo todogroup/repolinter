@@ -499,7 +499,7 @@ This Repolinter run generated the following results:
 <ul>
 <li><strong><code>rule</code></strong> - The check to perform. Repolinter can perform any check listed under the <a href="./docs/rules.md">rules documentation</a>. Unlike eslint, Repolinter checks are designed to be reused and specialized: for example, the <code>file-existence</code> check can be used in a <code>README-file-exists</code> rule and a <code>LICENSE-file-exists</code> rule in the same ruleset. This allows a user to write a very specific ruleset from configuring generic checks.</li>
 <li><strong><code>level</code></strong> - The error level to notify if the check fails. <code>warning</code> will not change the exit code and <code>off</code> will not run the check.</li>
-<li><strong><code>where</code></strong> - Conditionally enable or disable this rule based off of <a href="#axioms">axioms</a>. Strings in this array follow the format of <code>&#x3C;axiom>=&#x3C;value></code>, where value is either an axiom output or <code>*</code> to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the <a href="./docs/rules/axioms">axioms documentation</a>.</li>
+<li><strong><code>where</code></strong> - Conditionally enable or disable this rule based off of <a href="#axioms">axioms</a>. Strings in this array follow the format of <code>&#x3C;axiom>=&#x3C;value></code>, where value is either an axiom output or <code>*</code> to simply test if the axiom is enabled. If this option is present, this rule will only run if all specified axiom outputs are present. The available axioms in Repolinter can be found in the <a href="./docs/rules/axioms.md">axioms documentation</a>.</li>
 <li><strong><code>fix</code></strong> <em>(optional)</em> - The action to perform if the check performed by <code>rule</code> fails. Repolinter can perform any action listed under <a href="./docs/fixes.md">fixes documentation</a>.</li>
 <li><strong><code>policyInfo</code></strong>, <strong><code>policyUrl</code></strong> <em>(optional)</em> - Information used by the formatter to indicate why the check exists from a policy perspective. Note: <code>policyInfo</code> will automatically have a period appended to it for formatting purposes.</li>
 </ul>
@@ -777,6 +777,7 @@ This Repolinter run generated the following results:
 <li><a href="#file-contents"><code>file-contents</code></a></li>
 <li><a href="#file-existence"><code>file-existence</code></a></li>
 <li><a href="#file-hash"><code>file-hash</code></a></li>
+<li><a href="#file-no-broken-links"><code>file-no-broken-links</code></a></li>
 <li><a href="#file-not-contents"><code>file-not-contents</code></a></li>
 <li><a href="#file-not-exists"><code>file-not-exists</code></a></li>
 <li><a href="#file-starts-with"><code>file-starts-with</code></a></li>
@@ -980,6 +981,50 @@ This Repolinter run generated the following results:
 <td><code>boolean</code></td>
 <td><code>false</code></td>
 <td>Set to <code>true</code> to enable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3><code>file-no-broken-links</code></h3>
+<p>Scans a set of markup files for broken links. Links are tested by first rendering the markup file to HTML using <a href="https://github.com/github/markup">github-markup</a>, then each <code>&#x3C;a></code> tag in the HTML is extracted and tested using <a href="https://github.com/prototypicalpro/broken-link-checker">broken-link-checker</a>--as a result, this rule only supports checking markup formats supported by <a href="https://github.com/github/markup">github-markup</a>. Absolute URLs are checked using a HTTP request, and relative URLs are checked by accessing the file specified.</p>
+<p><a href="https://github.com/github/markup">github-markup</a> and its dependencies must be installed and available in <code>PATH</code> to use this rule.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>globsAll</code></td>
+<td><strong>Yes</strong></td>
+<td><code>string[]</code></td>
+<td></td>
+<td>A list of globs to search for. This rule passes if all of the markup files found do not contain broken links.</td>
+</tr>
+<tr>
+<td><code>nocase</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to perform an case insensitive search.</td>
+</tr>
+<tr>
+<td><code>succeed-on-non-exist</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to enable passing if no files are found from <code>globsAll</code>.</td>
+</tr>
+<tr>
+<td><code>pass-external-relative-links</code></td>
+<td>No</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to allow relative URLs outside of the target directory. As there is no good way to check these URLs, they will automatically pass if this setting is true.</td>
 </tr>
 </tbody>
 </table>
