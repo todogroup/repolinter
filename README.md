@@ -341,4 +341,4 @@ This API allows the developer to have complete control over the configuration an
 
 ## License
 
-This project is licensed under the [Apache 2.0](LICENSE) license using https://reuse.software best practice.
+This project is licensed under the [Apache 2.0](LICENSE) license.
