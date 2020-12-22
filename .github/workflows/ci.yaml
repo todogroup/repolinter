@@ -116,20 +116,23 @@ jobs:
       - name: Docker Run
         run: docker run -t -v ${{ github.workspace }}:/src -w /src todogroup/repolinter:latest .
 
-  publish-to-ghcr:
+  publish-release:
     name: Push Docker image to GitHub Container Registry
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     needs: [test, test-docker]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Gather Docker Metadata
-        id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@55d3462 #v1.9.1
+      - name: Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v2
         with:
-          images: ghcr.io/${{ github.repository }}
+          extra_plugins: |
+            @semantic-release/changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -141,12 +144,32 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
 
+      - name: Generate Docker Tags
+        id: tags
+        shell: python
+        with:
+          release_generated: ${{ steps.semantic.outputs.new_release_published }}
+          new_release_major_version: ${{ steps.semantic.outputs.new_release_major_version }}
+          new_release_minor_version: ${{ steps.semantic.outputs.new_release_minor_version }}
+          new_release_patch_version: ${{ steps.semantic.outputs.new_release_patch_version }}
+        run: |
+          import os
+          published, major, minor, patch = os.environ["INPUT_RELEASE_GENERATED"], os.environ["INPUT_NEW_RELEASE_MAJOR_VERSION"], os.environ["INPUT_NEW_RELEASE_MINOR_VERSION"], os.environ["INPUT_NEW_RELEASE_PATCH_VERSION"]
+          tags = f"latest,{major}.{minor},{major}.{minor}.{patch}" if published else "latest"
+          print(f"::set-output name=tags::{tags}")
+
+      - name: Gather Docker Labels
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@55d3462 #v1.9.1
+        with:
+          images: ghcr.io/${{ github.repository }}
+
       - name: Build and Push to GitHub Container Registry
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: ${{ steps.docker_meta.outputs.tags }}
+          tags: ${{ steps.tags.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
