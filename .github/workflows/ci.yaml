@@ -117,7 +117,7 @@ jobs:
         run: docker run -t -v ${{ github.workspace }}:/src -w /src todogroup/repolinter:latest .
 
   publish-release:
-    name: Push Docker image to GitHub Container Registry
+    name: Publish a Release
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     needs: [test, test-docker]
     runs-on: ubuntu-latest
@@ -133,6 +133,14 @@ jobs:
             @semantic-release/changelog
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -155,7 +163,7 @@ jobs:
         run: |
           import os
           published, major, minor, patch = os.environ["RELEASE_GENERATED"], os.environ["NEW_RELEASE_MAJOR_VERSION"], os.environ["NEW_RELEASE_MINOR_VERSION"], os.environ["NEW_RELEASE_PATCH_VERSION"]
-          tags = f"latest,{major}.{minor},{major}.{minor}.{patch}" if not published or published == "false" else "latest"
+          tags = f"latest,{major}.{minor},{major}.{minor}.{patch}" if published and published != "false" else "latest"
           print(f"::set-output name=tags::{tags}")
 
       - name: Gather Docker Labels
