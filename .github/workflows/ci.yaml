@@ -162,14 +162,13 @@ jobs:
         id: tags
         shell: python
         env:
-          RELEASE_GENERATED: ${{ steps.semantic.outputs.new_release_published }}
           NEW_RELEASE_MAJOR_VERSION: ${{ steps.semantic.outputs.new_release_major_version }}
           NEW_RELEASE_MINOR_VERSION: ${{ steps.semantic.outputs.new_release_minor_version }}
           NEW_RELEASE_PATCH_VERSION: ${{ steps.semantic.outputs.new_release_patch_version }}
         run: |
           import os
-          published, major, minor, patch = os.environ["RELEASE_GENERATED"], os.environ["NEW_RELEASE_MAJOR_VERSION"], os.environ["NEW_RELEASE_MINOR_VERSION"], os.environ["NEW_RELEASE_PATCH_VERSION"]
-          tags = f"latest,{major}.{minor},{major}.{minor}.{patch}"
+          major, minor, patch, repo = os.environ["RELEASE_GENERATED"], os.environ["NEW_RELEASE_MAJOR_VERSION"], os.environ["NEW_RELEASE_MINOR_VERSION"], os.environ["NEW_RELEASE_PATCH_VERSION"], os.environ["GITHUB_REPOSITORY"]
+          tags = f"ghcr.io/{repo}:latest,ghcr.io/{repo}:{major}.{minor},ghcr.io/{repo}:{major}.{minor}.{patch}"
           print(f"::set-output name=tags::{tags}")
 
       - name: Gather Docker Labels
