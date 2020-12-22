@@ -167,7 +167,7 @@ jobs:
           NEW_RELEASE_PATCH_VERSION: ${{ steps.semantic.outputs.new_release_patch_version }}
         run: |
           import os
-          major, minor, patch, repo = os.environ["RELEASE_GENERATED"], os.environ["NEW_RELEASE_MAJOR_VERSION"], os.environ["NEW_RELEASE_MINOR_VERSION"], os.environ["NEW_RELEASE_PATCH_VERSION"], os.environ["GITHUB_REPOSITORY"]
+          major, minor, patch, repo = os.environ["NEW_RELEASE_MAJOR_VERSION"], os.environ["NEW_RELEASE_MINOR_VERSION"], os.environ["NEW_RELEASE_PATCH_VERSION"], os.environ["GITHUB_REPOSITORY"]
           tags = f"ghcr.io/{repo}:latest,ghcr.io/{repo}:{major}.{minor},ghcr.io/{repo}:{major}.{minor}.{patch}"
           print(f"::set-output name=tags::{tags}")
 
