@@ -108,7 +108,7 @@ jobs:
       - name: Docker Build
         uses: docker/build-push-action@v2
         with:
-          tag: todogroup/repolinter:latest
+          tags: todogroup/repolinter:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
