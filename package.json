@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/prototypicalpro/repolinter.git"
+    "url": "https://github.com/todogroup/repolinter.git"
   },
   "dependencies": {
     "ajv": "^6.12.6",
