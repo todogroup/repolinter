@@ -137,6 +137,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Docker layers
+        if: steps.semantic.outputs.new_release_published == 'true'
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
@@ -145,9 +146,11 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Set up Docker Buildx
+        if: steps.semantic.outputs.new_release_published == 'true'
         uses: docker/setup-buildx-action@v1
 
       - name: Login to GitHub Container Registry
+        if: steps.semantic.outputs.new_release_published == 'true'
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -155,6 +158,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
 
       - name: Generate Docker Tags
+        if: steps.semantic.outputs.new_release_published == 'true'
         id: tags
         shell: python
         env:
@@ -165,16 +169,18 @@ jobs:
         run: |
           import os
           published, major, minor, patch = os.environ["RELEASE_GENERATED"], os.environ["NEW_RELEASE_MAJOR_VERSION"], os.environ["NEW_RELEASE_MINOR_VERSION"], os.environ["NEW_RELEASE_PATCH_VERSION"]
-          tags = f"latest,{major}.{minor},{major}.{minor}.{patch}" if published and published != "false" else "latest"
+          tags = f"latest,{major}.{minor},{major}.{minor}.{patch}"
           print(f"::set-output name=tags::{tags}")
 
       - name: Gather Docker Labels
+        if: steps.semantic.outputs.new_release_published == 'true'
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@55d3462 #v1.9.1
         with:
           images: ghcr.io/${{ github.repository }}
 
       - name: Build and Push to GitHub Container Registry
+        if: steps.semantic.outputs.new_release_published == 'true'
         uses: docker/build-push-action@v2
         with:
           context: .
