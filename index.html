@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>repolinter 0.9.0 | Documentation</title>
+  <title>repolinter 0.10.0 | Documentation</title>
   <meta name='description' content='Lint open source repositories'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>repolinter</h3>
-          <div class='mb1'><code>0.9.0</code></div>
+          <div class='mb1'><code>0.10.0</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -643,21 +643,21 @@ This Repolinter run generated the following results:
     <h1>Development</h1>
 <p>Repolinter is broken down into 7 main components, each of which is contained in a subfolder:</p>
 <ul>
-<li><strong>Axioms</strong> - located under <a href="../../axioms">axioms</a></li>
-<li><strong>CLI</strong> - located under <a href="../../bin">bin</a></li>
-<li><strong>Rules</strong> - located under <a href="../../rules">rules</a></li>
-<li><strong>Fixes</strong> - located under <a href="../../fixes">fixes</a></li>
-<li><strong>Formatters</strong> - located under <a href="../../formatters">formatters</a></li>
-<li><strong>Utilities</strong> - located under <a href="../../lib">lib</a></li>
-<li><strong>Built-In Rulesets and Schema</strong> - located under <a href="../../rulesets">rulesets</a></li>
+<li><strong>Axioms</strong> - located under <a href="../axioms">axioms</a></li>
+<li><strong>CLI</strong> - located under <a href="../bin">bin</a></li>
+<li><strong>Rules</strong> - located under <a href="../rules">rules</a></li>
+<li><strong>Fixes</strong> - located under <a href="../fixes">fixes</a></li>
+<li><strong>Formatters</strong> - located under <a href="../formatters">formatters</a></li>
+<li><strong>Utilities</strong> - located under <a href="../lib">lib</a></li>
+<li><strong>Built-In Rulesets and Schema</strong> - located under <a href="../rulesets">rulesets</a></li>
 </ul>
 <h2>Axioms</h2>
-<p>Axioms are registered in <a href="../../axioms/axioms.js">axioms/axioms.js</a> and in <a href="../../rulesets/schema.json">rulesets/schema.json</a>. An axiom implementation consists of a module with the following interface:</p>
+<p>Axioms are registered in <a href="../axioms/axioms.js">axioms/axioms.js</a> and in <a href="../rulesets/schema.json">rulesets/schema.json</a>. An axiom implementation consists of a module with the following interface:</p>
 <pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem) =&gt; Result</pre>
-<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository.</p>
+<p>Where fs is a <a href="../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository.</p>
 <p>The contents of the result should be an array of targets where <code>t.path</code> is a target that the axiom has determined is valid (ex. for language detecting axiom a possible result could be <code>new Result('', [{ path: 'javascript' passed: true }, { path: 'typescript', passed: true}], true)</code>). If the axiom fails to execute, it should return a failing result with an error message included instead of throwing an error.</p>
 <h2>Rules</h2>
-<p>A rule consists of two parts: a JavaScript module, which determines the rule's functionality and a JSON schema, which validates the rule's configuration options in rulesets. Rules are registered in <a href="../../rules/rules.js">rules/rules.js</a> and <a href="../../rulesets/schema.json">rulesets/schema.json</a>. Rules are also documented under <a href="./rules.md">rules.md</a>.</p>
+<p>A rule consists of two parts: a JavaScript module, which determines the rule's functionality and a JSON schema, which validates the rule's configuration options in rulesets. Rules are registered in <a href="../rules/rules.js">rules/rules.js</a> and <a href="../rulesets/schema.json">rulesets/schema.json</a>. Rules are also documented under <a href="./rules.md">rules.md</a>.</p>
 <h3>Rule Configuration JSON Schema</h3>
 <p>The configuration JSON schema determines how <code>rule.options</code> should be validated for this rule. All <a href="https://json-schema.org/">JSON Schema</a> tools supported by <a href="https://ajv.js.org/">AJV</a> all available, with a few important caveats:</p>
 <ul>
@@ -672,15 +672,15 @@ This Repolinter run generated the following results:
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"object"</span>,
     <span class="hljs-attr">"properties"</span>: {}
 }</pre>
-<p>Due to limitations with JSON Schema, you also must register your rule configuration schema in <a href="../../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.rule.allOf</code>:</p>
+<p>Due to limitations with JSON Schema, you also must register your rule configuration schema in <a href="../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.rule.allOf</code>:</p>
 <pre class='hljs'>{ <span class="hljs-attr">"if"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"type"</span>: { <span class="hljs-attr">"const"</span>: <span class="hljs-string">"&lt;rule-name&gt;"</span> } } }, <span class="hljs-attr">"then"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"options"</span>: { <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"../rules/&lt;rule-name&gt;-config.json"</span> } } } }</pre>
 <h3>JavaScript Implementation</h3>
 <p>A rule implementation consists of a module with the following interface:</p>
 <pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem, opts <span class="hljs-comment">/* type determined by your JSON schema */</span>) =&gt; Result</pre>
-<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository and <code>opts</code> is the options provided by the ruleset.</p>
+<p>Where fs is a <a href="../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository and <code>opts</code> is the options provided by the ruleset.</p>
 <p>A rule implementation is encouraged to use <code>Result#targets</code> to show the individual files/patterns checked when processing the rule. Including filenames in <code>Result#message</code> is discouraged as it makes formatting difficult. If a rule fails to execute, it should throw an error.</p>
 <h2>Fixes</h2>
-<p>A fix, similar to a rule, consists of two parts: a JavaScript module, which determines the fix's functionality and a JSON schema, which validates the fix's configuration options in rulesets. Fixes are registered in <a href="../../fixes/fixes.js">fixes/fixes.js</a> and <a href="../../rulesets/schema.json">rulesets/schema.json</a>. Fixes are also documented under <a href="./fixes.md">fixes.md</a>.</p>
+<p>A fix, similar to a rule, consists of two parts: a JavaScript module, which determines the fix's functionality and a JSON schema, which validates the fix's configuration options in rulesets. Fixes are registered in <a href="../fixes/fixes.js">fixes/fixes.js</a> and <a href="../rulesets/schema.json">rulesets/schema.json</a>. Fixes are also documented under <a href="./fixes.md">fixes.md</a>.</p>
 <h3>Fix Configuration JSON Schema</h3>
 <p>Fix JSON schemas work identically to <a href="#rule-configuration-json-schema">rule JSON schemas</a>, with the only difference the respective names and paths.</p>
 <p>To get started, you can use the following template:</p>
@@ -690,15 +690,15 @@ This Repolinter run generated the following results:
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"object"</span>,
     <span class="hljs-attr">"properties"</span>: {}
 }</pre>
-<p>Similar as with rules, you must register the fix schema in <a href="../../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.fix.allOf</code> (note that this is a different list than the rule registration list):</p>
+<p>Similar as with rules, you must register the fix schema in <a href="../rulesets/schema.json">rulesets/schema.json</a> by adding the following item to the list under <code>root.then.properties.rules.properties.fix.allOf</code> (note that this is a different list than the rule registration list):</p>
 <pre class='hljs'>{ <span class="hljs-attr">"if"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"type"</span>: { <span class="hljs-attr">"const"</span>: <span class="hljs-string">"&lt;fix-name&gt;"</span> } } }, <span class="hljs-attr">"then"</span>: { <span class="hljs-attr">"properties"</span>: { <span class="hljs-attr">"options"</span>: { <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"../rules/&lt;fix-name&gt;-config.json"</span> } } } }</pre>
 <h3>JavaScript Implementation</h3>
 <p>Unlike rules, a fix implementation consists of a module with the following interface:</p>
 <pre class='hljs'><span class="hljs-keyword">async</span> (fs: FileSystem, options <span class="hljs-comment">/* Type determined by your JSON schema */</span>, targets: <span class="hljs-built_in">string</span>[], dryRun: <span class="hljs-built_in">boolean</span>) =&gt; Result</pre>
-<p>Where fs is a <a href="../../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository, <code>opts</code> is the options provided by the ruleset, <code>targets</code> are filepaths which did not pass the rule associated with this fix, and <code>dryRun</code> determines if the fix is allowed to make changes to the repository.</p>
+<p>Where fs is a <a href="../lib/file_system.js"><code>FileSystem</code></a> scoped to the current repository, <code>opts</code> is the options provided by the ruleset, <code>targets</code> are filepaths which did not pass the rule associated with this fix, and <code>dryRun</code> determines if the fix is allowed to make changes to the repository.</p>
 <p>The fix implementation is encouraged to use <code>Result#targets</code> to show the individual files/patterns changed. If the fix fails to execute, it should either return a failed result or throw an error.</p>
 <h2>Formatters</h2>
-<p>Formatters are exported by <a href="../../index.js">index.js</a> and manually called by the <a href="../../bin/repolinter.js">CLI</a>. A formatter implementation consists of the following interface:</p>
+<p>Formatters are exported by <a href="../index.js">index.js</a> and manually called by the <a href="../bin/repolinter.js">CLI</a>. A formatter implementation consists of the following interface:</p>
 <pre class='hljs'><span class="hljs-keyword">interface</span> Formatter {
   formatOutput(output: LintResult, dryRun: <span class="hljs-built_in">boolean</span>): <span class="hljs-built_in">string</span>
 }</pre>
