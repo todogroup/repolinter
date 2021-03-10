@@ -122,7 +122,7 @@ Where:
 
 - **`$schema`**- points to the [JSON schema](./rulesets/schema.json) for all Repolinter rulesets. This schema both validates the ruleset and makes the ruleset creation process a bit easier.
 - **`version`** - specifies the ruleset version Repolinter should expect. Currently there are two versions: omitted for legacy config ([example](https://github.com/todogroup/repolinter/blob/1a66d77e3a744222a049bdb4041437cbcf26a308/rulesets/default.json)) and `2` for all others. Use `2` unless you know what you're doing.
-- **`axiom`** - The axiom functionality, covered in [Axoms](#axioms).
+- **`axiom`** - The axiom functionality, covered in [Axioms](#axioms).
 - **`rules`** - The actual ruleset, covered in [Rules](#rules).
 
 #### Rules
