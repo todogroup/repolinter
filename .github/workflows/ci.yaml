@@ -162,7 +162,7 @@ jobs:
       - name: Gather Docker Labels
         if: steps.semantic.outputs.new_release_published == 'true'
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@55d3462 #v1.9.1
+        uses: crazy-max/ghaction-docker-meta@55d3462f059e0f1f2477ee4270665c7855d6b4ae #v1.9.1
         with:
           images: ghcr.io/${{ github.repository }}
 
