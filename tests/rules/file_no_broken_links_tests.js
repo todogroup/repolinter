@@ -35,7 +35,7 @@ describe('rule', () => {
       })
 
       it('returns true if a valid link is present in a markdown file', async () => {
-        const scope = nock('https://www.example.com')
+        const scope = nock('http://www.example.com')
           .head('/something/somethingelse')
           .reply(200)
 
@@ -56,7 +56,7 @@ describe('rule', () => {
       })
 
       it('returns false if an invalid link is present in a markdown file', async () => {
-        const scope = nock('https://www.example.com')
+        const scope = nock('http://www.example.com')
           .head('/something/somethingelse')
           .replyWithError('nxdomain or something')
 
@@ -77,7 +77,7 @@ describe('rule', () => {
       })
 
       it('returns false if a private link is present in a markdown file', async () => {
-        const scope = nock('https://www.example.com')
+        const scope = nock('http://www.example.com')
           .head('/something/somethingelse')
           .reply(404)
 
@@ -97,8 +97,29 @@ describe('rule', () => {
         scope.done()
       })
 
+      it('returns true if an autolink is present in a markdown file', async () => {
+        const scope = nock('http://www.example.com')
+          .head('/something/somethingelse')
+          .reply(200)
+
+        const ruleopts = {
+          globsAll: ['autolink.md']
+        }
+
+        const actual = await fileNoBrokenLinks(testFs, ruleopts)
+
+        expect(actual.passed).to.equal(true)
+        expect(actual.targets).to.have.length(1)
+        expect(actual.targets[0]).to.deep.include({
+          passed: true,
+          path: 'autolink.md'
+        })
+
+        scope.done()
+      })
+
       it('returns true if a valid link is present in an rst file', async () => {
-        const scope = nock('https://www.example.com')
+        const scope = nock('http://www.example.com')
           .head('/something/somethingelse')
           .reply(200)
 
@@ -119,7 +140,7 @@ describe('rule', () => {
       })
 
       it('returns false if an invalid link is present in an rst file', async () => {
-        const scope = nock('https://www.example.com')
+        const scope = nock('http://www.example.com')
           .head('/something/somethingelse')
           .replyWithError('nxdomain or something')
 
@@ -291,10 +312,10 @@ describe('rule', () => {
       })
 
       it('checks multiple links in markdown', async () => {
-        const scope = nock('https://www.example.com')
+        const scope = nock('http://www.example.com')
           .head('/something/somethingelse')
           .reply(200)
-        const scope2 = nock('https://www.example.com')
+        const scope2 = nock('http://www.example.com')
           .head('/something')
           .reply(200)
 
@@ -316,7 +337,7 @@ describe('rule', () => {
       })
 
       it('checks multiple files', async () => {
-        const scope = nock('https://www.example.com')
+        const scope = nock('http://www.example.com')
           .head('/something/somethingelse')
           .reply(200)
           .persist()
