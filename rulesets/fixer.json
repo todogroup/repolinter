@@ -1,0 +1,34 @@
+{
+  "$schema": "./schema.json",
+  "version": 2,
+  "axioms": {
+    "linguist": "language",
+    "licensee": "license",
+    "packagers": "packager"
+  },
+  "rules": {
+    "license-file-exists": {
+      "level": "error",
+      "rule": {
+        "type": "file-existence",
+        "options": {
+          "globsAny": ["LICENSE*", "COPYING*"],
+          "nocase": true
+        }
+      }
+    },
+    "readme-file-exists": {
+      "level": "error",
+      "rule": {
+        "type": "file-existence",
+        "options": {
+          "globsAny": ["README*"],
+          "nocase": true
+        }
+      },
+      "fix": {
+        "type":"github-issue-create"
+      }
+    }
+  }
+}

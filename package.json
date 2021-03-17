@@ -35,6 +35,7 @@
     "url": "https://github.com/todogroup/repolinter.git"
   },
   "dependencies": {
+    "@octokit/rest": "^18.3.5",
     "ajv": "^6.12.6",
     "broken-link-checker": "github:prototypicalpro/broken-link-checker#master",
     "chalk": "^4.1.0",

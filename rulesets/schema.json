@@ -250,6 +250,16 @@
                       "options": { "$ref": "../fixes/file-remove-config.json" }
                     }
                   }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "github-issue-create" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": { "$ref": "../fixes/github-issue-create-config.json" }
+                    }
+                  }
                 }
               ]
             },
