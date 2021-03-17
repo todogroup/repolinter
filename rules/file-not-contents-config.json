@@ -14,7 +14,7 @@
     "content": { "type": "string" },
     "flags": { "type": "string" },
     "human-readable-content": { "type": "string" },
-    "fail-on-non-exist": {
+    "fail-on-non-existent": {
       "type": "boolean",
       "default": false
     }
