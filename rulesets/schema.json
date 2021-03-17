@@ -266,6 +266,16 @@
                       "options": { "$ref": "../fixes/file-remove-config.json" }
                     }
                   }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "github-issue-create" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": { "$ref": "https://raw.githubusercontent.com/philips-labs/repolinter/feature/github-issue-fix/fixes/github-issue-create-config.json" }
+                    }
+                  }
                 }
               ]
             },

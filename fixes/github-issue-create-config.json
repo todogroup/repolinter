@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/philips-labs/repolinter/feature/github-issue-fix/fixes/github-issue-create-config.json",
+  "type": "object",
+  "properties": {
+    "issueLabels": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "issueBody": {
+      "type": "string"
+    },
+    "commentBody": {
+      "type": "string"
+    },
+    "issueTitle": {
+      "type": "string"
+    },
+    "bypassLabel": {
+      "type": "string",
+      "default": "CC: Bypass"
+    },
+    "uniqueRuleId": {
+      "type": "string"
+    }
+  },
+  "required": ["issueLabels", "bypassLabel", "issueBody", "commentBody", "issueTitle", "uniqueRuleId"]
+}

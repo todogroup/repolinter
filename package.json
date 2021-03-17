@@ -35,10 +35,12 @@
     "url": "https://github.com/todogroup/repolinter.git"
   },
   "dependencies": {
+    "@octokit/rest": "^18.5.0",
     "ajv": "^6.12.6",
     "broken-link-checker": "^0.7.8",
     "chalk": "^4.1.0",
     "command-exists": "^1.2.9",
+    "dotenv": "^8.2.0",
     "emoji-regex": "^9.2.0",
     "find-config": "^1.0.0",
     "gitlog": "^4.0.3",
@@ -53,6 +55,7 @@
     "node-fetch": "^2.6.0",
     "rimraf": "^3.0.2",
     "simple-git": "^2.25.0",
+    "standardjs": "^1.0.0-alpha",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
