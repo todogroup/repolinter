@@ -1,12 +1,32 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/fixes/github-issue-create-config.json",
+  "$id": "https://raw.githubusercontent.com/philips-labs/repolinter/feature/github-issue-fix/fixes/github-issue-create-config.json",
   "type": "object",
   "properties": {
-    "globsAll": {
+    "issueLabels": {
       "type": "array",
       "items": { "type": "string" }
     },
-    "nocase": { "type": "boolean", "default": false }
-  }
+    "issueBody": {
+      "type": "string"
+    },
+    "commentBody": {
+      "type": "string"
+    },
+    "issueTitle": {
+      "type": "string"
+    },
+    "issueCreator": {
+      "type": "string",
+      "default": "Continuous Compliance"
+    },
+    "bypassLabel": {
+      "type": "string",
+      "default": "CC: Bypass"
+    },
+    "uniqueRuleId": {
+      "type": "string"
+    }
+  },
+  "required": ["issueLabels", "bypassLabel", "issueBody", "commentBody", "issueTitle", "issueCreator", "uniqueRuleId"]
 }
