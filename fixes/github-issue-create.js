@@ -18,7 +18,7 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
 {
   // Prepare
   this.Octokit = new Octokit({
-    auth: '',
+    auth: process.env.GITHUB_TOKEN,
     baseUrl: 'https://api.github.com',
     owner: 'Brend-Smits',
     repo: 'octokit-test-repo'
