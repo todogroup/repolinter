@@ -4,9 +4,11 @@
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const { Octokit } = require('@octokit/rest');
+const targetOrg = ''
+const targetRepository = ''
 
 /**
- * Removes a file or a list of files.
+ * Create a Github Issue on the targeted repository specifically for this broken rule.
  *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
@@ -16,15 +18,7 @@ const { Octokit } = require('@octokit/rest');
  */
 async function createGithubIssue(fs, options, targets, dryRun = false)
 {
-  const targetOrg = process.env.TARGET_REPO.split('/')[0]
-  const targetRepository = process.env.TARGET_REPO.split('/')[1]
-  // Prepare
-  this.Octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
-    baseUrl: 'https://api.github.com',
-    owner: targetOrg,
-    repo: targetRepository
-  })
+  await prepareWorkingEnvironment();
 
   // Create Labels
   await findOrAddGithubLabel(options.issueLabels.push(options.bypassLabel))
@@ -87,7 +81,13 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
   return new Result(`Github Issue ${newIssue.number} Created!`, targets, true)
 }
 
-// Check if the bypass label has been found
+/**
+ * Check if the bypass label has been found.
+ *
+ * @param {object} options The rule configuration.
+ * @param {string[]} labels The labels of the issue to match against.
+ * @returns {boolean} True if bypass label is found, false otherwise.
+ */
 function hasBypassLabelBeenApplied(options, labels)
 {
   for (let index = 0; index < labels.length; index++)
@@ -102,7 +102,13 @@ function hasBypassLabelBeenApplied(options, labels)
   return false;
 }
 
-// Check if the unique rule id can be found in the issue body
+/**
+ * Check if the unique rule id can be found in the issue body.
+ *
+ * @param {string} body The body of the issue.
+ * @returns {string} Returns the rule identifier as a string that was found in the issue body.
+ * @returns {null} Returns null if no rule identifier can be found in the issue body.
+ */
 function retrieveRuleIdentifier(body)
 {
   if (body.includes("Unique rule set ID: "))
@@ -115,14 +121,26 @@ function retrieveRuleIdentifier(body)
     return null;
   }
 }
-// Find existing repolinter issues and return that array of issues
+
+/**
+ * Find existing repolinter issues, open and closed.
+ * These issues are found by looking for labels and creator
+ *
+ * @param {object} options The rule configuration.
+ * @returns {null} Returns null if no issue can be found.
+ * @returns {object[]} Returns array of issues if issues can be found that match the criteria. This array is sorted by
+ *  last created date. Latest created issues show up first.
+ */
 async function findExistingRepolinterIssues(options)
 {
+  // Get current authenticated user
+  const issueCreator = (await this.Octokit.users.getAuthenticated()).data.login
+  // Get issues by creator/labels
   const issues = await this.Octokit.issues.listForRepo({
-    owner: targetOrg,
-    repo: targetRepository,
+    owner: this.targetOrg,
+    repo: this.targetRepository,
     labels: options.issueLabels.join(),
-    creator: targetOrg,
+    creator: issueCreator,
     state: 'all',
     sort: 'created',
     direction: 'desc'
@@ -146,15 +164,20 @@ async function findExistingRepolinterIssues(options)
   return issues.data
 }
 
-// Create issue on Github
+/**
+ * Create an issue on Github with labels and all on the target repository.
+ *
+ * @param {object} options The rule configuration.
+ * @returns {object} Returns issue after adding it via the Github API.
+ */
 async function createIssueOnGithub(options)
 {
   try
   {
     const issueBodyWithId = options.issueBody.concat(`\n Unique rule set ID: ${options.uniqueRuleId}`)
     return await this.Octokit.issues.create({
-      owner: targetOrg,
-      repo: targetRepository,
+      owner: this.targetOrg,
+      repo: this.targetRepository,
       title: options.issueTitle,
       body: issueBodyWithId,
       labels: options.issueLabels
@@ -165,15 +188,21 @@ async function createIssueOnGithub(options)
   }
 }
 
-// Update issue on Github
+/**
+ * Update specific issue on Github.
+ *
+ * @param {object} options The rule configuration.
+ * @param {string} issueNumber The number of the issue we should update.
+ * @returns {object} Returns issue after updating it via the Github API.
+ */
 async function updateIssueOnGithub(options, issueNumber)
 {
   try
   {
     const issueBodyWithId = options.issueBody.concat(`\n Unique rule set ID: ${options.uniqueRuleId}`)
     return await this.Octokit.issues.update({
-      owner: targetOrg,
-      repo: targetRepository,
+      owner: this.targetOrg,
+      repo: this.targetRepository,
       issue_number: issueNumber,
       title: options.issueTitle,
       body: issueBodyWithId,
@@ -186,14 +215,20 @@ async function updateIssueOnGithub(options, issueNumber)
   }
 }
 
-// Comment on an issue on Github
+/**
+ * Comment on a specific issue on Github.
+ *
+ * @param {object} options The rule configuration.
+ * @param {string} issueNumber The number of the issue we should update.
+ * @returns {object} Returns issue after commenting on it via the Github API.
+ */
 async function commentOnGithubIssue(options, issueNumber)
 {
   try
   {
     return await this.Octokit.issues.createComment({
-      owner: targetOrg,
-      repo: targetRepository,
+      owner: this.targetOrg,
+      repo: this.targetRepository,
       issue_number: issueNumber,
       body: options.commentBody,
     })
@@ -203,18 +238,47 @@ async function commentOnGithubIssue(options, issueNumber)
   }
 }
 
+/**
+ * Adds the labels to this target repository on Github.
+ *
+ * @param {string[]} labelsToCheckOrCreate An array of labels that we should check and possibly add.
+ */
 async function findOrAddGithubLabel(labelsToCheckOrCreate)
 {
   for (let i = 0; i < labelsToCheckOrCreate.length; i++)
   {
     label += labelsToCheckOrCreate[i];
     await this.Octokit.issues.createLabel({
-      owner: targetOrg,
-      repo: targetRepository,
+      owner: this.targetOrg,
+      repo: this.targetRepository,
       name: label
     })
   }
   return;
+}
+/**
+ * Prepare our working environment.
+ * Check if environment variables are set.
+ * Set constants like targetOrg and targetRepository and initialize OctoKit.
+ *
+ */
+async function prepareWorkingEnvironment() {
+  const targetRepoEnv = process.env.TARGET_REPO
+  const authTokenEnv = process.env.GITHUB_TOKEN
+  if (!authTokenEnv || !targetRepoEnv)
+  {
+    return new Result(`Could not perform fix due to missing/invalid environment variables! Please set TARGET_REPO and GITHUB_TOKEN environment variables.`, [], false)
+  }
+  this.targetOrg = targetRepoEnv.split('/')[0]
+  this.targetRepository = targetRepoEnv.split('/')[1]
+
+  // Prepare
+  this.Octokit = new Octokit({
+    auth: authTokenEnv,
+    baseUrl: 'https://api.github.com',
+    owner: this.targetOrg,
+    repo: this.targetRepository
+  })
 }
 
 

@@ -16,10 +16,6 @@
     "issueTitle": {
       "type": "string"
     },
-    "issueCreator": {
-      "type": "string",
-      "default": "Continuous Compliance"
-    },
     "bypassLabel": {
       "type": "string",
       "default": "CC: Bypass"

@@ -34,7 +34,6 @@
       "fix": {
         "type": "github-issue-create",
         "options": {
-          "issueCreator": "Philips - Continuous Compliance",
           "issueLabels": [
             "continuous-compliance",
             "automated"
