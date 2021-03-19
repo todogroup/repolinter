@@ -16,12 +16,14 @@ const { Octokit } = require('@octokit/rest');
  */
 async function createGithubIssue(fs, options, targets, dryRun = false)
 {
+  const targetOrg = process.env.TARGET_REPO.split('/')[0]
+  const targetRepository = process.env.TARGET_REPO.split('/')[1]
   // Prepare
   this.Octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
     baseUrl: 'https://api.github.com',
-    owner: 'Brend-Smits',
-    repo: 'octokit-test-repo'
+    owner: targetOrg,
+    repo: targetRepository
   })
 
   // Create Labels
@@ -117,10 +119,10 @@ function retrieveRuleIdentifier(body)
 async function findExistingRepolinterIssues(options)
 {
   const issues = await this.Octokit.issues.listForRepo({
-    owner: 'Brend-Smits',
-    repo: 'octokit-test-repo',
+    owner: targetOrg,
+    repo: targetRepository,
     labels: options.issueLabels.join(),
-    creator: 'Brend-Smits',
+    creator: targetOrg,
     state: 'all',
     sort: 'created',
     direction: 'desc'
@@ -151,8 +153,8 @@ async function createIssueOnGithub(options)
   {
     const issueBodyWithId = options.issueBody.concat(`\n Unique rule set ID: ${options.uniqueRuleId}`)
     return await this.Octokit.issues.create({
-      owner: 'Brend-Smits',
-      repo: 'octokit-test-repo',
+      owner: targetOrg,
+      repo: targetRepository,
       title: options.issueTitle,
       body: issueBodyWithId,
       labels: options.issueLabels
@@ -170,8 +172,8 @@ async function updateIssueOnGithub(options, issueNumber)
   {
     const issueBodyWithId = options.issueBody.concat(`\n Unique rule set ID: ${options.uniqueRuleId}`)
     return await this.Octokit.issues.update({
-      owner: 'Brend-Smits',
-      repo: 'octokit-test-repo',
+      owner: targetOrg,
+      repo: targetRepository,
       issue_number: issueNumber,
       title: options.issueTitle,
       body: issueBodyWithId,
@@ -190,8 +192,8 @@ async function commentOnGithubIssue(options, issueNumber)
   try
   {
     return await this.Octokit.issues.createComment({
-      owner: 'Brend-Smits',
-      repo: 'octokit-test-repo',
+      owner: targetOrg,
+      repo: targetRepository,
       issue_number: issueNumber,
       body: options.commentBody,
     })
@@ -207,8 +209,8 @@ async function findOrAddGithubLabel(labelsToCheckOrCreate)
   {
     label += labelsToCheckOrCreate[i];
     await this.Octokit.issues.createLabel({
-      owner: 'Brend-Smits',
-      repo: 'octokit-test-repo',
+      owner: targetOrg,
+      repo: targetRepository,
       name: label
     })
   }
