@@ -33,6 +33,7 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
   {
     // Issue should include the broken rule, a message in the body and a label.
     const createdIssue = await createIssueOnGithub(options)
+    console.log(createdIssue);
     // We are done here, we created a new issue.
     return new Result(`No Open/Closed issues were found for this rule - Created new Github Issue with issue number - ${createdIssue.number}`, [], true)
 
@@ -134,7 +135,7 @@ function retrieveRuleIdentifier(body)
 async function findExistingRepolinterIssues(options)
 {
   // Get current authenticated user
-  const issueCreator = 'Continuous Compliance App'
+  const issueCreator = 'continuous-compliance-app'
   // Get issues by creator/labels
   const issues = await this.Octokit.issues.listForRepo({
     owner: this.targetOrg,
