@@ -18,22 +18,29 @@ const targetRepository = ''
  */
 async function createGithubIssue(fs, options, targets, dryRun = false)
 {
-  await prepareWorkingEnvironment();
+  try
+  {
+    await prepareWorkingEnvironment();
+  } catch (error)
+  {
+    return new Result(error.message, [], false)
+  }
 
   // Create Labels
-  await findOrAddGithubLabel(options.issueLabels.push(options.bypassLabel))
+  const labels = options.issueLabels
+  labels.push(options.bypassLabel)
+  await findOrAddGithubLabel(labels)
   options.issueLabels = options.issueLabels.filter(label => label !== options.bypassLabel)
 
   // Find issue created by Repolinter
   const issues = await findExistingRepolinterIssues(options)
-  console.log(issues)
 
   // If there are no issues, create one.
   // If there are issues, we loop through them and handle each each on it's own
   if (issues === null || issues === undefined)
   {
     // Issue should include the broken rule, a message in the body and a label.
-    // const createdIssue = await createIssueOnGithub(options)
+    const createdIssue = await createIssueOnGithub(options)
     // We are done here, we created a new issue.
     return new Result(`No Open/Closed issues were found for this rule - Created new Github Issue with issue number - ${createdIssue.number}`, [], true)
 
@@ -134,14 +141,11 @@ function retrieveRuleIdentifier(body)
  */
 async function findExistingRepolinterIssues(options)
 {
-  // Get current authenticated user
-  const issueCreator = 'continuous-compliance-app'
   // Get issues by creator/labels
   const issues = await this.Octokit.request('GET /repos/{owner}/{repo}/issues', {
     owner: this.targetOrg,
     repo: this.targetRepository,
     labels: options.issueLabels.join(),
-    // creator: issueCreator,
     state: 'all',
     sort: 'created',
     direction: 'desc'
@@ -176,7 +180,7 @@ async function createIssueOnGithub(options)
   try
   {
     const issueBodyWithId = options.issueBody.concat(`\n Unique rule set ID: ${options.uniqueRuleId}`)
-    return await this.Octokit.request('POST /repos/{owner}/{repo}/issues',{
+    return await this.Octokit.request('POST /repos/{owner}/{repo}/issues', {
       owner: this.targetOrg,
       repo: this.targetRepository,
       title: options.issueTitle,
@@ -248,12 +252,35 @@ async function findOrAddGithubLabel(labelsToCheckOrCreate)
 {
   for (let i = 0; i < labelsToCheckOrCreate.length; i++)
   {
-    label += labelsToCheckOrCreate[i];
-    await this.Octokit.request('POST /repos/{owner}/{repo}/labels', {
-      owner: this.targetOrg,
-      repo: this.targetRepository,
-      name: label
-    })
+    try
+    {
+      await this.Octokit.request('GET /repos/{owner}/{repo}/labels/{name}', {
+        owner: this.targetOrg,
+        repo: this.targetRepository,
+        name: labelsToCheckOrCreate[i]
+      })
+    } catch (error)
+    {
+      if (error.status === 404)
+      {
+        console.log(`Adding label: ${labelsToCheckOrCreate[i]}`)
+        try {
+          await this.Octokit.request('POST /repos/{owner}/{repo}/labels', {
+            owner: this.targetOrg,
+            repo: this.targetRepository,
+            name: labelsToCheckOrCreate[i]
+          })
+        } catch (error){
+          if (error.status === 422)
+          {
+            // Do nothing, this means it's probably already being processed in another thread
+          } else {
+            console.log(error);
+          }
+        }
+
+      }
+    }
   }
   return;
 }
@@ -263,12 +290,13 @@ async function findOrAddGithubLabel(labelsToCheckOrCreate)
  * Set constants like targetOrg and targetRepository and initialize OctoKit.
  *
  */
-async function prepareWorkingEnvironment() {
+async function prepareWorkingEnvironment()
+{
   const targetRepoEnv = process.env.TARGET_REPO
   const authTokenEnv = process.env.GITHUB_TOKEN
-  if (!authTokenEnv || !targetRepoEnv)
+  if (authTokenEnv === undefined || targetRepoEnv === undefined)
   {
-    return new Result(`Could not perform fix due to missing/invalid environment variables! Please set TARGET_REPO and GITHUB_TOKEN environment variables.`, [], false)
+    throw new Error("Could not perform fix due to missing/invalid environment variables! Please set TARGET_REPO and GITHUB_TOKEN environment variables.")
   }
   this.targetOrg = targetRepoEnv.split('/')[0]
   this.targetRepository = targetRepoEnv.split('/')[1]
