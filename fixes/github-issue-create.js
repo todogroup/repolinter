@@ -134,7 +134,7 @@ function retrieveRuleIdentifier(body)
 async function findExistingRepolinterIssues(options)
 {
   // Get current authenticated user
-  const issueCreator = (await this.Octokit.users.getAuthenticated()).data.login
+  const issueCreator = 'Continuous Compliance App'
   // Get issues by creator/labels
   const issues = await this.Octokit.issues.listForRepo({
     owner: this.targetOrg,
