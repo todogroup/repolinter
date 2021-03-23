@@ -26,6 +26,7 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
 
   // Find issue created by Repolinter
   const issues = await findExistingRepolinterIssues(options)
+  console.log(issues)
 
   // If there are no issues, create one.
   // If there are issues, we loop through them and handle each each on it's own
@@ -137,7 +138,7 @@ async function findExistingRepolinterIssues(options)
   // Get current authenticated user
   const issueCreator = 'continuous-compliance-app'
   // Get issues by creator/labels
-  const issues = await this.Octokit.issues.listForRepo({
+  const issues = await this.Octokit.request('GET /repos/{owner}/{repo}/issues', {
     owner: this.targetOrg,
     repo: this.targetRepository,
     labels: options.issueLabels.join(),
@@ -176,7 +177,7 @@ async function createIssueOnGithub(options)
   try
   {
     const issueBodyWithId = options.issueBody.concat(`\n Unique rule set ID: ${options.uniqueRuleId}`)
-    return await this.Octokit.issues.create({
+    return await this.Octokit.request('POST /repos/{owner}/{repo}/issues',{
       owner: this.targetOrg,
       repo: this.targetRepository,
       title: options.issueTitle,
@@ -201,7 +202,7 @@ async function updateIssueOnGithub(options, issueNumber)
   try
   {
     const issueBodyWithId = options.issueBody.concat(`\n Unique rule set ID: ${options.uniqueRuleId}`)
-    return await this.Octokit.issues.update({
+    return await this.Octokit.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}', {
       owner: this.targetOrg,
       repo: this.targetRepository,
       issue_number: issueNumber,
@@ -227,7 +228,7 @@ async function commentOnGithubIssue(options, issueNumber)
 {
   try
   {
-    return await this.Octokit.issues.createComment({
+    return await this.Octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
       owner: this.targetOrg,
       repo: this.targetRepository,
       issue_number: issueNumber,
@@ -249,7 +250,7 @@ async function findOrAddGithubLabel(labelsToCheckOrCreate)
   for (let i = 0; i < labelsToCheckOrCreate.length; i++)
   {
     label += labelsToCheckOrCreate[i];
-    await this.Octokit.issues.createLabel({
+    await this.Octokit.request('POST /repos/{owner}/{repo}/labels', {
       owner: this.targetOrg,
       repo: this.targetRepository,
       name: label
