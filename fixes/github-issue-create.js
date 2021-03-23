@@ -33,8 +33,7 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
   if (issues === null || issues === undefined)
   {
     // Issue should include the broken rule, a message in the body and a label.
-    const createdIssue = await createIssueOnGithub(options)
-    console.log(createdIssue);
+    // const createdIssue = await createIssueOnGithub(options)
     // We are done here, we created a new issue.
     return new Result(`No Open/Closed issues were found for this rule - Created new Github Issue with issue number - ${createdIssue.number}`, [], true)
 
@@ -142,7 +141,7 @@ async function findExistingRepolinterIssues(options)
     owner: this.targetOrg,
     repo: this.targetRepository,
     labels: options.issueLabels.join(),
-    creator: issueCreator,
+    // creator: issueCreator,
     state: 'all',
     sort: 'created',
     direction: 'desc'
