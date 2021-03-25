@@ -45,26 +45,30 @@ async function fileNoBrokenLinks(fs, options) {
       }
 
       // scan the rendered HTML for broken links
-      const linkRes = []
-      const htmlChecker = new HtmlChecker({
-        ...options,
-        autoPrefix: [{ pattern: /^[\w_-]+\.[^\s]+$/i, prefix: 'https://' }], // autoprefix domain-only links
-        includeLink: link => !link.get('originalURL').startsWith('#') // exclude local section links
-      }).on('link', res =>
-        linkRes.push(
-          Array.from(res.entries()).reduce((a, [key, value]) => {
-            a[key] = value
-            return a
-          }, {})
+      const linkRes = await new Promise((resolve, reject) => {
+        const linkBuf = []
+        const htmlChecker = new HtmlChecker(
+          {
+            ...options,
+            excludedKeywords: ['#*'] // exclude local section links
+          },
+          {
+            link: res => linkBuf.push(res),
+            complete: () => resolve(linkBuf)
+          }
         )
-      )
-      await htmlChecker.scan(
-        rendered,
-        new URL(`file://${path.posix.join(fs.targetDir, f)}`)
-      )
+
+        const didScan = htmlChecker.scan(
+          rendered,
+          new URL(`file://${path.posix.join(fs.targetDir, f)}`)
+        )
+        if (!didScan)
+          reject(Error('Failed to scan HTML with broken link checker'))
+      })
+
       // find all relative links, and double check the filesystem for their existence
       // filter down to broken links
-      const brokenLinks = linkRes.filter(({ isBroken }) => isBroken)
+      const brokenLinks = linkRes.filter(link => link.broken)
       // split into invalid and otherwise failing
       const { failing, invalid } = brokenLinks.reduce(
         (res, linkRes) => {
@@ -77,10 +81,10 @@ async function fileNoBrokenLinks(fs, options) {
       )
       // make the messages for the failing URLs
       const failingMessages = failing.map(
-        ({ brokenReason, originalURL, httpResponse }) =>
-          `\`${originalURL}\` (${
+        ({ brokenReason, url: { original }, http: { response } }) =>
+          `\`${original}\` (${
             brokenReason.includes('HTTP')
-              ? `status code ${httpResponse && httpResponse.status}`
+              ? `status code ${response && response.status}`
               : `unknown error ${brokenReason}`
           })`
       )
@@ -88,13 +92,14 @@ async function fileNoBrokenLinks(fs, options) {
       // returning the message for invalid URLs
       const failingInvalidMessagesWithNulls = await Promise.all(
         invalid.map(async b => {
-          const { resolvedURL, originalURL } = b
+          const originalURL = b.url.original
+          const baseURL = b.base.resolved
           let url
           // parse the URL, and if it fails to parse it's invalid
           try {
-            url = new URL(resolvedURL)
+            url = new URL(originalURL, baseURL)
             if (url.protocol !== 'file:' || !url.pathname)
-              return `\`${resolvedURL}\` (invalid URL)`
+              return `\`${originalURL}\` (invalid URL)`
           } catch (e) {
             return `\`${originalURL}\` (invalid path)`
           }

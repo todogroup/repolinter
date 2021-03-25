@@ -1,1 +1,1 @@
-[myurl](www.example.com/something/somethingelse)
+[myurl](http://www.example.com/something/somethingelse)
