@@ -57,7 +57,7 @@ Checks if the contents of a file match a given regular expression.
 | `nocase`                 | No       | `boolean`  | `false`                             | Set to `true` to make the globs case insensitive. This does not effect the case sensitivity of the regular expression.                                                                                                           |
 | `flags`                  | No       | `string`   | `""`                                | The flags to use for the regular expression in `content` (ex. `"i"` for case insensitivity).                                                                                                                                     |
 | `human-readable-content` | No       | `string`   | The regular expression in `content` | The string to print instead of the regular expression when generating human-readable output.                                                                                                                                     |
-| `fail-on-non-exist`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
+| `fail-on-non-existent`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
 
 ### `file-existence`
 
@@ -107,7 +107,7 @@ Checks none of a given list of files match a given regular expression.
 | `nocase`                 | No       | `boolean`  | `false`                             | Set to `true` to make the globs case insensitive. This does not effect the case sensitivity of the regular expression.                                                                                                           |
 | `flags`                  | No       | `string`   | `""`                                | The flags to use for the regular expression in `content` (ex. `"i"` for case insensitivity).                                                                                                                                     |
 | `human-readable-content` | No       | `string`   | The regular expression in `content` | The string to print instead of the regular expression when generating human-readable output.                                                                                                                                     |
-| `fail-on-non-exist`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
+| `fail-on-non-existent`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
 
 ### `file-not-exists`
 

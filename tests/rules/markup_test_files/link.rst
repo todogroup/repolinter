@@ -1,1 +1,1 @@
-`My URL <www.example.com/something/somethingelse>`_
+`My URL <http://www.example.com/something/somethingelse>`_

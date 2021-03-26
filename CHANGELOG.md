@@ -1,3 +1,10 @@
+## [0.10.1](https://github.com/todogroup/repolinter/compare/v0.10.0...v0.10.1) (2021-03-25)
+
+
+### Bug Fixes
+
+* switch to canonical broken-link-checker ([#205](https://github.com/todogroup/repolinter/issues/205)) ([e62d767](https://github.com/todogroup/repolinter/commit/e62d767dc299c503d04ff61da6433fede6899eb8))
+
 # [0.10.0](https://github.com/todogroup/repolinter/compare/v0.9.0...v0.10.0) (2020-12-30)
 
 

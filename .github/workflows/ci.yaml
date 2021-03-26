@@ -156,13 +156,13 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Gather Docker Labels
         if: steps.semantic.outputs.new_release_published == 'true'
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@55d3462 #v1.9.1
+        uses: crazy-max/ghaction-docker-meta@v1.12.0
         with:
           images: ghcr.io/${{ github.repository }}
 
