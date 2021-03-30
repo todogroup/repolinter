@@ -3,13 +3,8 @@
 
 /** @module repolinter */
 
-const jsonfile = require('jsonfile')
-const Ajv = require('ajv')
 const path = require('path')
-const findConfig = require('find-config')
-const fs = require('fs')
-const yaml = require('js-yaml')
-// eslint-disable-next-line no-unused-vars
+const config = require('./lib/config')
 const Result = require('./lib/result')
 const RuleInfo = require('./lib/ruleinfo')
 const FormatResult = require('./lib/formatresult')
@@ -126,26 +121,18 @@ async function lint(
 
   let rulesetPath = null
   if (typeof ruleset === 'string') {
-    rulesetPath = path.resolve(targetDir, ruleset)
+    if (config.isAbsoluteURL(ruleset)) {
+      rulesetPath = ruleset
+    } else {
+      rulesetPath = path.resolve(targetDir, ruleset)
+    }
   } else if (!ruleset) {
-    rulesetPath =
-      findConfig('repolint.json', { cwd: targetDir }) ||
-      findConfig('repolint.yaml', { cwd: targetDir }) ||
-      findConfig('repolint.yml', { cwd: targetDir }) ||
-      findConfig('repolinter.json', { cwd: targetDir }) ||
-      findConfig('repolinter.yaml', { cwd: targetDir }) ||
-      findConfig('repolinter.yml', { cwd: targetDir }) ||
-      path.join(__dirname, 'rulesets/default.json')
+    rulesetPath = config.findConfig(targetDir)
   }
+
   if (rulesetPath !== null) {
-    const extension = path.extname(rulesetPath)
     try {
-      const file = await fs.promises.readFile(rulesetPath, 'utf-8')
-      if (extension === '.yaml' || extension === '.yml') {
-        ruleset = yaml.safeLoad(file)
-      } else {
-        ruleset = JSON.parse(file)
-      }
+      ruleset = await config.loadConfig(rulesetPath)
     } catch (e) {
       return {
         params: {
@@ -164,8 +151,9 @@ async function lint(
       }
     }
   }
+
   // validate config
-  const val = await validateConfig(ruleset)
+  const val = await config.validateConfig(ruleset)
   if (!val.passed) {
     return {
       params: {
@@ -184,7 +172,7 @@ async function lint(
     }
   }
   // parse it
-  const configParsed = parseConfig(ruleset)
+  const configParsed = config.parseConfig(ruleset)
   // determine axiom targets
   /** @ignore @type {Object.<string, Result>} */
   let targetObj = {}
@@ -488,106 +476,10 @@ async function determineTargets(axiomconfig, fs) {
   }, {})
 }
 
-/**
- * Validate a repolint configuration against a known JSON schema
- *
- * @memberof repolinter
- * @param {Object} config The configuration to validate
- * @returns {Promise<Object>}
- * A object representing or not the config validation succeeded (passed)
- * an an error message if not (error)
- */
-async function validateConfig(config) {
-  // compile the json schema
-  const ajvProps = new Ajv()
-  // find all json schemas
-  const parsedRuleSchemas = Promise.all(
-    Rules.map(rs =>
-      jsonfile.readFile(path.resolve(__dirname, 'rules', `${rs}-config.json`))
-    )
-  )
-  const parsedFixSchemas = Promise.all(
-    Fixes.map(f =>
-      jsonfile.readFile(path.resolve(__dirname, 'fixes', `${f}-config.json`))
-    )
-  )
-  const allSchemas = (
-    await Promise.all([parsedFixSchemas, parsedRuleSchemas])
-  ).reduce((a, c) => a.concat(c), [])
-  // load them into the validator
-  for (const schema of allSchemas) {
-    ajvProps.addSchema(schema)
-  }
-  const validator = ajvProps.compile(
-    await jsonfile.readFile(require.resolve('./rulesets/schema.json'))
-  )
-
-  // validate it against the supplied ruleset
-  if (!validator(config)) {
-    return {
-      passed: false,
-      error: `Configuration validation failed with errors: \n${validator.errors
-        .map(e => `\tconfiguration${e.dataPath} ${e.message}`)
-        .join('\n')}`
-    }
-  } else {
-    return { passed: true }
-  }
-}
-
-/**
- * Parse a JSON object config (with repolinter.json structure) and return a list
- * of RuleInfo objects which will then be used to determine how to run the linter.
- *
- * @memberof repolinter
- * @param {Object} config The repolinter.json config
- * @returns {RuleInfo[]} The parsed rule data
- */
-function parseConfig(config) {
-  // check to see if the config has a version marker
-  // parse modern config
-  if (config.version === 2) {
-    return Object.entries(config.rules).map(
-      ([name, cfg]) =>
-        new RuleInfo(
-          name,
-          cfg.level,
-          cfg.where,
-          cfg.rule.type,
-          cfg.rule.options,
-          cfg.fix && cfg.fix.type,
-          cfg.fix && cfg.fix.options,
-          cfg.policyInfo,
-          cfg.policyUrl
-        )
-    )
-  }
-  // parse legacy config
-  // old format of "axiom": { "rule-name:rule-type": ["level", { "configvalue": false }]}
-  return (
-    Object.entries(config.rules)
-      // get axioms
-      .map(([where, rules]) => {
-        // get the rules in each axiom
-        return Object.entries(rules).map(([rulename, configray]) => {
-          const [name, type] = rulename.split(':')
-          return new RuleInfo(
-            name,
-            configray[0],
-            where === 'all' ? [] : [where],
-            type || name,
-            configray[1] || {}
-          )
-        })
-      })
-      .reduce((a, c) => a.concat(c))
-  )
-}
-
 module.exports.runRuleset = runRuleset
 module.exports.determineTargets = determineTargets
-module.exports.validateConfig = validateConfig
-module.exports.parseConfig = parseConfig
+module.exports.validateConfig = config.validateConfig
+module.exports.parseConfig = config.parseConfig
 module.exports.shouldRuleRun = shouldRuleRun
 module.exports.lint = lint
 module.exports.Result = Result
