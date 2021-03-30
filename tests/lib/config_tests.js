@@ -78,6 +78,46 @@ describe('lib', () => {
         expect(actual.rules['test-file-exists'].level).to.equals('error')
       })
 
+      it('should handle relative file extends', async () => {
+        const actual = await Config.loadConfig(
+          path.join(__dirname, 'repolinter.yaml')
+        )
+        expect(actual.rules).to.have.property('test-file-exists')
+        expect(actual.rules['test-file-exists'].level).to.equals('error')
+      })
+
+      it('should handle relative URL extends', async () => {
+        server.on(serveDirectory(__dirname))
+        const actual = await Config.loadConfig(
+          'http://localhost:9000/repolinter.yaml'
+        )
+        expect(actual.rules).to.have.property('test-file-exists')
+        expect(actual.rules['test-file-exists'].level).to.equals('error')
+      })
+
+      it('should handle absolute URL extends', async () => {
+        server.on(serveDirectory(__dirname))
+        const actual = await Config.loadConfig(
+          path.join(__dirname, 'absolute-override.yaml')
+        )
+        expect(actual.rules).to.have.property('test-file-exists')
+        expect(actual.rules['test-file-exists'].level).to.equals('off')
+      })
+
+      it('should detect loops in extended rulesets', async () => {
+        const loopSelf = await Config.loadConfig(
+          path.join(__dirname, 'loop-self.yaml')
+        )
+        expect(loopSelf.rules).to.have.property('test-file-exists')
+        expect(loopSelf.rules['test-file-exists'].level).to.equals('error')
+
+        const loopB = await Config.loadConfig(
+          path.join(__dirname, 'loop-b.yaml')
+        )
+        expect(loopB.rules).to.have.property('test-file-exists')
+        expect(loopB.rules['test-file-exists'].level).to.equals('off')
+      })
+
       it('should throw error on non existant file', async () => {
         expect(Config.loadConfig('/does-not-exist')).to.eventually.throw(
           'ENOENT'
