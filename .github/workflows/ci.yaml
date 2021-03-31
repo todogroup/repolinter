@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: Setup Ruby
         if: ${{ runner.os != 'Windows' }}
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.6'
 
@@ -162,7 +162,7 @@ jobs:
       - name: Gather Docker Labels
         if: steps.semantic.outputs.new_release_published == 'true'
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1.12.0
+        uses: crazy-max/ghaction-docker-meta@v2
         with:
           images: ghcr.io/${{ github.repository }}
 
