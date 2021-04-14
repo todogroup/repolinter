@@ -1,0 +1,9 @@
+name: repolinter
+on: [push, pull_request]
+
+jobs:
+  repolinter:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: newrelic/repolinter-action@0e463abe6d591be494272ebb50a536dcb270bcfe #v1.6.5
