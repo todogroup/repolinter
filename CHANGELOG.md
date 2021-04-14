@@ -1,3 +1,10 @@
+# [0.11.0](https://github.com/todogroup/repolinter/compare/v0.10.1...v0.11.0) (2021-04-14)
+
+
+### Features
+
+* add support for inheriting rulesets ([#207](https://github.com/todogroup/repolinter/issues/207)) ([ca1ae01](https://github.com/todogroup/repolinter/commit/ca1ae01996bbf30c687126fe51d84c4f2b979f7e)), closes [#21](https://github.com/todogroup/repolinter/issues/21)
+
 ## [0.10.1](https://github.com/todogroup/repolinter/compare/v0.10.0...v0.10.1) (2021-03-25)
 
 
