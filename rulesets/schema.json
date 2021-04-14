@@ -14,6 +14,10 @@
     "properties": {
       "$schema": { "type": "string" },
       "version": { "const": 2 },
+      "extends": {
+        "type": "string",
+        "title": "URL or path of ruleset file this ruleset extends"
+      },
       "axioms": {
         "type": "object",
         "title": "The axioms schema",

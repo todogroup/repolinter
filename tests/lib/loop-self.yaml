@@ -1,0 +1,6 @@
+$schema: "../../rulesets/schema.json"
+extends: "./loop-self.yaml"
+version: 2
+rules:
+  test-file-exists:
+    level: error

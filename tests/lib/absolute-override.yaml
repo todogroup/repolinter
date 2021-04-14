@@ -1,0 +1,6 @@
+$schema: "../../rulesets/schema.json"
+extends: "http://localhost:9000/default.json"
+version: 2
+rules:
+  test-file-exists:
+    level: off
