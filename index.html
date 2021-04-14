@@ -235,6 +235,36 @@
               
                 
                 <li><a
+                  href='#isabsoluteurl'
+                  class="">
+                  isAbsoluteURL
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#findconfig'
+                  class="">
+                  findConfig
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#loadconfig'
+                  class="">
+                  loadConfig
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#resulttarget'
                   class="">
                   ResultTarget
@@ -612,6 +642,39 @@ This Repolinter run generated the following results:
     <span class="hljs-bullet">-</span> <span class="hljs-string">contributors&lt;200</span>
     <span class="hljs-attr">rule:</span>
       <span class="hljs-string">...</span></pre>
+<h3>Extending Rulesets</h3>
+<p>A ruleset can extend another ruleset, in which case the two files will be
+recursively merged. Extended rulesets can themselves extend additional rulesets
+up to 20 rulesets deep.</p>
+<p>Extend a ruleset by including an "extends" top-level key which identifies a URL
+or file path:</p>
+<pre class='hljs'>{
+  "extends": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/default.json"
+  "rules": {
+    # disable CI check
+    "integrates-with-ci": {
+      "level": "off"
+    }
+  }
+}</pre>
+<pre class='hljs'><span class="hljs-attr">extends:</span> <span class="hljs-string">https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/default.json</span>
+<span class="hljs-attr">rules:</span>
+  <span class="hljs-comment"># disable CI check</span>
+  <span class="hljs-string">integrates-with-ci</span>
+    <span class="hljs-attr">level:</span> <span class="hljs-string">off</span>
+    <span class="hljs-string">...</span></pre>
+<p>Relative paths are resolved relative to the location used to access the
+extending file.  For example, if repolinter is invoked as:</p>
+<pre><code>repolinter -u http://example.com/custom-rules.yaml
+</code></pre>
+<p>And that ruleset includes <code>extends: "./default.yaml"</code>, the path will be resolved
+relative to the original URL as <code>http://example.com/default.yaml</code>.  If instead
+repolinter is invoked as:</p>
+<pre><code>repolinter -r /etc/repolinter/custom-rules.yaml
+</code></pre>
+<p>And that ruleset includes <code>extends: "./default.yaml"</code>, the path will be resolved
+relative to the original file path as <code>/etc/repolinter/default.yaml</code>.</p>
+<p>YAML and JSON rulesets can be extended from either format.</p>
 <h2>API</h2>
 <p>Repolinter also includes an extensible JavaScript API:</p>
 <pre class='hljs'><span class="hljs-keyword">const</span> repolinter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'repolinter'</span>)
@@ -2440,7 +2503,7 @@ a list of objects with the output of the linter rules</p>
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         A object representing or not the config validation succeeded (passed)
-an an error message if not (error)
+or an error message if not (error)
 
       
     
@@ -4278,6 +4341,245 @@ from results.</p>
 
   
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='isabsoluteurl'>
+      isAbsoluteURL
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Determine if provided string is an absolute URL.  That is, if it is
+parseable and has a 'host' URL component.</p>
+
+    <div class='pre p1 fill-light mt0'>isAbsoluteURL(url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    string to test
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        true if the string is an absolute URL
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='findconfig'>
+      findConfig
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Find a repolinter config file in the specified directory. This looks for
+files named repolint or repolinter with a file extension of .json, .yaml, or
+.yml in the specified directory or the nearest ancestor directory.  If no
+file is found, the default configuration that ships with repolinter is
+returned.</p>
+
+    <div class='pre p1 fill-light mt0'>findConfig(directory: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>directory</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+	    directory to search for config files in
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>:
+        absolute path of configuration file
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='loadconfig'>
+      loadConfig
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Load a ruleset config from the specified location.</p>
+
+    <div class='pre p1 fill-light mt0'>loadConfig(configLocation: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, processed: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>configLocation</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    A URL or local file containing a repolinter config file
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>processed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>?
+            = <code>[]</code>)</code>
+	    List of config files already processed, used to prevent loops
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+        The loaded repolinter json config
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>any: Will throw an error if unable to parse config or if config is invalid
+</li>
+      
+    </ul>
   
 
   
