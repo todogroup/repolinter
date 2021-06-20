@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const Result = require('../lib/result')
+const InternalHelpers = require('./helpers/github-issue-create-helpers')
 // eslint-disable-next-line no-unused-vars
 const { Octokit } = require('@octokit/rest')
 let targetOrg = ''
@@ -52,7 +53,7 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
     const issue = openIssues[i]
     // Issue is open, check body and find what rules have been broken.
     // If the rule that has been broken, is already listed in the issue body/title, do nothing
-    const ruleIdentifier = retrieveRuleIdentifier(issue.body)
+    const ruleIdentifier = InternalHelpers.retrieveRuleIdentifier(issue.body)
     if (ruleIdentifier === options.uniqueRuleId) {
       return new Result(
         `No Github Issue Created - Issue already exists with correct unique identifier`,
@@ -65,11 +66,11 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
   const closedIssues = issues.filter(issue => issue.state === 'closed')
   for (let i = 0; i < closedIssues.length; i++) {
     const issue = closedIssues[i]
-    const ruleIdentifier = retrieveRuleIdentifier(issue.body)
+    const ruleIdentifier = InternalHelpers.retrieveRuleIdentifier(issue.body)
 
     if (ruleIdentifier === options.uniqueRuleId) {
       // This means that there is regression, we should update the issue with new body and comment on it.
-      if (hasBypassLabelBeenApplied(options, issue.labels)) {
+      if (InternalHelpers.hasBypassLabelBeenApplied(options, issue.labels)) {
         // Bypass label has been seen for this issue, we can ignore it.
         return new Result(
           `Rule fix failed as Github Issue ${issue.number} has bypass label.`,
@@ -95,41 +96,6 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
   // Issue should include the broken rule, a message in the body and a label.
   const newIssue = await createIssueOnGithub(options)
   return new Result(`Github Issue ${newIssue.number} Created!`, targets, true)
-}
-
-/**
- * Check if the bypass label has been found.
- *
- * @param {object} options The rule configuration.
- * @param {string[]} labels The labels of the issue to match against.
- * @returns {boolean} True if bypass label is found, false otherwise.
- */
-function hasBypassLabelBeenApplied(options, labels) {
-  for (let index = 0; index < labels.length; index++) {
-    const label = labels[index]
-    if (label.name === options.bypassLabel) {
-      // Set bypass label to true as it has been seen for this issue
-      return true
-    }
-  }
-  return false
-}
-
-/**
- * Check if the unique rule id can be found in the issue body.
- *
- * @param {string} body The body of the issue.
- * @returns {string} Returns the rule identifier as a string that was found in the issue body.
- * @returns {null} Returns null if no rule identifier can be found in the issue body.
- */
-function retrieveRuleIdentifier(body) {
-  if (body.includes('Unique rule set ID: ')) {
-    const ruleIdentifier = body.split('Unique rule set ID: ')[1]
-    return ruleIdentifier
-  } else {
-    console.error('No rule identifier found, was the issue modified manually?')
-    return null
-  }
 }
 
 /**
