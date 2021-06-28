@@ -54,8 +54,7 @@
     "nock": "^13.0.5",
     "node-fetch": "^2.6.0",
     "rimraf": "^3.0.2",
-    "simple-git": "^2.25.0",
-    "standardjs": "^1.0.0-alpha",
+    "simple-git": "^3.3.0",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
@@ -76,7 +75,7 @@
     "gh-pages": "^3.1.0",
     "markdown-toc": "^1.2.0",
     "markdownlint": "^0.20.4",
-    "mocha": "^8.2.1",
+    "mocha": "^8.4.0",
     "mock-http-server": "^1.4.2",
     "nyc": "^15.1.0",
     "prettier": "2.2.0",

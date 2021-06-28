@@ -62,7 +62,9 @@
                 },
                 {
                   "if": {
-                    "properties": { "type": { "const": "bespractices-badge-present" } }
+                    "properties": {
+                      "type": { "const": "bespractices-badge-present" }
+                    }
                   },
                   "then": {
                     "properties": {
@@ -117,10 +119,16 @@
                   }
                 },
                 {
-                  "if": { "properties": { "type": { "const": "file-no-broken-links" } } },
+                  "if": {
+                    "properties": {
+                      "type": { "const": "file-no-broken-links" }
+                    }
+                  },
                   "then": {
                     "properties": {
-                      "options": { "$ref": "../rules/file-no-broken-links-config.json" }
+                      "options": {
+                        "$ref": "../rules/file-no-broken-links-config.json"
+                      }
                     }
                   }
                 },
@@ -273,7 +281,9 @@
                   },
                   "then": {
                     "properties": {
-                      "options": { "$ref": "https://raw.githubusercontent.com/philips-labs/repolinter/feature/github-issue-fix/fixes/github-issue-create-config.json" }
+                      "options": {
+                        "$ref": "../fixes/github-issue-create-config.json"
+                      }
                     }
                   }
                 }
