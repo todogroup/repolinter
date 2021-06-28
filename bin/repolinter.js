@@ -6,10 +6,8 @@ const repolinter = require('..')
 const rimraf = require('rimraf')
 const git = require('simple-git/promise')()
 /** @type {any} */
-const fetch = require('node-fetch')
 const fs = require('fs')
 const os = require('os')
-const yaml = require('js-yaml')
 
 // eslint-disable-next-line no-unused-expressions
 require('yargs')
@@ -65,47 +63,6 @@ require('yargs')
         })
     },
     async (/** @type {any} */ argv) => {
-      let rulesetParsed = null
-      let jsonerror
-      let yamlerror
-      // resolve the ruleset if a url is specified
-      if (argv.rulesetUrl) {
-        const res = await fetch(argv.rulesetUrl)
-        if (!res.ok) {
-          console.error(
-            `Failed to fetch config from ${argv.rulesetUrl} with status code ${res.status}`
-          )
-          process.exitCode = 1
-          return
-        }
-        const data = await res.text()
-        // attempt to parse as JSON
-        try {
-          rulesetParsed = JSON.parse(data)
-        } catch (e) {
-          jsonerror = e
-        }
-        // attempt to parse as YAML
-        if (!rulesetParsed) {
-          try {
-            rulesetParsed = yaml.safeLoad(data)
-          } catch (e) {
-            yamlerror = e
-          }
-        }
-        // throw an error if neither worked
-        if (!rulesetParsed) {
-          console.log(`Failed to fetch ruleset from URL ${argv.rulesetUrl}:`)
-          console.log(
-            `\tJSON failed with error ${jsonerror && jsonerror.toString()}`
-          )
-          console.log(
-            `\tYAML failed with error ${yamlerror && yamlerror.toString()}`
-          )
-          process.exitCode = 1
-          return
-        }
-      }
       let tmpDir = null
       // temporarily clone a git repo to lint
       if (argv.git) {
@@ -124,7 +81,7 @@ require('yargs')
       const output = await repolinter.lint(
         tmpDir || path.resolve(process.cwd(), argv.directory),
         argv.allowPaths,
-        rulesetParsed || argv.rulesetFile,
+        argv.rulesetUrl || argv.rulesetFile,
         argv.dryRun
       )
       // create the output

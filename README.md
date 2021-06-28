@@ -320,6 +320,56 @@ rules:
       ...
 ```
 
+### Extending Rulesets
+
+A ruleset can extend another ruleset, in which case the two files will be
+recursively merged. Extended rulesets can themselves extend additional rulesets
+up to 20 rulesets deep.
+
+Extend a ruleset by including an "extends" top-level key which identifies a URL
+or file path:
+
+```JavaScript
+{
+  "extends": "https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/default.json"
+  "rules": {
+    # disable CI check
+    "integrates-with-ci": {
+      "level": "off"
+    }
+  }
+}
+```
+
+```YAML
+extends: https://raw.githubusercontent.com/todogroup/repolinter/master/rulesets/default.json
+rules:
+  # disable CI check
+  integrates-with-ci
+    level: off
+    ...
+```
+
+Relative paths are resolved relative to the location used to access the
+extending file.  For example, if repolinter is invoked as:
+
+```
+repolinter -u http://example.com/custom-rules.yaml
+```
+
+And that ruleset includes `extends: "./default.yaml"`, the path will be resolved
+relative to the original URL as `http://example.com/default.yaml`.  If instead
+repolinter is invoked as:
+
+```
+repolinter -r /etc/repolinter/custom-rules.yaml
+```
+
+And that ruleset includes `extends: "./default.yaml"`, the path will be resolved
+relative to the original file path as `/etc/repolinter/default.yaml`.
+
+YAML and JSON rulesets can be extended from either format.
+
 ## API
 
 Repolinter also includes an extensible JavaScript API:

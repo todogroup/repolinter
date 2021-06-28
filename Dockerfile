@@ -37,7 +37,7 @@ RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-FROM python:2.7-slim as python-deps
+FROM python:3.9-slim as python-deps
 
 # docutils for github-markup
 RUN python -m pip install --upgrade pip && \

@@ -1,3 +1,17 @@
+## [0.11.1](https://github.com/todogroup/repolinter/compare/v0.11.0...v0.11.1) (2021-04-14)
+
+
+### Bug Fixes
+
+* update github-markup to remove python2 dependency ([#209](https://github.com/todogroup/repolinter/issues/209)) ([0c7c50c](https://github.com/todogroup/repolinter/commit/0c7c50c41b620f876d1da84318800a9dde9cc9d6))
+
+# [0.11.0](https://github.com/todogroup/repolinter/compare/v0.10.1...v0.11.0) (2021-04-14)
+
+
+### Features
+
+* add support for inheriting rulesets ([#207](https://github.com/todogroup/repolinter/issues/207)) ([ca1ae01](https://github.com/todogroup/repolinter/commit/ca1ae01996bbf30c687126fe51d84c4f2b979f7e)), closes [#21](https://github.com/todogroup/repolinter/issues/21)
+
 ## [0.10.1](https://github.com/todogroup/repolinter/compare/v0.10.0...v0.10.1) (2021-03-25)
 
 

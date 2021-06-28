@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -41,7 +41,7 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         uses: actions/setup-python@v2
         with:
-          python-version: '2.x'
+          python-version: '3.x'
 
       - name: Install docutils for Github-Markup
         if: ${{ runner.os != 'Windows' }}
@@ -61,25 +61,10 @@ jobs:
 
       - name: Setup Ruby
         if: ${{ runner.os != 'Windows' }}
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.6'
-
-      - name: Cache Ruby Gems
-        if: ${{ runner.os != 'Windows' }}
-        uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-
-      - name: Install Ruby Dependencies
-        if: ${{ runner.os != 'Windows' }}
-        run: |
-          gem install --no-document bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Run Test
         if: ${{ runner.os != 'Windows' }}
@@ -162,7 +147,7 @@ jobs:
       - name: Gather Docker Labels
         if: steps.semantic.outputs.new_release_published == 'true'
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1.12.0
+        uses: crazy-max/ghaction-docker-meta@v2
         with:
           images: ghcr.io/${{ github.repository }}
 

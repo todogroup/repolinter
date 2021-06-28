@@ -1,0 +1,16 @@
+{
+  "$schema": "../../rulesets/schema.json",
+  "version": 2,
+  "axioms": {},
+  "rules": {
+    "test-file-exists": {
+      "level": "error",
+      "rule": {
+        "type": "file-existence",
+        "options": {
+          "globsAny": ["text_file_for_test.txt"]
+        }
+      }
+    }
+  }
+}

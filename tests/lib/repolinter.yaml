@@ -1,0 +1,3 @@
+$schema: "../../rulesets/schema.json"
+extends: "./default.json"
+version: 2
