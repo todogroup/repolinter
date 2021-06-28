@@ -17,33 +17,38 @@ let targetRepository = ''
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<Result>} The fix result
  */
-async function createGithubIssue(fs, options, targets, dryRun = false)
-{
-  try
-  {
-    try
-    {
+async function createGithubIssue(fs, options, targets, dryRun = false) {
+  try {
+    try {
       await prepareWorkingEnvironment(dryRun)
-    } catch (error)
-    {
+    } catch (error) {
       return new Result(error.message, [], false)
     }
 
     // Create Labels
     const labels = options.issueLabels
     labels.push(options.bypassLabel)
-    await InternalHelpers.ensureAddedGithubLabels(labels, targetOrg, targetRepository, this.Octokit)
+    await InternalHelpers.ensureAddedGithubLabels(
+      labels,
+      targetOrg,
+      targetRepository,
+      this.Octokit
+    )
     options.issueLabels = options.issueLabels.filter(
       label => label !== options.bypassLabel
     )
 
     // Find issues created by Repolinter
-    const issues = await InternalHelpers.findExistingRepolinterIssues(options, targetOrg, targetRepository, this.Octokit)
+    const issues = await InternalHelpers.findExistingRepolinterIssues(
+      options,
+      targetOrg,
+      targetRepository,
+      this.Octokit
+    )
 
     // If there are no issues, create one.
     // If there are issues, we loop through them and handle each each on it's own
-    if (issues === null || issues === undefined)
-    {
+    if (issues === null || issues === undefined) {
       // Issue should include the broken rule, a message in the body and a label.
       const createdIssue = await createIssueOnGithub(options)
       // We are done here, we created a new issue.
@@ -55,52 +60,44 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
     }
 
     const openIssues = issues.filter(issue => issue.state === 'open')
-    for (let i = 0; i < openIssues.length; i++)
-    {
+    for (let i = 0; i < openIssues.length; i++) {
       const issue = openIssues[i]
       // Issue is open, check body and find what rules have been broken.
       // If the rule that has been broken, is already listed in the issue body/title, do nothing
       const ruleIdentifier = InternalHelpers.retrieveRuleIdentifier(issue.body)
-      if (ruleIdentifier === options.uniqueRuleId)
-      {
-        if (InternalHelpers.hasBypassLabelBeenApplied(options, issue.labels))
-        {
+      if (ruleIdentifier === options.uniqueRuleId) {
+        if (InternalHelpers.hasBypassLabelBeenApplied(options, issue.labels)) {
           // Bypass label has been seen for this issue, we can ignore it.
           return new Result(
             `Rule fix failed as Github Issue ${issue.number} has bypass label.`,
             [],
             true
           )
-        } else
-        {
-        return new Result(
-          `No Github Issue Created - Issue already exists with correct unique identifier`,
-          [],
-          true
-        )
+        } else {
+          return new Result(
+            `No Github Issue Created - Issue already exists with correct unique identifier`,
+            [],
+            true
+          )
         }
       }
     }
 
     const closedIssues = issues.filter(issue => issue.state === 'closed')
-    for (let i = 0; i < closedIssues.length; i++)
-    {
+    for (let i = 0; i < closedIssues.length; i++) {
       const issue = closedIssues[i]
       const ruleIdentifier = InternalHelpers.retrieveRuleIdentifier(issue.body)
 
-      if (ruleIdentifier === options.uniqueRuleId)
-      {
+      if (ruleIdentifier === options.uniqueRuleId) {
         // This means that there is regression, we should update the issue with new body and comment on it.
-        if (InternalHelpers.hasBypassLabelBeenApplied(options, issue.labels))
-        {
+        if (InternalHelpers.hasBypassLabelBeenApplied(options, issue.labels)) {
           // Bypass label has been seen for this issue, we can ignore it.
           return new Result(
             `Rule fix failed as Github Issue ${issue.number} has bypass label.`,
             [],
             true
           )
-        } else
-        {
+        } else {
           await updateIssueOnGithub(options, issue.number)
           await commentOnGithubIssue(options, issue.number)
           return new Result(
@@ -109,8 +106,7 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
             true
           )
         }
-      } else
-      {
+      } else {
         console.log(
           'Issue: ' + issue.number + ' - No matching rule identifier was found'
         )
@@ -119,15 +115,15 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
     // There are open/closed issues from Continuous Compliance, but non of them are for this ruleset
     // Issue should include the broken rule, a message in the body and a label.
     const newIssue = await createIssueOnGithub(options)
-    return new Result(`Github Issue ${newIssue.data.number} Created!`, targets, true)
-  }
-  catch (e)
-  {
+    return new Result(
+      `Github Issue ${newIssue.data.number} Created!`,
+      targets,
+      true
+    )
+  } catch (e) {
     console.error(e)
   }
 }
-
-
 
 /**
  * Create an issue on Github with labels and all on the target repository.
@@ -135,10 +131,8 @@ async function createGithubIssue(fs, options, targets, dryRun = false)
  * @param {object} options The rule configuration.
  * @returns {object} Returns issue after adding it via the Github API.
  */
-async function createIssueOnGithub(options)
-{
-  try
-  {
+async function createIssueOnGithub(options) {
+  try {
     const issueBodyWithId = options.issueBody.concat(
       `\n Unique rule set ID: ${options.uniqueRuleId}`
     )
@@ -149,8 +143,7 @@ async function createIssueOnGithub(options)
       body: issueBodyWithId,
       labels: options.issueLabels
     })
-  } catch (e)
-  {
+  } catch (e) {
     console.error(e)
   }
 }
@@ -162,10 +155,8 @@ async function createIssueOnGithub(options)
  * @param {string} issueNumber The number of the issue we should update.
  * @returns {object} Returns issue after updating it via the Github API.
  */
-async function updateIssueOnGithub(options, issueNumber)
-{
-  try
-  {
+async function updateIssueOnGithub(options, issueNumber) {
+  try {
     const issueBodyWithId = options.issueBody.concat(
       `\n Unique rule set ID: ${options.uniqueRuleId}`
     )
@@ -181,8 +172,7 @@ async function updateIssueOnGithub(options, issueNumber)
         state: 'open'
       }
     )
-  } catch (e)
-  {
+  } catch (e) {
     console.error(e)
   }
 }
@@ -194,10 +184,8 @@ async function updateIssueOnGithub(options, issueNumber)
  * @param {string} issueNumber The number of the issue we should update.
  * @returns {object} Returns issue after commenting on it via the Github API.
  */
-async function commentOnGithubIssue(options, issueNumber)
-{
-  try
-  {
+async function commentOnGithubIssue(options, issueNumber) {
+  try {
     return await this.Octokit.request(
       'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
       {
@@ -207,52 +195,43 @@ async function commentOnGithubIssue(options, issueNumber)
         body: options.commentBody
       }
     )
-  } catch (e)
-  {
+  } catch (e) {
     console.error(e)
   }
 }
 
-
 /**
  * Prepare our working environment.
  * Check if environment variables are set.
+ * @param {string} dryRun Enable this if you want to test without configuring environment variables
  * Set constants like targetOrg and targetRepository and initialize OctoKit.
  *
  */
-async function prepareWorkingEnvironment(dryRun)
-{
-  if (!dryRun)
-  {
+async function prepareWorkingEnvironment(dryRun) {
+  if (!dryRun) {
     const targetRepoEnv = process.env.TARGET_REPO
     const authTokenEnv = process.env.GITHUB_TOKEN
-    if (authTokenEnv === undefined || targetRepoEnv === undefined)
-    {
+    if (authTokenEnv === undefined || targetRepoEnv === undefined) {
       throw new Error(
         'Could not perform fix due to missing/invalid environment variables! Please set TARGET_REPO and GITHUB_TOKEN environment variables.'
       )
     }
     targetOrg = targetRepoEnv.split('/')[0]
     targetRepository = targetRepoEnv.split('/')[1]
-    // Prepare
     this.Octokit = new Octokit({
       auth: authTokenEnv,
       baseUrl: 'https://api.github.com',
       owner: targetOrg,
       repo: targetRepository
     })
-  } else
-  {
+  } else {
     targetOrg = 'test'
     targetRepository = 'tester-repo'
-    // Prepare
     this.Octokit = new Octokit({
       auth: 'fake',
-      baseUrl: 'https://api.github.com',
+      baseUrl: 'https://api.github.com'
     })
   }
-
-
 }
 
 module.exports = createGithubIssue
