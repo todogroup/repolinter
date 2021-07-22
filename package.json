@@ -53,7 +53,6 @@
     "node-fetch": "^2.6.0",
     "rimraf": "^3.0.2",
     "simple-git": "^2.25.0",
-    "standardjs": "^1.0.0-alpha",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
