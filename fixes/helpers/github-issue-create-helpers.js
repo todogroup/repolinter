@@ -64,7 +64,7 @@ async function ensureAddedGithubLabels(
         })
       }
     } catch (error) {
-      if (error.status != 422 && error.errors[0].code != 'already_exists') {
+      if (error.status != 422 && errors.errors != undefined && error.errors[0].code != 'already_exists') {
         console.error(error)
       }
     }
