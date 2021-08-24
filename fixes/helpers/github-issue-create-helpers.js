@@ -64,7 +64,9 @@ async function ensureAddedGithubLabels(
         })
       }
     } catch (error) {
-      console.error(error)
+      if (error.status != 422 && error.errors[0].code != 'already_exists') {
+        console.error(error)
+      }
     }
   }
 }
@@ -89,9 +91,8 @@ async function doesLabelExistOnRepo(targetOrg, repo, label, octokit) {
   } catch (error) {
     if (error.status === 404) {
       return false
-    } else {
-      console.error(error)
     }
+    console.error(error)
   }
   return true
 }
