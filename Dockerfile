@@ -10,49 +10,52 @@
 #
 #   docker run -t repolinter --git https://github.com/username/repo.git
 #
+FROM node:buster
 
-ARG RUNTIME_DEPS="git libicu-dev perl"
-ARG BUILD_DEPS="make build-essential cmake pkg-config zlib1g-dev libcurl4-openssl-dev libssl-dev libldap2-dev libidn11-dev"
+ARG RUNTIME_DEPS="git libicu-dev perl python3 ruby-full locales patch ruby-dev"
+ARG BUILD_DEPS="make autoconf automake python3-pip curl liblzma-dev build-essential cmake pkg-config zlib1g-dev libcurl4-openssl-dev libssl-dev libldap2-dev libidn11-dev"
+ARG NODE_VERSION="lts/fermium"
 
-FROM ruby:2.6-slim as ruby-deps
-ARG RUNTIME_DEPS
-ARG BUILD_DEPS
+## Image Building ##
 
-# set to always UTF8
-ENV LANG=C.UTF-8
+# update image
+RUN apt-get update && apt-get -y upgrade
 
-# Install build deps
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y $RUNTIME_DEPS $BUILD_DEPS && \
-    gem update --system --silent
+# Install APT deps
+RUN apt-get install --no-install-recommends -y $BUILD_DEPS $RUNTIME_DEPS
+
+# Install Bundler
+RUN gem install bundler
+
+# Link python3 as default
+RUN ln -sf /usr/bin/python3 /usr/bin/python; \
+  ln -sf /usr/bin/pip3 /usr/bin/pip;
+
+# Configure Git
+RUN git config --global user.name "repolinter docker" && \
+  git config --global user.email "repolinter@docker.container"
+
+## Language Dependencies ##
+
+WORKDIR /app
 
 # Install ruby gems
-WORKDIR /app
 COPY Gemfile* ./
 RUN bundle config path vendor/bundle && \
-    bundle install --jobs 4 --retry 3
-
-# cleanup
-RUN apt-get remove -y $BUILD_DEPS && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
-
-FROM python:3.9-slim as python-deps
+  bundle install --jobs 4 --retry 3
 
 # docutils for github-markup
 RUN python -m pip install --upgrade pip && \
-    pip install docutils
-
-FROM node:lts-slim
-
-# Copy Ruby dependencies
-COPY --from=ruby-deps . .
-COPY --from=python-deps . .
+  pip install docutils
 
 # Install node_modules
-WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
+
+# cleanup
+RUN apt-get remove -y $BUILD_DEPS && \
+  apt-get autoremove -y && \
+  rm -rf /var/lib/apt/lists/*
 
 # move the rest of the project over
 COPY . .
