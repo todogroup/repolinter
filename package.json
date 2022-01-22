@@ -50,7 +50,7 @@
     "log-symbols": "^4.0.0",
     "matched": "^5.0.1",
     "nock": "^13.0.5",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "rimraf": "^3.0.2",
     "simple-git": "^2.25.0",
     "yargs": "^15.4.1"
