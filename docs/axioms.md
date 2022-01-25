@@ -76,4 +76,4 @@ An example of using this axiom:
 
 ### `packagers`
 
-This axiom detects the projects packaging system by looking for project metadata files such as the [package.json](https://docs.npmjs.com/files/package.json). The list of detectable packaging systems can be found in the [axiom source](../../axioms/packagers.js).
+This axiom detects the projects packaging system by looking for project metadata files such as the [package.json](https://docs.npmjs.com/files/package.json). The list of detectable packaging systems can be found in the [axiom source](../axioms/packagers.js).
