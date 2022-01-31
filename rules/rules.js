@@ -3,6 +3,7 @@
 
 module.exports = [
   'apache-notice',
+  'best-practices-badge-present',
   'directory-existence',
   'file-contents',
   'file-existence',
