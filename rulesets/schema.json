@@ -62,6 +62,18 @@
                 },
                 {
                   "if": {
+                    "properties": { "type": { "const": "bespractices-badge-present" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": {
+                        "$ref": "../rules/best-practices-badge-present-config.json"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
                     "properties": { "type": { "const": "directory-existence" } }
                   },
                   "then": {

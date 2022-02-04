@@ -22,6 +22,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`git-working-tree`](#git-working-tree)
   - [`json-schema-passes`](#json-schema-passes)
   - [`license-detectable-by-licensee`](#license-detectable-by-licensee)
+  - [`best-practices-badge-present`](#best-practices-badge-present)
 
 ## Reference
 
@@ -195,3 +196,11 @@ Checks if a given file matches a provided [JSON schema](https://json-schema.org/
 ### `license-detectable-by-licensee`
 
 Fails if Licensee doesn't detect the repository's license. This rule takes no inputs, but requires `licensee` in the path, see [command line dependencies](#command-line-dependencies) for details.
+
+### `best-practices-badge-present`
+
+Check Best Practices Badge is present in README. Optionally check a certain badge level is accomplished.
+
+| Input        | Required | Type       | Default | Description                                                        |
+| ------------ | -------- | ---------- | ------- | ------------------------------------------------------------------ |
+| `minPercentage` | No       | `integer`  | `null` | Minimum [Tiered Percentage](https://github.com/coreinfrastructure/best-practices-badge/blob/main/doc/api.md#tiered-percentage-in-openssf-best-practices-badge) accomplished by project. `passing=100`, `silver=200`, `gold=300`, set to `0` or `null` to disable check. |
