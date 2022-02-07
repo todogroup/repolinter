@@ -104,6 +104,7 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @param {string[]} [filterPaths] A list of directories to allow linting of, or [] for all.
  * @param {Object|string|null} [ruleset] A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
  * Set to null for repolinter to automatically find it in the repository.
+ * @param {boolean} [encodedIsUsed] If true, repolinter expects base64 encoded string in the ruleset, we will decode the base64 encoded ruleset.
  * @param {boolean} [dryRun] If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<LintResult>} An object representing the output of the linter
  */
@@ -111,6 +112,7 @@ async function lint(
   targetDir,
   filterPaths = [],
   ruleset = null,
+  encodedIsUsed = false,
   dryRun = false
 ) {
   const fileSystem = new FileSystem()
@@ -120,36 +122,40 @@ async function lint(
   }
 
   let rulesetPath = null
-  if (typeof ruleset === 'string') {
-    if (config.isAbsoluteURL(ruleset)) {
-      rulesetPath = ruleset
-    } else {
-      rulesetPath = path.resolve(targetDir, ruleset)
+  if (!encodedIsUsed) {
+    if (typeof ruleset === 'string') {
+      if (config.isAbsoluteURL(ruleset)) {
+        rulesetPath = ruleset
+      } else {
+        rulesetPath = path.resolve(targetDir, ruleset)
+      }
+    } else if (!ruleset) {
+      rulesetPath = config.findConfig(targetDir)
     }
-  } else if (!ruleset) {
-    rulesetPath = config.findConfig(targetDir)
-  }
 
-  if (rulesetPath !== null) {
-    try {
-      ruleset = await config.loadConfig(rulesetPath)
-    } catch (e) {
-      return {
-        params: {
-          targetDir,
-          filterPaths,
-          rulesetPath,
-          ruleset
-        },
-        passed: false,
-        errored: true,
-        /** @ignore */
-        errMsg: e && e.toString(),
-        results: [],
-        targets: {},
-        formatOptions: ruleset && ruleset.formatOptions
+    if (rulesetPath !== null) {
+      try {
+        ruleset = await config.loadConfig(rulesetPath)
+      } catch (e) {
+        return {
+          params: {
+            targetDir,
+            filterPaths,
+            rulesetPath,
+            ruleset
+          },
+          passed: false,
+          errored: true,
+          /** @ignore */
+          errMsg: e && e.toString(),
+          results: [],
+          targets: {},
+          formatOptions: ruleset && ruleset.formatOptions
+        }
       }
     }
+  } else {
+    ruleset = await config.decodeConfig(ruleset)
   }
 
   // validate config
