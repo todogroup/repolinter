@@ -83,9 +83,9 @@ require('yargs')
           return
         }
       }
-      var encodedIsUsed = false;
+      var encodedIsUsed = false
       if (argv.rulesetEncoded) {
-        encodedIsUsed = true;
+        encodedIsUsed = true
       }
       // run the linter
       const output = await repolinter.lint(
