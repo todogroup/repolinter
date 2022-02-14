@@ -47,6 +47,12 @@ require('yargs')
             'Specify an alternate URL repolinter configuration to use (This will default to repolinter.json/repolinter.yaml at the root of the project, or the internal default ruleset if none is found).',
           type: 'string'
         })
+        .option('rulesetEncoded', {
+          alias: 'c',
+          describe:
+            'Specify a base64 encoded ruleset that repolinter will decode and use instead.',
+          type: 'string'
+        })
         .option('git', {
           alias: 'g',
           describe:
@@ -77,11 +83,16 @@ require('yargs')
           return
         }
       }
+      var encodedIsUsed = false
+      if (argv.rulesetEncoded) {
+        encodedIsUsed = true
+      }
       // run the linter
       const output = await repolinter.lint(
         tmpDir || path.resolve(process.cwd(), argv.directory),
         argv.allowPaths,
-        argv.rulesetUrl || argv.rulesetFile,
+        argv.rulesetUrl || argv.rulesetFile || argv.rulesetEncoded,
+        encodedIsUsed,
         argv.dryRun
       )
       // create the output
