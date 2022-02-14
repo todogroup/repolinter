@@ -1,3 +1,10 @@
+## [0.11.2](https://github.com/todogroup/repolinter/compare/v0.11.1...v0.11.2) (2021-09-27)
+
+
+### Bug Fixes
+
+* update dockerfile to fix bad copying ([#224](https://github.com/todogroup/repolinter/issues/224)) ([92389be](https://github.com/todogroup/repolinter/commit/92389bec927d91c0220dd0f9f01d7c1a0c1148be))
+
 ## [0.11.1](https://github.com/todogroup/repolinter/compare/v0.11.0...v0.11.1) (2021-04-14)
 
 

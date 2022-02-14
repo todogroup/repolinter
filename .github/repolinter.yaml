@@ -1,0 +1,2 @@
+extends: https://raw.githubusercontent.com/todogroup/.github/master/repolinter-rules/default.yaml
+# Add custom repolinter rules here. Learn more at https://github.com/todogroup/repolinter
