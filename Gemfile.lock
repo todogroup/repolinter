@@ -7,9 +7,7 @@ GEM
     asciidoctor (2.0.12)
     builder (3.2.4)
     charlock_holmes (0.7.7)
-    commonmarker (0.21.2)
-      ruby-enum (~> 0.5)
-    concurrent-ruby (1.1.8)
+    commonmarker (0.23.4)
     creole (0.5.0)
     dotenv (2.7.6)
     escape_utils (1.2.1)
@@ -26,8 +24,6 @@ GEM
       rugged (>= 0.25.1)
     github-markup (4.0.0)
     htmlentities (4.3.4)
-    i18n (1.8.9)
-      concurrent-ruby (~> 1.0)
     idn-ruby (0.1.0)
     json (1.8.6)
     licensee (9.15.1)
@@ -53,8 +49,6 @@ GEM
       json (~> 1.4)
     reverse_markdown (1.4.0)
       nokogiri
-    ruby-enum (0.9.0)
-      i18n
     ruby2_keywords (0.0.4)
     rubypants (0.7.1)
     rugged (1.1.0)
@@ -81,7 +75,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth (~> 4.3)
   asciidoctor (~> 2.0)
-  commonmarker (~> 0.21.0)
+  commonmarker (~> 0.23.4)
   creole (~> 0.5.0)
   github-linguist (>= 7.12.1)
   github-markup (~> 4.0)
