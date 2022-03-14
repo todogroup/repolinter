@@ -80,7 +80,7 @@ require('yargs')
             console.log(`git.${method} ${stage} stage ${progress}% complete`)
           },
           timeout: {
-            block: 300000 // 5 minutes
+            block: 1000 // 1 second
           }
         }).clone(argv.directory, tmpDir, { '--depth': '2' })
         if (result) {
