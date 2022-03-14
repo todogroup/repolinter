@@ -4,7 +4,7 @@
 const path = require('path')
 const repolinter = require('..')
 const rimraf = require('rimraf')
-const git = require('simple-git/promise')()
+const simpleGit = require('simple-git')
 /** @type {any} */
 const fs = require('fs')
 const os = require('os')
@@ -75,7 +75,14 @@ require('yargs')
         tmpDir = await fs.promises.mkdtemp(
           path.join(os.tmpdir(), 'repolinter-')
         )
-        const result = await git.clone(argv.directory, tmpDir)
+        const result = await simpleGit({
+          progress({ method, stage, progress }) {
+            console.log(`git.${method} ${stage} stage ${progress}% complete`)
+          },
+          timeout: {
+            block: 1000 // 1 second
+          }
+        }).clone(argv.directory, tmpDir, { '--depth': '2' })
         if (result) {
           console.error(result)
           process.exitCode = 1
