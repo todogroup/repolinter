@@ -75,11 +75,11 @@ require('yargs')
         tmpDir = await fs.promises.mkdtemp(
           path.join(os.tmpdir(), 'repolinter-')
         )
-        const result = await git.clone(argv.directory, tmpDir)
+        const result = await git.clone(argv.directory, tmpDir, { '--depth': '2' })
         if (result) {
           console.error(result)
           process.exitCode = 1
-          rimraf(tmpDir, () => {})
+          rimraf(tmpDir, () => { })
           return
         }
       }
@@ -110,7 +110,7 @@ require('yargs')
       process.exitCode = output.passed ? 0 : 1
       // delete the tmpdir if it exists
       if (tmpDir) {
-        rimraf(tmpDir, function () {})
+        rimraf(tmpDir, function () { })
       }
     }
   )
