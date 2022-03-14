@@ -78,9 +78,6 @@ require('yargs')
         const result = await simpleGit({
           progress({ method, stage, progress }) {
             console.log(`git.${method} ${stage} stage ${progress}% complete`)
-          },
-          timeout: {
-            block: 1000 // 1 second
           }
         }).clone(argv.directory, tmpDir, { '--depth': '2' })
         if (result) {
