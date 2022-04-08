@@ -83,16 +83,11 @@ require('yargs')
           return
         }
       }
-      var encodedIsUsed = false
-      if (argv.rulesetEncoded) {
-        encodedIsUsed = true
-      }
       // run the linter
       const output = await repolinter.lint(
         tmpDir || path.resolve(process.cwd(), argv.directory),
         argv.allowPaths,
         argv.rulesetUrl || argv.rulesetFile || argv.rulesetEncoded,
-        encodedIsUsed,
         argv.dryRun
       )
       // create the output

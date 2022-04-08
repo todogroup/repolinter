@@ -104,7 +104,6 @@ module.exports.resultFormatter = exports.defaultFormatter
  * @param {string[]} [filterPaths] A list of directories to allow linting of, or [] for all.
  * @param {Object|string|null} [ruleset] A custom ruleset object with the same structure as the JSON ruleset configs, or a string path to a JSON config.
  * Set to null for repolinter to automatically find it in the repository.
- * @param {boolean} [encodedIsUsed] If true, repolinter expects base64 encoded string in the ruleset, we will decode the base64 encoded ruleset.
  * @param {boolean} [dryRun] If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<LintResult>} An object representing the output of the linter
  */
@@ -112,7 +111,6 @@ async function lint(
   targetDir,
   filterPaths = [],
   ruleset = null,
-  encodedIsUsed = false,
   dryRun = false
 ) {
   const fileSystem = new FileSystem()
@@ -122,7 +120,14 @@ async function lint(
   }
 
   let rulesetPath = null
-  if (!encodedIsUsed) {
+  let isEncoded = false
+  if (ruleset !== undefined && ruleset !== null) {
+    isEncoded = isBase64(ruleset)
+  }
+
+  if (isEncoded) {
+    ruleset = await config.decodeConfig(ruleset)
+  } else {
     if (typeof ruleset === 'string') {
       if (config.isAbsoluteURL(ruleset)) {
         rulesetPath = ruleset
@@ -154,8 +159,6 @@ async function lint(
         }
       }
     }
-  } else {
-    ruleset = await config.decodeConfig(ruleset)
   }
 
   // validate config
@@ -480,6 +483,12 @@ async function determineTargets(axiomconfig, fs) {
     a[k] = v
     return a
   }, {})
+}
+
+// isBase64 returns a boolean when the string is a valid base64 string
+function isBase64(str) {
+  var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
+  return base64regex.test(str)
 }
 
 module.exports.runRuleset = runRuleset
