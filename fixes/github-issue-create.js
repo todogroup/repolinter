@@ -48,12 +48,15 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
     )
 
     // Retrieve committers of a repository if option is enabled
+    if (options.assignTopCommitter === undefined) {
+      options.assignTopCommitter = true
+    }
     if (options.assignTopCommitter) {
       const assignees = await getTopCommittersOfRepository(
         targetOrg,
         targetRepository
       )
-      if (assignees.data.length > 0) {
+      if (assignees !== undefined && assignees.data.length > 0) {
         issuesAssignees.push(assignees.data[0].login)
       }
     }
