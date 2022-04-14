@@ -18,7 +18,9 @@ function mockStandardGithubApiCalls(repoIssues, githubIssueTemplate) {
   nock('https://api.github.com')
     .get(`/repos/test/tester-repo/labels/CC%3A%20Bypass`)
     .reply(200)
-
+  nock('https://api.github.com')
+    .get(`/repos/test/tester-repo/contributors`)
+    .reply(200)
   nock('https://api.github.com')
     .post(`/repos/test/tester-repo/issues`)
     .reply(200, githubIssueTemplate)

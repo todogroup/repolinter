@@ -7,6 +7,7 @@ const InternalHelpers = require('./helpers/github-issue-create-helpers')
 const { Octokit } = require('@octokit/rest')
 let targetOrg = ''
 let targetRepository = ''
+const issuesAssignees = new Array(0)
 
 /**
  * Create a Github Issue on the targeted repository specifically for this broken rule.
@@ -46,6 +47,15 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
       this.Octokit
     )
 
+    // Retrieve committers of a repository
+    const assignees = await getTopCommittersOfRepository(
+      targetOrg,
+      targetRepository
+    )
+    if (assignees.data.length > 0) {
+      issuesAssignees.push(assignees.data[0].login)
+    }
+
     // If there are no issues, create one.
     // If there are issues, we loop through them and handle each each on it's own
     if (issues === null || issues === undefined) {
@@ -74,6 +84,9 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
             true
           )
         } else {
+          if (issue.assignees.length === 0) {
+            await updateIssueOnGithub(options, issue.number)
+          }
           return new Result(
             `No Github Issue Created - Issue already exists with correct unique identifier`,
             [],
@@ -126,6 +139,27 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
 }
 
 /**
+ * Retrieve the top contributor by commit count of a repository.
+ *
+ * @param {object} targetOrg Target Organization
+ * @param {object} targetRepository Target Repository
+ * @returns {object} Returns array of contributors.
+ */
+async function getTopCommittersOfRepository(targetOrg, targetRepository) {
+  try {
+    return await this.Octokit.request(
+      'GET /repos/{owner}/{repo}/contributors',
+      {
+        owner: targetOrg,
+        repo: targetRepository
+      }
+    )
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+/**
  * Create an issue on Github with labels and all on the target repository.
  *
  * @param {object} options The rule configuration.
@@ -141,7 +175,8 @@ async function createIssueOnGithub(options) {
       repo: targetRepository,
       title: options.issueTitle,
       body: issueBodyWithId,
-      labels: options.issueLabels
+      labels: options.issueLabels,
+      assignees: issuesAssignees
     })
   } catch (e) {
     console.error(e)
@@ -169,6 +204,7 @@ async function updateIssueOnGithub(options, issueNumber) {
         title: options.issueTitle,
         body: issueBodyWithId,
         labels: options.issueLabels,
+        assignees: issuesAssignees,
         state: 'open'
       }
     )
