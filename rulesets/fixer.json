@@ -12,10 +12,7 @@
       "rule": {
         "type": "file-existence",
         "options": {
-          "globsAny": [
-            "LICENSE*",
-            "COPYING*"
-          ],
+          "globsAny": ["LICENSE*", "COPYING*"],
           "nocase": true
         }
       }
@@ -25,20 +22,16 @@
       "rule": {
         "type": "file-existence",
         "options": {
-          "globsAny": [
-            "README*"
-          ],
+          "globsAny": ["README*"],
           "nocase": true
         }
       },
       "fix": {
         "type": "github-issue-create",
         "options": {
-          "issueLabels": [
-            "continuous-compliance",
-            "automated"
-          ],
+          "issueLabels": ["continuous-compliance", "automated"],
           "bypassLabel": "CC: Bypass",
+          "assignTopCommitter": true,
           "issueTitle": "Continuous Compliance - Create a Read-me 👍",
           "issueBody": "Hi there 👋, \n Philips tries to make sure that repositories in this organization follow a certain standardization. While reviewing your repository, we could not stop ourselves to further improve this repository! \n \n According to our standards, we think the following can be improved: \n - Add a Read-me file to explain to other people what your repository is about. \n \n We are happy to help you set up a nice Read me, please head over to Slack and we will get you set up. \n Auto-generated issue by Continuous Compliance",
           "commentBody": "Hey, it's me, I am back😎. \n We noticed regression on this issue, so we opened and updated it. \n Could you please have a look to see what is going on? \n \n If you want to bypass the check for this rule, attach the 'CC: Bypass' label. \n Thanks!",

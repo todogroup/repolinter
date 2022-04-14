@@ -47,13 +47,15 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
       this.Octokit
     )
 
-    // Retrieve committers of a repository
-    const assignees = await getTopCommittersOfRepository(
-      targetOrg,
-      targetRepository
-    )
-    if (assignees.data.length > 0) {
-      issuesAssignees.push(assignees.data[0].login)
+    // Retrieve committers of a repository if option is enabled
+    if (options.assignTopCommitter) {
+      const assignees = await getTopCommittersOfRepository(
+        targetOrg,
+        targetRepository
+      )
+      if (assignees.data.length > 0) {
+        issuesAssignees.push(assignees.data[0].login)
+      }
     }
 
     // If there are no issues, create one.
@@ -84,7 +86,7 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
             true
           )
         } else {
-          if (issue.assignees.length === 0) {
+          if (issue.assignees.length === 0 && options.assignTopCommitter) {
             await updateIssueOnGithub(options, issue.number)
           }
           return new Result(
