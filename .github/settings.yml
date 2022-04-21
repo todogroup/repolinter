@@ -24,3 +24,6 @@ collaborators:
 
   - username: prototypicalpro
     permission: admin
+
+  - username: hyandell
+    permission: admin
