@@ -19,5 +19,6 @@ module.exports = [
   'git-working-tree',
   'license-detectable-by-licensee',
   'json-schema-passes',
-  'any-file-contents'
+  'any-file-contents',
+  'file-or-directory-existence'
 ]
