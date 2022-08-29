@@ -127,10 +127,11 @@ describe('rule', () => {
       const ruleopts = {
         globsAny: [brokenSymlink],
         lineCount: 1,
-        patterns: ['something']
+        patterns: ['something'],
+        'fail-on-non-existent': true
       }
       const actual = await anyFileContents(fs, ruleopts)
-      expect(actual.passed).to.equal(true)
+      expect(actual.passed).to.equal(false)
     })
   })
 })

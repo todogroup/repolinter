@@ -145,6 +145,7 @@ describe('rule', () => {
         patterns: ['something']
       }
       const actual = await fileContents(fs, rule)
+
       expect(actual.passed).to.equal(true)
     })
   })

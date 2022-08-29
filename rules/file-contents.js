@@ -59,6 +59,7 @@ async function fileContents(fs, options, not = false, any = false) {
   const passed = any
     ? filteredResults.some(r => r.passed)
     : !filteredResults.find(r => !r.passed)
+
   return new Result('', filteredResults, passed)
 }
 
