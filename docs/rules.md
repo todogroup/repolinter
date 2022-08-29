@@ -24,6 +24,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`license-detectable-by-licensee`](#license-detectable-by-licensee)
   - [`best-practices-badge-present`](#best-practices-badge-present)
   - [`any-file-contents`](#any-file-contents)
+  - [`file-or-directory-existence`](#file-or-directory-existence)
 
 ## Reference
 
@@ -218,3 +219,13 @@ Checks if the contents of at least one file in a given list match a given regula
 | `flags`                  | No       | `string`   | `""`                                | The flags to use for the regular expression in `content` (ex. `"i"` for case insensitivity).                                                                                                                                     |
 | `human-readable-content` | No       | `string`   | The regular expression in `content` | The string to print instead of the regular expression when generating human-readable output.                                                                                                                                     |
 | `fail-on-non-existent`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
+
+### `file-or-directory-existence`
+
+Checks the existence of a given file OR directory.
+
+| Input          | Required | Type       | Default | Description                                                                                        |
+| -------------- | -------- | ---------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `globsAny`     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if at least one glob returns a file or directory.  |
+| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                               |
+| `fail-message` | No       | `string`   | `""`    | The string to print if file or directory does not exist, used to create human-readable error messages. |
