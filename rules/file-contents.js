@@ -18,11 +18,12 @@ function getContent(options) {
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
+ * @param {boolean} any Whether to check if the regular expression is contained by at least one of the files in the list
  * @returns {Promise<Result>} The lint rule result
  */
-async function fileContents(fs, options, not = false) {
+async function fileContents(fs, options, not = false, any = false) {
   // support legacy configuration keys
-  const fileList = options.globsAll || options.files
+  const fileList = (any ? options.globsAny : options.globsAll) || options.files
   const files = await fs.findAllFiles(fileList, !!options.nocase)
 
   if (files.length === 0) {
@@ -55,7 +56,10 @@ async function fileContents(fs, options, not = false) {
   )
 
   const filteredResults = results.filter(r => r !== null)
-  const passed = !filteredResults.find(r => !r.passed)
+  const passed = any
+    ? filteredResults.some(r => r.passed)
+    : !filteredResults.find(r => !r.passed)
+
   return new Result('', filteredResults, passed)
 }
 
