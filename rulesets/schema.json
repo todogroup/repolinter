@@ -243,6 +243,18 @@
                       }
                     }
                   }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "file-or-directory-existence" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": {
+                        "$ref": "../rules/file-or-directory-existence-config.json"
+                      }
+                    }
+                  }
                 }
               ]
             },
