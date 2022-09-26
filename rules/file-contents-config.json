@@ -17,6 +17,11 @@
     "fail-on-non-existent": {
       "type": "boolean",
       "default": false
+    },
+    "display-line-numbers": {"type": "boolean", "default": false},
+    "context-length": {
+      "type": "number",
+      "default": 50
     }
   },
   "required": ["content"],

@@ -29,30 +29,124 @@ async function fileContents(fs, options, not = false) {
     return new Result(
       'Did not find file matching the specified patterns',
       fileList.map(f => {
-        return { passed: false, pattern: f }
+        return { passed: !options['fail-on-non-existent'], pattern: f }
       }),
       !options['fail-on-non-existent']
     )
   }
 
-  const results = await Promise.all(
-    files.map(async file => {
-      const fileContents = await fs.getFileContents(file)
-      if (!fileContents) return null
+  const regexp = new RegExp(options.content, options.flags)
+  let results
 
-      const regexp = new RegExp(options.content, options.flags)
-      const passed = fileContents.search(regexp) >= 0
-      const message = `${passed ? 'Contains' : "Doesn't contain"} ${getContent(
-        options
-      )}`
+  if (!options['display-line-numbers']) {
+    /**
+     * Default "Contains" / "Doesn't contain"
+     */
+    results = await Promise.all(
+      files.map(async file => {
+        const fileContents = await fs.getFileContents(file)
+        if (!fileContents) return null
 
-      return {
-        passed: not ? !passed : passed,
-        path: file,
-        message
-      }
-    })
-  )
+        const passed = fileContents.search(regexp) >= 0
+        const message = `${
+          passed ? 'Contains' : "Doesn't contain"
+        } ${getContent(options)}`
+
+        return {
+          passed: not ? !passed : passed,
+          path: file,
+          message
+        }
+      })
+    )
+  } else {
+    /**
+     * Add lines for each match to output.
+     */
+    results = (
+      await Promise.all(
+        files.map(async file => {
+          const fileContents = await fs.getFileContents(file)
+          if (!fileContents) return null
+
+          const envContextLength = options['context-length'] || 50
+          const split = fileContents.split(regexp)
+          const passed = split.length > 1
+          const fileLines = fileContents.split('\n')
+          const contextLines = split
+            /**
+             * @return number of lines in each regexp split chunks.
+             */
+            .map(fileChunk => {
+              return fileChunk.split('\n').length
+            })
+            /**
+             * Get lines of regexp match
+             * @return list of lines contains regexp matchs
+             */
+            .reduce((previous, current, index, array) => {
+              if (previous.length === 0) {
+                previous.push(current)
+              } else if (current === 1 || index === array.length - 1) {
+                /**
+                 * We don't need to count multiple times if one line contains multiple regexp match.
+                 * We don't need to count rest of lines after last regexp match.
+                 */
+              } else {
+                previous.push(current - 1 + previous[previous.length - 1])
+              }
+              return previous
+            }, [])
+            /**
+             * @return lines and contexts of every regexp match.
+             */
+            .reduce((previous, current) => {
+              const regexp = new RegExp(options.content, options.flags || 'gi')
+              const matchedLine = fileLines[current - 1]
+              let currentMatch
+              while ((currentMatch = regexp.exec(matchedLine)) !== null) {
+                const matchStart = currentMatch.index
+                const contextStart =
+                  matchStart - envContextLength > 0
+                    ? matchStart - envContextLength
+                    : 0
+                const contextLength =
+                  Math.min(
+                    regexp.lastIndex + envContextLength,
+                    matchedLine.length - 1
+                  ) - contextStart
+                previous.push({
+                  line: current,
+                  context: matchedLine.substr(contextStart, contextLength)
+                })
+              }
+              return previous
+            }, [])
+          const message = `${
+            passed ? 'Contains' : "Doesn't contain"
+          } '${getContent(options)}'`
+
+          return {
+            passed: not ? !passed : passed,
+            path: file,
+            contextLines,
+            message
+          }
+        })
+      )
+    )
+      .filter(result => result && !result.passed)
+      .reduce((previous, current) => {
+        current.contextLines.forEach(lineContext => {
+          previous.push({
+            passed: current.passed,
+            path: current.path,
+            message: `${current.message} on line ${lineContext.line}, context: \n\t|${lineContext.context}`
+          })
+        })
+        return previous
+      }, [])
+  }
 
   const filteredResults = results.filter(r => r !== null)
   const passed = !filteredResults.find(r => !r.passed)
