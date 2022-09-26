@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-not-hash-config.json",
+  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/files-not-hash-config.json",
   "type": "object",
   "properties": {
     "globsAll": {
