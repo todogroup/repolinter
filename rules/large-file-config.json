@@ -5,10 +5,10 @@
   "properties": {
     "globsAll": {
       "type": "array",
-      "items": { "type": "number" }
+      "items": { "type": "string" }
     },
     "size": {"type": "number"}
   },
-  "required": ["content"],
+  "required": ["size"],
   "oneOf": [{ "required": ["globsAll"] }, { "required": ["files"] }]
 }

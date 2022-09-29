@@ -4,7 +4,7 @@ const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const path = require('path')
 /**
- * Check if a list of files is larger than provided file system size.
+ * Check if a list of files' size on the file system that is larger than provided size.
  *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
@@ -31,7 +31,7 @@ async function largeFile(fs, options, not = false) {
       files.map(async file => {
         const filePath = path.resolve(fs.targetDir, file)
         const stat = await nodefs.promises.stat(filePath)
-        const passed = stat.size < options.size
+        const passed = stat.size <= options.size
         const readerFriendlySize =
           stat.size > 1000 * 1000
             ? `${stat.size / 1000000} MB`
@@ -63,7 +63,7 @@ async function largeFile(fs, options, not = false) {
       passed
     )
   }
-  return new Result('', filteredResults, passed)
+  return new Result('Large file(s) found:', filteredResults, passed)
 }
 
 module.exports = largeFile
