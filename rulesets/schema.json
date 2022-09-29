@@ -117,6 +117,14 @@
                   }
                 },
                 {
+                  "if": { "properties": { "type": { "const": "file-hashes-not-exist" } } },
+                  "then": {
+                    "properties": {
+                      "options": { "$ref": "../rules/file-hashes-not-exist-config.json" }
+                    }
+                  }
+                },
+                {
                   "if": { "properties": { "type": { "const": "file-no-broken-links" } } },
                   "then": {
                     "properties": {
@@ -214,6 +222,20 @@
                     "properties": {
                       "options": {
                         "$ref": "../rules/git-working-tree-config.json"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": { "const": "large-file" }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": {
+                        "$ref": "../rules/large-file-config.json"
                       }
                     }
                   }
