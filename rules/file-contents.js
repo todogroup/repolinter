@@ -38,7 +38,7 @@ async function fileContents(fs, options, not = false) {
   const regexp = new RegExp(options.content, options.flags)
   let results
 
-  if (!options['display-line-numbers']) {
+  if (!options['display-result-context']) {
     /**
      * Default "Contains" / "Doesn't contain"
      */
@@ -69,7 +69,7 @@ async function fileContents(fs, options, not = false) {
           const fileContents = await fs.getFileContents(file)
           if (!fileContents) return null
 
-          const envContextLength = options['context-length'] || 50
+          const optionContextCharLength = options['context-char-length'] || 50
           const split = fileContents.split(regexp)
           const passed = split.length > 1
           const fileLines = fileContents.split('\n')
@@ -107,12 +107,12 @@ async function fileContents(fs, options, not = false) {
               while ((currentMatch = regexp.exec(matchedLine)) !== null) {
                 const matchStart = currentMatch.index
                 const contextStart =
-                  matchStart - envContextLength > 0
-                    ? matchStart - envContextLength
+                  matchStart - optionContextCharLength > 0
+                    ? matchStart - optionContextCharLength
                     : 0
                 const contextLength =
                   Math.min(
-                    regexp.lastIndex + envContextLength,
+                    regexp.lastIndex + optionContextCharLength,
                     matchedLine.length - 1
                   ) - contextStart
                 previous.push({
@@ -135,7 +135,7 @@ async function fileContents(fs, options, not = false) {
         })
       )
     )
-      .filter(result => result && !result.passed)
+      .filter(result => result && (not ? !result.passed : result.passed))
       .reduce((previous, current) => {
         current.contextLines.forEach(lineContext => {
           previous.push({

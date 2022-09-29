@@ -18,8 +18,8 @@
       "type": "boolean",
       "default": false
     },
-    "display-line-numbers": {"type": "boolean", "default": false},
-    "context-length": {
+    "display-result-context": {"type": "boolean", "default": false},
+    "context-char-length": {
       "type": "number",
       "default": 50
     }

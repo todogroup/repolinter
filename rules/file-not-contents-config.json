@@ -12,18 +12,48 @@
       "items": { "type": "string" }
     },
     "content": { "type": "string" },
+    "contents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "flags": { "type": "string" },
     "human-readable-content": { "type": "string" },
     "fail-on-non-existent": {
       "type": "boolean",
       "default": false
     },
-    "display-line-numbers": {"type": "boolean", "default": false},
-    "context-length": {
+    "display-result-context": {"type": "boolean", "default": false},
+    "context-char-length": {
       "type": "number",
       "default": 50
     }
   },
-  "required": ["content"],
-  "oneOf": [{ "required": ["globsAll"] }, { "required": ["files"] }]
+  "oneOf": [
+    {
+      "required": [
+        "content",
+        "globsAll"
+      ]
+    },
+    {
+      "required": [
+        "contents",
+        "globsAll"
+      ]
+    },
+    {
+      "required": [
+        "content",
+        "files"
+      ]
+    },
+    {
+      "required": [
+        "contents",
+        "files"
+      ]
+    }
+  ]
 }
