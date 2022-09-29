@@ -21,5 +21,5 @@
     }
   },
   "required": ["hashes"],
-  "oneOf": [{ "required": ["globsAny"] }, { "required": ["files"] }]
+  "oneOf": [{ "required": ["globsAll"] }, { "required": ["files"] }]
 }

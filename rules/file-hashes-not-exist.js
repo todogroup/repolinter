@@ -10,24 +10,21 @@ const FileSystem = require('../lib/file_system')
  * @param {object} options The rule configuration
  * @returns {Promise<Result>} The lint rule result
  */
-async function filesNotHash(fs, options) {
+async function fileHashesNotExist(fs, options) {
   const fileList = options.globsAll || options.files
   const files = await fs.findAllFiles(fileList, !!options.nocase)
 
   if (files.length === 0) {
     return new Result(
-      'Did not find file matching the specified patterns',
+      'Did not find any file matching the specified patterns',
       fileList.map(f => {
         return { passed: false, pattern: f }
       }),
-      !options['fail-on-non-existent']
+      true
     )
   }
 
-  let algorithm = options.algorithm
-  if (algorithm === undefined) {
-    algorithm = 'sha256'
-  }
+  const algorithm = options.algorithm || 'sha256'
 
   const resultsList = await Promise.all(
     options.hashes.map(async hash => {
@@ -71,4 +68,4 @@ async function filesNotHash(fs, options) {
   return new Result('File matching has found', results, passed)
 }
 
-module.exports = filesNotHash
+module.exports = fileHashesNotExist

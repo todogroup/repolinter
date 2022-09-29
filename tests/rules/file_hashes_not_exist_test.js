@@ -3,10 +3,11 @@
 
 const chai = require('chai')
 const expect = chai.expect
-const filesNotHash = require('../../rules/files-not-hash')
 
 describe('rule', () => {
   describe('files_not_hash', () => {
+    const filesNotHash = require('../../rules/file-hashes-not-exist')
+
     it('returns pass if requested files not matches the hashes', async () => {
       /** @type {any} */
       const mockfs = {
