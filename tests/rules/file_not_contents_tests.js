@@ -116,7 +116,7 @@ describe('rule', () => {
       const ruleopts = {
         globsAll: [brokenSymlink],
         lineCount: 1,
-        patterns: ['something']
+        content: 'something'
       }
       const actual = await fileNotContents(fs, ruleopts)
       expect(actual.passed).to.equal(true)
