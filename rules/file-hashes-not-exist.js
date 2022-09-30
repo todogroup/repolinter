@@ -4,7 +4,7 @@ const crypto = require('crypto')
 const FileSystem = require('../lib/file_system')
 
 /**
- * Check files not include a list of certain cryptographic hashes.
+ * Check files' hashes not included in a list of certain cryptographic hashes.
  *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
