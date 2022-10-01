@@ -12,6 +12,17 @@ function getContent(options) {
     : options.content
 }
 
+function getContext(matchedLine, regexMatch, contextLength) {
+  const matchStart = regexMatch.index
+  const contextStart =
+    matchStart - contextLength > 0 ? matchStart - contextLength : 0
+  const contextEnd = Math.min(
+    regexMatch.index + regexMatch[0].length + contextLength,
+    matchedLine.length
+  )
+  return matchedLine.substring(contextStart, contextEnd)
+}
+
 /**
  * Check if a list of files contains a regular expression.
  *
@@ -24,6 +35,7 @@ async function fileContents(fs, options, not = false) {
   // support legacy configuration keys
   const fileList = options.globsAll || options.files
   const files = await fs.findAllFiles(fileList, !!options.nocase)
+  const regexFlags = options.flags || ''
 
   if (files.length === 0) {
     return new Result(
@@ -35,7 +47,7 @@ async function fileContents(fs, options, not = false) {
     )
   }
 
-  const regexp = new RegExp(options.content, options.flags)
+  const regex = new RegExp(options.content, regexFlags)
   let results
 
   if (!options['display-result-context']) {
@@ -47,7 +59,7 @@ async function fileContents(fs, options, not = false) {
         const fileContents = await fs.getFileContents(file)
         if (!fileContents) return null
 
-        const passed = fileContents.search(regexp) >= 0
+        const passed = fileContents.search(regex) >= 0
         const message = `${
           passed ? 'Contains' : "Doesn't contain"
         } ${getContent(options)}`
@@ -76,16 +88,30 @@ async function fileContents(fs, options, not = false) {
           const fileContents = await fs.getFileContents(file)
           if (!fileContents) return null
 
-          const optionContextCharLength = options['context-char-length'] || 50
-          const split = fileContents.split(regexp)
-          const passed = split.length > 1
+          const optionContextCharLength = options['context-char-length'] || 5
+          const split = fileContents.split(regex)
+          const regexHasMatch = split.length > 1
+          if (!regexHasMatch) {
+            return {
+              passed: not ? !regexHasMatch : regexHasMatch,
+              path: file,
+              contextLines: [],
+              message: `Doesn't contain '${getContent(options)}'`
+            }
+          }
+
           const fileLines = fileContents.split('\n')
           const contextLines = split
             /**
              * @return sum of line numbers in each regexp split chunks.
              */
             .map(fileChunk => {
-              return fileChunk.split('\n').length
+              /**
+               * Note: Handle *undefined* in regex split result issue
+               * by treating *undefined* as ''
+               */
+              if (fileChunk !== undefined) return fileChunk.split('\n').length
+              return 1
             })
             /**
              * Get lines of regexp match
@@ -99,8 +125,8 @@ async function fileContents(fs, options, not = false) {
                 previous.push(current)
               } else if (current === 1 || index === array.length - 1) {
                 /**
-                 * We don't need to count multiple times if one line contains multiple regexp match.
-                 * We don't need to count rest of lines after last regexp match.
+                 * We don't need to count multiple times if one line contains multiple regex match.
+                 * We don't need to count rest of lines after last regex match.
                  */
               } else {
                 /**
@@ -113,39 +139,104 @@ async function fileContents(fs, options, not = false) {
               return previous
             }, [])
             /**
-             * @return lines and contexts of every regexp match.
+             * @return lines and contexts of every regex matches.
              */
             .reduce((previous, current) => {
               const matchedLine = fileLines[current - 1]
-              let currentMatch
-              while ((currentMatch = regexp.exec(matchedLine)) !== null) {
-                const matchStart = currentMatch.index
-                const contextStart =
-                  matchStart - optionContextCharLength > 0
-                    ? matchStart - optionContextCharLength
-                    : 0
-                const contextEnd = Math.min(
-                  currentMatch.index +
-                    currentMatch[0].length +
-                    optionContextCharLength,
-                  matchedLine.length
+              /**
+               * We can't do multi-line match on a single line context,
+               * so we try to detect a match on the line
+               * and print helpful info if there is none.
+               *
+               * Note: multi-line output context can be challenging to read.
+               * So instead of print unpredictable context in the output,
+               * we just print line number.
+               */
+              if (regexFlags.includes('m')) {
+                let currentMatch = regex.exec(matchedLine)
+
+                /**
+                 * Found no match, the regex match was multi-line.
+                 * Print info in context instead of actual context.
+                 */
+                if (currentMatch === null) {
+                  previous.push({
+                    line: current,
+                    context:
+                      '-- This is a multi-line regex match so we only displaying line number --'
+                  })
+                  return previous
+                }
+                /**
+                 * Find a match, so we try to find all matches.
+                 * Reset regex.lastIndex to start from beginning.
+                 */
+                regex.lastIndex = 0
+                while ((currentMatch = regex.exec(matchedLine)) !== null) {
+                  previous.push({
+                    line: current,
+                    context: getContext(
+                      matchedLine,
+                      currentMatch,
+                      optionContextCharLength
+                    )
+                  })
+                  if (regex.lastIndex === 0) break
+                }
+                return previous
+              }
+
+              /**
+               * No *global* flag means regex.lastIndex will not advance.
+               * We just need to run regex.exec once
+               */
+              if (!regexFlags.includes('g')) {
+                const currentMatch = regex.exec(matchedLine)
+                /**
+                 * Found a match! Put it in the result
+                 */
+                if (currentMatch != null) {
+                  previous.push({
+                    line: current,
+                    context: getContext(
+                      matchedLine,
+                      currentMatch,
+                      optionContextCharLength
+                    )
+                  })
+                  return previous
+                }
+                /**
+                 * User should never reach here, throw an error when that happens.
+                 */
+                console.trace('Error trace:')
+                throw new Error(
+                  'Please open an issue on https://github.com/todogroup/repolinter'
                 )
+              }
+
+              /**
+               * Find all matches on the string with non-multi-line regex
+               */
+              let currentMatch
+              while ((currentMatch = regex.exec(matchedLine)) !== null) {
                 previous.push({
                   line: current,
-                  context: matchedLine.substring(contextStart, contextEnd)
+                  context: getContext(
+                    matchedLine,
+                    currentMatch,
+                    optionContextCharLength
+                  )
                 })
               }
               return previous
             }, [])
-          const message = `${
-            passed ? 'Contains' : "Doesn't contain"
-          } '${getContent(options)}'`
 
           return {
-            passed: not ? !passed : passed,
+            passed: not ? !regexHasMatch : regexHasMatch,
             path: file,
             contextLines,
-            message
+            message: `Contains '${getContent(options)}'`
           }
         })
       )
