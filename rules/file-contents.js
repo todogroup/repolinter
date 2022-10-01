@@ -61,7 +61,14 @@ async function fileContents(fs, options, not = false) {
     )
   } else {
     /**
-     * Add lines for each match to output.
+     * Add regular expression matched content context into result.
+     * Added contexts includes:
+     *  - line # of the regular expression.
+     *  - 'options.context-char-length' number of characters before and after the regex match.
+     * The added context will be in result.message.
+     *
+     * Note: if 'g' is not presented in 'options.flags',
+     * the regular expression will only display the first match context.
      */
     results = (
       await Promise.all(
@@ -75,7 +82,7 @@ async function fileContents(fs, options, not = false) {
           const fileLines = fileContents.split('\n')
           const contextLines = split
             /**
-             * @return number of lines in each regexp split chunks.
+             * @return sum of line numbers in each regexp split chunks.
              */
             .map(fileChunk => {
               return fileChunk.split('\n').length
@@ -85,6 +92,9 @@ async function fileContents(fs, options, not = false) {
              * @return list of lines contains regexp matchs
              */
             .reduce((previous, current, index, array) => {
+              /**
+               * Push number of lines before the first regex match to the result array.
+               */
               if (previous.length === 0) {
                 previous.push(current)
               } else if (current === 1 || index === array.length - 1) {
@@ -93,6 +103,11 @@ async function fileContents(fs, options, not = false) {
                  * We don't need to count rest of lines after last regexp match.
                  */
               } else {
+                /**
+                 * Add *relative number of lines* between this regex match and last regex match (current-1)
+                 * to the last *absolute number of lines* of last regex match to the top of file (previous[lastElement])
+                 * to get the *absolute number of lines* of current regex match.
+                 */
                 previous.push(current - 1 + previous[previous.length - 1])
               }
               return previous
@@ -101,7 +116,6 @@ async function fileContents(fs, options, not = false) {
              * @return lines and contexts of every regexp match.
              */
             .reduce((previous, current) => {
-              const regexp = new RegExp(options.content, options.flags || 'gi')
               const matchedLine = fileLines[current - 1]
               let currentMatch
               while ((currentMatch = regexp.exec(matchedLine)) !== null) {
@@ -110,14 +124,15 @@ async function fileContents(fs, options, not = false) {
                   matchStart - optionContextCharLength > 0
                     ? matchStart - optionContextCharLength
                     : 0
-                const contextLength =
-                  Math.min(
-                    regexp.lastIndex + optionContextCharLength,
-                    matchedLine.length - 1
-                  ) - contextStart
+                const contextEnd = Math.min(
+                  currentMatch.index +
+                    currentMatch[0].length +
+                    optionContextCharLength,
+                  matchedLine.length
+                )
                 previous.push({
                   line: current,
-                  context: matchedLine.substr(contextStart, contextLength)
+                  context: matchedLine.substring(contextStart, contextEnd)
                 })
               }
               return previous
