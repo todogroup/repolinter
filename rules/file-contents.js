@@ -88,7 +88,7 @@ async function fileContents(fs, options, not = false) {
           const fileContents = await fs.getFileContents(file)
           if (!fileContents) return null
 
-          const optionContextCharLength = options['context-char-length'] || 5
+          const optionContextCharLength = options['context-char-length'] || 50
           const split = fileContents.split(regex)
           const regexHasMatch = split.length > 1
           if (!regexHasMatch) {
