@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/file-hashes-not-exist-config.json",
+  "type": "object",
+  "properties": {
+    "globsAll": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "nocase": {
+      "type": "boolean",
+      "default": false
+    },
+    "algorithm": {
+      "type": "string",
+      "default": "sha256"
+    },
+    "hashes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["hashes"],
+  "oneOf": [{ "required": ["globsAll"] }, { "required": ["files"] }]
+}

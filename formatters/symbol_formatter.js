@@ -30,6 +30,8 @@ class SymbolFormatter {
    *
    * @param {Result} result The result to format, must be valid
    * @param {string} ruleName The name of the rule this result is from
+   * @param {string} rulePolicyUrl The policyUrl of the rule this result is from
+   * @param {string} rulePolicyInfo The policyInfo of the rule this result is from
    * @param {string} errorSymbol The symbol to use if the result did not pass
    * @param {string} okSymbol The symbol to use if the result passed
    * @returns {string} The formatted string
@@ -37,13 +39,24 @@ class SymbolFormatter {
   static formatResult(
     result,
     ruleName,
+    rulePolicyUrl = undefined,
+    rulePolicyInfo = undefined,
     errorSymbol,
     okSymbol = logSymbols.success
   ) {
     // format lint output
+    let policyLines = ''
+    if (!result.passed) {
+      if (rulePolicyUrl)
+        policyLines += `\n\t${logSymbols.info} PolicyUrl: ${rulePolicyUrl}`
+      if (rulePolicyInfo)
+        policyLines += `\n\t${logSymbols.info} PolicyInfo: ${rulePolicyInfo}`
+    }
     const formatbase = `\n${
       result.passed ? okSymbol : errorSymbol
-    } ${ruleName}:${frontSpace(result.message)}`
+    }  ${ruleName}:${frontSpace(result.message)}${
+      !result.passed ? policyLines : ''
+    }`
     // condensed one-line version for rules with no targets
     if (result.targets.length === 0) {
       return formatbase
@@ -136,6 +149,8 @@ class SymbolFormatter {
             return SymbolFormatter.formatResult(
               result.lintResult,
               result.ruleInfo.name,
+              result.ruleInfo.policyUrl,
+              result.ruleInfo.policyInfo,
               SymbolFormatter.getSymbol(result.ruleInfo.level)
             )
           })
@@ -150,6 +165,8 @@ class SymbolFormatter {
             SymbolFormatter.formatResult(
               result.fixResult,
               result.ruleInfo.name,
+              result.ruleInfo.policyUrl,
+              result.ruleInfo.policyInfo,
               SymbolFormatter.getSymbol(result.ruleInfo.level),
               dryRun ? logSymbols.info : logSymbols.success
             )

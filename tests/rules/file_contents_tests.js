@@ -35,6 +35,66 @@ describe('rule', () => {
       })
     })
 
+    it('returns passes and display context if requested file contents exists', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles() {
+          return ['README.md']
+        },
+        getFileContents() {
+          return 'foo get test'
+        },
+        targetDir: '.'
+      }
+
+      const ruleopts = {
+        globsAll: ['README*'],
+        content: 'get',
+        'display-result-context': true,
+        'context-char-length': 2
+      }
+
+      const actual = await fileContents(mockfs, ruleopts)
+      console.log(actual)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({
+        passed: true,
+        path: 'README.md',
+        message: "Contains 'get' on line 1, context: \n\t|o get t"
+      })
+    })
+
+    it('returns failure and display context if requested file contents exists', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles() {
+          return ['README.md']
+        },
+        getFileContents() {
+          return 'foo get test'
+        },
+        targetDir: '.'
+      }
+
+      const ruleopts = {
+        globsAll: ['README*'],
+        content: 'get',
+        'display-result-context': true,
+        'context-char-length': 2
+      }
+
+      const actual = await fileContents(mockfs, ruleopts, true)
+      console.log(actual)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(1)
+      expect(actual.targets[0]).to.deep.include({
+        passed: false,
+        path: 'README.md',
+        message: "Contains 'get' on line 1, context: \n\t|o get t"
+      })
+    })
+
     it('returns passes if requested file contents exists with human-readable contents', async () => {
       /** @type {any} */
       const mockfs = {
@@ -109,7 +169,7 @@ describe('rule', () => {
       const actual = await fileContents(mockfs, ruleopts)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
-      expect(actual.targets[0].passed).to.equal(false)
+      expect(actual.targets[0].passed).to.equal(true)
       expect(actual.targets[0].pattern).to.equal(ruleopts.globsAll[0])
     })
 

@@ -8,6 +8,7 @@ module.exports = [
   'file-contents',
   'file-existence',
   'file-hash',
+  'file-hashes-not-exist',
   'file-no-broken-links',
   'file-not-contents',
   'file-not-exists',
@@ -17,6 +18,7 @@ module.exports = [
   'git-grep-log',
   'git-list-tree',
   'git-working-tree',
+  'large-file',
   'license-detectable-by-licensee',
   'json-schema-passes'
 ]

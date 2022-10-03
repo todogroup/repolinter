@@ -9,7 +9,7 @@ describe('rule', () => {
   describe('files_not_contents', () => {
     const fileNotContents = require('../../rules/file-not-contents')
 
-    it('returns passes if requested file contents do not exist', async () => {
+    it('returns passes if requested file content do not exist', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles() {
@@ -36,7 +36,7 @@ describe('rule', () => {
       expect(actual.targets[0].message).to.contain(ruleopts.content)
     })
 
-    it('returns fails if requested file contents exists', async () => {
+    it('returns fails if requested file content exists', async () => {
       /** @type {any} */
       const mockfs = {
         findAllFiles() {
@@ -116,10 +116,64 @@ describe('rule', () => {
       const ruleopts = {
         globsAll: [brokenSymlink],
         lineCount: 1,
-        patterns: ['something']
+        content: 'something'
       }
       const actual = await fileNotContents(fs, ruleopts)
       expect(actual.passed).to.equal(true)
+    })
+
+    it('returns passes if requested file contents do not exist', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles() {
+          return ['README.md']
+        },
+        getFileContents() {
+          return 'foo'
+        },
+        targetDir: '.'
+      }
+
+      const ruleopts = {
+        globsAll: ['README*'],
+        contents: ['bar', 'jax']
+      }
+
+      const actual = await fileNotContents(mockfs, ruleopts)
+      console.log(actual)
+      expect(actual.passed).to.equal(true)
+      expect(actual.targets).to.have.length(0)
+      expect(actual.message).to.equal(
+        'Did not find content matching specified patterns'
+      )
+    })
+
+    it('returns fails if requested file contents exists', async () => {
+      /** @type {any} */
+      const mockfs = {
+        findAllFiles() {
+          return ['README.md']
+        },
+        getFileContents() {
+          return 'foobar'
+        },
+        targetDir: '.'
+      }
+
+      const ruleopts = {
+        globsAll: ['README*'],
+        contents: ['foo', 'bar']
+      }
+
+      const actual = await fileNotContents(mockfs, ruleopts)
+      expect(actual.passed).to.equal(false)
+      expect(actual.targets).to.have.length(2)
+      expect(actual.targets[0]).to.deep.include({
+        passed: false,
+        path: 'README.md'
+      })
+      expect(actual.targets[0].message).to.contain(ruleopts.contents[0])
+      expect(actual.targets[1].message).to.contain(ruleopts.contents[1])
     })
   })
 })
