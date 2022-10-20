@@ -223,14 +223,7 @@ async function lint(
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadRules() {
-  // convert the lists into a easily-loadable object
-  return Rules.map(f => [
-    f,
-    () => require(path.resolve(__dirname, './rules/', f))
-  ]).reduce((p, [name, require]) => {
-    p[name] = require
-    return p
-  }, {})
+  return Rules
 }
 
 /**
@@ -248,14 +241,7 @@ async function loadRules() {
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadFixes() {
-  // convert the lists into a easily-loadable object
-  return Fixes.map(f => [
-    f,
-    () => require(path.resolve(__dirname, './fixes/', f))
-  ]).reduce((p, [name, require]) => {
-    p[name] = require
-    return p
-  }, {})
+  return Fixes
 }
 
 /**
@@ -273,14 +259,7 @@ async function loadFixes() {
  * An object containing JS file names associated with their appropriate require function
  */
 async function loadAxioms() {
-  // convert the lists into a easily-loadable object
-  return Axioms.map(f => [
-    f,
-    () => require(path.resolve(__dirname, './axioms/', f))
-  ]).reduce((p, [name, require]) => {
-    p[name] = require
-    return p
-  }, {})
+  return Axioms
 }
 
 /**
@@ -405,7 +384,7 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun) {
     let result
     try {
       // load the rule
-      const ruleFunc = allRules[r.ruleType]()
+      const ruleFunc = allRules[r.ruleType]
       // run the rule!
       result = await ruleFunc(fileSystem, r.ruleConfig)
     } catch (e) {
@@ -429,7 +408,7 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun) {
     }
     let fixresult
     try {
-      const fixFunc = allFixes[r.fixType]()
+      const fixFunc = allFixes[r.fixType]
       fixresult = await fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
     } catch (e) {
       return FormatResult.CreateError(
@@ -465,7 +444,7 @@ async function determineTargets(axiomconfig, fs) {
           new Result(`invalid axiom name ${axiomId}`, [], false)
         ]
       }
-      const axiomFunction = allAxioms[axiomId]()
+      const axiomFunction = allAxioms[axiomId]
       return [axiomName, await axiomFunction(fs)]
     })
   )
