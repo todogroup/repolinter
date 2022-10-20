@@ -11,6 +11,7 @@ const FileSystem = require('../lib/file_system')
  *
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @returns {Result} The lint rule result
+ * @ignore
  */
 async function licenceDetect(fs) {
   const result = new Result('', [], false)

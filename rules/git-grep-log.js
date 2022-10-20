@@ -24,6 +24,7 @@ function grepLog(fileSystem, options) {
 
 /**
  * @param log
+ * @ignore
  */
 function parseLog(log) {
   const logEntries = log.split('\ncommit ').filter(x => !!x)
@@ -33,6 +34,7 @@ function parseLog(log) {
 
 /**
  * @param commit
+ * @ignore
  */
 function extractInfo(commit) {
   const [hash, , , ...message] = commit.split('\n')
@@ -47,6 +49,7 @@ function extractInfo(commit) {
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
+ * @ignore
  */
 function gitGrepLog(fs, options) {
   // backwards compatibility with blacklist

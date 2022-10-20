@@ -4,7 +4,10 @@
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
-/** @type {any} */
+/**
+ * @type {any}
+ * @ignore
+ */
 const fetch = require('node-fetch')
 
 /**
@@ -15,6 +18,7 @@ const fetch = require('node-fetch')
  * @param {string[]} targets The files to modify (will be overridden by options if present)
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<Result>} The lint rule result
+ * @ignore
  */
 async function fileModify(fs, options, targets, dryRun = false) {
   const realTargets = options.files || targets

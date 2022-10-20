@@ -11,6 +11,7 @@ const FileSystem = require('../lib/file_system')
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
+ * @ignore
  */
 function gitWorkingTree(fs, options) {
   const args = ['-C', fs.targetDir, 'rev-parse', '--show-prefix']

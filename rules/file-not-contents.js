@@ -13,10 +13,12 @@ const fileContents = require('./file-contents')
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Promise<Result>} The lint rule result
+ * @ignore
  */
 async function fileNotContents(fs, options) {
   /**
    * Found options.content, check for single regular expression match
+   * @ignore
    */
   if (options.content && !options.contents) {
     return fileContents(fs, options, true)
@@ -25,6 +27,7 @@ async function fileNotContents(fs, options) {
   /**
    * Found options.contents, check for regular expressions matches
    * @type {Awaited<number>[]}
+   * @ignore
    */
   const results = await Promise.all(
     options.contents.map(content => {

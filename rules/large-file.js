@@ -10,6 +10,7 @@ const path = require('path')
  * @param {object} options The rule configuration
  * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
  * @returns {Promise<Result>} The lint rule result
+ * @ignore
  */
 async function largeFile(fs, options, not = false) {
   // support legacy configuration keys
