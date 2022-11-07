@@ -13,6 +13,7 @@ const FileSystem = require('../lib/file_system')
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Promise<Result>} The lint rule result
+ * @ignore
  */
 async function fileExistence(fs, options) {
   const fileList = options.globsAny || options.files || options.directories

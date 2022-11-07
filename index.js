@@ -209,81 +209,6 @@ async function lint(
 }
 
 /**
- * Index all javascript files in a certain subdirectory of repolinter,
- * returning an object which can later be used to load the modules. This
- * allows modules such as the linter and fixer rules to be dynamically
- * loaded at runtime, but still protects against an injection attack.
- *
- * This function is similar to loadFixes and loadAxioms, this variant
- * is for rules. This function is split in three to allow NCC to
- * statically determine the modules to resolve.
- *
- * @private
- * @returns {Promise<Object.<string, Function>>}
- * An object containing JS file names associated with their appropriate require function
- */
-async function loadRules() {
-  // convert the lists into a easily-loadable object
-  return Rules.map(f => [
-    f,
-    () => require(path.resolve(__dirname, './rules/', f))
-  ]).reduce((p, [name, require]) => {
-    p[name] = require
-    return p
-  }, {})
-}
-
-/**
- * Index all javascript files in a certain subdirectory of repolinter,
- * returning an object which can later be used to load the modules. This
- * allows modules such as the linter and fixer rules to be dynamically
- * loaded at runtime, but still protects against an injection attack.
- *
- * This function is similar to loadRules and loadAxioms, this variant
- * is for fixes. This function is split in three to allow NCC to
- * statically determine the modules to resolve.
- *
- * @private
- * @returns {Promise<Object.<string, Function>>}
- * An object containing JS file names associated with their appropriate require function
- */
-async function loadFixes() {
-  // convert the lists into a easily-loadable object
-  return Fixes.map(f => [
-    f,
-    () => require(path.resolve(__dirname, './fixes/', f))
-  ]).reduce((p, [name, require]) => {
-    p[name] = require
-    return p
-  }, {})
-}
-
-/**
- * Index all javascript files in a certain subdirectory of repolinter,
- * returning an object which can later be used to load the modules. This
- * allows modules such as the linter and fixer rules to be dynamically
- * loaded at runtime, but still protects against an injection attack.
- *
- * This function is similar to loadRules and loadFixes, this variant
- * is for Axioms. This function is split in three to allow NCC to
- * statically determine the modules to resolve.
- *
- * @private
- * @returns {Promise<Object.<string, Function>>}
- * An object containing JS file names associated with their appropriate require function
- */
-async function loadAxioms() {
-  // convert the lists into a easily-loadable object
-  return Axioms.map(f => [
-    f,
-    () => require(path.resolve(__dirname, './axioms/', f))
-  ]).reduce((p, [name, require]) => {
-    p[name] = require
-    return p
-  }, {})
-}
-
-/**
  * Checks a rule's list of axioms against a list of valid
  * targets, and determines if the rule should run or not
  * based on the following rules criteria:
@@ -376,10 +301,6 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun) {
       )
       .reduce((a, c) => a.concat(c), [])
   }
-  // load the rules
-  const allRules = await loadRules()
-  // load the fixes
-  const allFixes = await loadFixes()
   // run the ruleset
   const results = ruleset.map(async r => {
     // check axioms and enable appropriately
@@ -399,13 +320,13 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun) {
       }
     }
     // check if the rule file exists
-    if (!Object.prototype.hasOwnProperty.call(allRules, r.ruleType)) {
+    if (!Object.prototype.hasOwnProperty.call(Rules, r.ruleType)) {
       return FormatResult.CreateError(r, `${r.ruleType} is not a valid rule`)
     }
     let result
     try {
       // load the rule
-      const ruleFunc = allRules[r.ruleType]()
+      const ruleFunc = Rules[r.ruleType]
       // run the rule!
       result = await ruleFunc(fileSystem, r.ruleConfig)
     } catch (e) {
@@ -424,12 +345,12 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun) {
     }
     // else run the fix
     // check if the rule file exists
-    if (!Object.prototype.hasOwnProperty.call(allFixes, r.fixType)) {
+    if (!Object.prototype.hasOwnProperty.call(Fixes, r.fixType)) {
       return FormatResult.CreateError(r, `${r.fixType} is not a valid fix`)
     }
     let fixresult
     try {
-      const fixFunc = allFixes[r.fixType]()
+      const fixFunc = Fixes[r.fixType]
       fixresult = await fixFunc(fileSystem, r.fixConfig, fixTargets, dryRun)
     } catch (e) {
       return FormatResult.CreateError(
@@ -455,17 +376,16 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun) {
  */
 async function determineTargets(axiomconfig, fs) {
   // load axioms
-  const allAxioms = await loadAxioms()
   const ruleresults = await Promise.all(
     Object.entries(axiomconfig).map(async ([axiomId, axiomName]) => {
       // Execute axiom if it exists
-      if (!Object.prototype.hasOwnProperty.call(allAxioms, axiomId)) {
+      if (!Object.prototype.hasOwnProperty.call(Axioms, axiomId)) {
         return [
           axiomName,
           new Result(`invalid axiom name ${axiomId}`, [], false)
         ]
       }
-      const axiomFunction = allAxioms[axiomId]()
+      const axiomFunction = Axioms[axiomId]
       return [axiomName, await axiomFunction(fs)]
     })
   )

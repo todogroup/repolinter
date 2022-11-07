@@ -60,7 +60,7 @@
     "chai-as-promised": "^7.1.1",
     "chai-each": "0.0.1",
     "chai-string": "^1.5.0",
-    "documentation": "^13.2.5",
+    "documentation": "^14.0.0",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-config-prettier-standard": "^3.0.1",

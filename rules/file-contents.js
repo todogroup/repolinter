@@ -30,6 +30,7 @@ function getContext(matchedLine, regexMatch, contextLength) {
  * @param {object} options The rule configuration
  * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
  * @returns {Promise<Result>} The lint rule result
+ * @ignore
  */
 async function fileContents(fs, options, not = false) {
   // support legacy configuration keys
@@ -53,6 +54,7 @@ async function fileContents(fs, options, not = false) {
   if (!options['display-result-context']) {
     /**
      * Default "Contains" / "Doesn't contain"
+     * @ignore
      */
     results = await Promise.all(
       files.map(async file => {
@@ -81,6 +83,7 @@ async function fileContents(fs, options, not = false) {
      *
      * Note: if 'g' is not presented in 'options.flags',
      * the regular expression will only display the first match context.
+     * @ignore
      */
     results = (
       await Promise.all(
@@ -104,11 +107,13 @@ async function fileContents(fs, options, not = false) {
           const contextLines = split
             /**
              * @return sum of line numbers in each regexp split chunks.
+             * @ignore
              */
             .map(fileChunk => {
               /**
                * Note: Handle *undefined* in regex split result issue
                * by treating *undefined* as ''
+               * @ignore
                */
               if (fileChunk !== undefined) return fileChunk.split('\n').length
               return 1
@@ -116,10 +121,12 @@ async function fileContents(fs, options, not = false) {
             /**
              * Get lines of regexp match
              * @return list of lines contains regexp matchs
+             * @ignore
              */
             .reduce((previous, current, index, array) => {
               /**
                * Push number of lines before the first regex match to the result array.
+               * @ignore
                */
               if (previous.length === 0) {
                 previous.push(current)
@@ -127,12 +134,14 @@ async function fileContents(fs, options, not = false) {
                 /**
                  * We don't need to count multiple times if one line contains multiple regex match.
                  * We don't need to count rest of lines after last regex match.
+                 * @ignore
                  */
               } else {
                 /**
                  * Add *relative number of lines* between this regex match and last regex match (current-1)
                  * to the last *absolute number of lines* of last regex match to the top of file (previous[lastElement])
                  * to get the *absolute number of lines* of current regex match.
+                 * @ignore
                  */
                 previous.push(current - 1 + previous[previous.length - 1])
               }
@@ -140,6 +149,7 @@ async function fileContents(fs, options, not = false) {
             }, [])
             /**
              * @return lines and contexts of every regex matches.
+             * @ignore
              */
             .reduce((previous, current) => {
               const matchedLine = fileLines[current - 1]
@@ -151,6 +161,7 @@ async function fileContents(fs, options, not = false) {
                * Note: multi-line output context can be challenging to read.
                * So instead of print unpredictable context in the output,
                * we just print line number.
+               * @ignore
                */
               if (regexFlags.includes('m')) {
                 let currentMatch = regex.exec(matchedLine)
@@ -158,6 +169,7 @@ async function fileContents(fs, options, not = false) {
                 /**
                  * Found no match, the regex match was multi-line.
                  * Print info in context instead of actual context.
+                 * @ignore
                  */
                 if (currentMatch === null) {
                   previous.push({
@@ -170,6 +182,7 @@ async function fileContents(fs, options, not = false) {
                 /**
                  * Find a match, so we try to find all matches.
                  * Reset regex.lastIndex to start from beginning.
+                 * @ignore
                  */
                 regex.lastIndex = 0
                 while ((currentMatch = regex.exec(matchedLine)) !== null) {
@@ -189,11 +202,13 @@ async function fileContents(fs, options, not = false) {
               /**
                * No *global* flag means regex.lastIndex will not advance.
                * We just need to run regex.exec once
+               * @ignore
                */
               if (!regexFlags.includes('g')) {
                 const currentMatch = regex.exec(matchedLine)
                 /**
                  * Found a match! Put it in the result
+                 * @ignore
                  */
                 if (currentMatch != null) {
                   previous.push({
@@ -208,6 +223,7 @@ async function fileContents(fs, options, not = false) {
                 }
                 /**
                  * User should never reach here, throw an error when that happens.
+                 * @ignore
                  */
                 console.trace('Error trace:')
                 throw new Error(
@@ -217,6 +233,7 @@ async function fileContents(fs, options, not = false) {
 
               /**
                * Find all matches on the string with non-multi-line regex
+               * @ignore
                */
               let currentMatch
               while ((currentMatch = regex.exec(matchedLine)) !== null) {
