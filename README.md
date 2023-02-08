@@ -2,6 +2,16 @@
 
 Lint open source repositories for common issues.
 
+## Changes in this fork
+
+- Possibility to create a GitHub Issue per rule violation (<https://github.com/philips-forks/repolinter/pull/1>)
+- Ability to dynamically pass a ruleset using base64 encoded string (<https://github.com/philips-forks/repolinter/pull/7>)
+- New rule that checks whether a file or directory exists (file-or-directory-existence, <https://github.com/philips-forks/repolinter/pull/19>)
+- New rule that checks if content exists within a file (any-file-contents, <https://github.com/philips-forks/repolinter/pull/18>)
+- Minor optimization if you have a very large repository (lots of commits) so it doesn't do a full checkout. (<https://github.com/philips-forks/repolinter/pull/12>)
+
+We are working on getting (some) of these changes merged back into upstream. Time is a limiting factor here..
+
 ## Installation
 
 Repolinter requires [Node.JS](https://nodejs.org/en/) >= v10 to function properly. Once Node.JS is installed, you can install Repolinter using `npm`:
