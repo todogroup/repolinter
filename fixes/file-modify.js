@@ -116,10 +116,11 @@ async function fileModify(fs, options, targets, dryRun = false) {
       // return the target information
       const message =
         typeof options.text === 'object'
-          ? `${options.write_mode} text from ${
-              options.text.file || options.text.url
-            } to file`
-          : `${options.write_mode} \`${JSON.stringify(content).slice(
+          ? `${options.write_mode} text from ${options.text.file || options.text.url
+          } to file`
+          : `${options.write_mode} \`${JSON.stringify(content)
+            .replace(/\\"/g, '"')
+            .slice(
               1,
               -1
             )}\` to file`
