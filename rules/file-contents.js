@@ -31,7 +31,8 @@ async function fileContents(fs, options, not = false, any = false) {
   let results = []
   let fileFoundResults = 0
   let switchedBranch = false
-  branches.forEach(async b => {
+  for (let index = 0; index < branches.length; index++) {
+    const b = branches[index]
     // if branch name is 'default', ignore and do not checkout.
     // 'default' keyword is reserved for default branch when cloning
     if (b !== 'default') {
@@ -48,7 +49,7 @@ async function fileContents(fs, options, not = false, any = false) {
     const files = await fs.findAllFiles(fileList, !!options.nocase)
     if (files.length === 0) {
       fileFoundResults++
-      return
+      continue
     }
 
     const tempResults = await Promise.all(
@@ -69,7 +70,7 @@ async function fileContents(fs, options, not = false, any = false) {
       })
     )
     results = results.concat(tempResults)
-  })
+  }
   if (fileFoundResults > 0) {
     return new Result(
       'Did not find file matching the specified patterns',
