@@ -29,11 +29,9 @@ async function fileContents(fs, options, not = false, any = false) {
   const defaultBranch = await simpleGit().raw(['branch', '--show-current'])
 
   let results = []
-  const fileFoundResults = []
+  let fileFoundResults = 0
   let switchedBranch = false
   branches.forEach(async b => {
-    console.log(results)
-
     // if branch name is 'default', ignore and do not checkout.
     // 'default' keyword is reserved for default branch when cloning
     if (b !== 'default') {
@@ -49,15 +47,7 @@ async function fileContents(fs, options, not = false, any = false) {
 
     const files = await fs.findAllFiles(fileList, !!options.nocase)
     if (files.length === 0) {
-      fileFoundResults.push(
-        new Result(
-          'Did not find file matching the specified patterns',
-          fileList.map(f => {
-            return { passed: false, pattern: f }
-          }),
-          !options['fail-on-non-existent']
-        )
-      )
+      fileFoundResults++
       return
     }
 
@@ -68,9 +58,8 @@ async function fileContents(fs, options, not = false, any = false) {
 
         const regexp = new RegExp(options.content, options.flags)
         const passed = fileContents.search(regexp) >= 0
-        const message = `${
-          passed ? 'Contains' : "Doesn't contain"
-        } ${getContent(options)}`
+        const message = `${passed ? 'Contains' : "Doesn't contain"
+          } ${getContent(options)}`
 
         return {
           passed: not ? !passed : passed,
@@ -81,6 +70,15 @@ async function fileContents(fs, options, not = false, any = false) {
     )
     results = results.concat(tempResults)
   })
+  if (fileFoundResults > 0) {
+    return new Result(
+      'Did not find file matching the specified patterns',
+      fileList.map(f => {
+        return { passed: false, pattern: f }
+      }),
+      !options['fail-on-non-existent']
+    )
+  }
   if (switchedBranch) {
     // Make sure we are back using the default branch
     const result = await gitCheckout(defaultBranch)
