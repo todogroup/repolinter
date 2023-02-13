@@ -91,6 +91,18 @@
         }
       }
     },
+    "readme-references-new-git-branches-feature": {
+      "level": "error",
+      "rule": {
+        "type": "file-contents",
+        "options": {
+          "globsAll": ["README*"],
+          "content": "Add ability to specify which Git branches",
+          "flags": "i",
+          "branches": ["default", "feature/specify-branches"]
+        }
+      }
+    },
     "binaries-not-present": {
       "level": "error",
       "rule": {

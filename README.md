@@ -9,6 +9,7 @@ Lint open source repositories for common issues.
 - New rule that checks whether a file or directory exists (file-or-directory-existence, <https://github.com/philips-forks/repolinter/pull/19>)
 - New rule that checks if content exists within a file (any-file-contents, <https://github.com/philips-forks/repolinter/pull/18>)
 - Minor optimization if you have a very large repository (lots of commits) so it doesn't do a full checkout. (<https://github.com/philips-forks/repolinter/pull/12>)
+- Add ability to specify which Git branches to search for with the file-contents and any-file-content rules.
 
 We are working on getting (some) of these changes merged back into upstream. Time is a limiting factor here..
 
