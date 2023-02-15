@@ -421,6 +421,7 @@ async function runRuleset(ruleset, targets, fileSystem, dryRun) {
       )
     }
     // generate fix targets
+    console.log(result)
     const fixTargets = !result.passed
       ? result.targets.filter(t => !t.passed && t.path).map(t => t.path)
       : []

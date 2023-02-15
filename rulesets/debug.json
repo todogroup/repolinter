@@ -1,0 +1,23 @@
+{
+  "$schema": "./schema.json",
+  "version": 2,
+  "axioms": {
+    "linguist": "language",
+    "licensee": "license",
+    "packagers": "packager"
+  },
+  "rules": {
+    "readme-references-new-git-branches-feature": {
+      "level": "error",
+      "rule": {
+        "type": "file-contents",
+        "options": {
+          "globsAll": ["README*"],
+          "content": "Add ability to specify which Git branches",
+          "flags": "i",
+          "branches": ["default", "feature/specify-branches"]
+        }
+      }
+    }
+  }
+}
