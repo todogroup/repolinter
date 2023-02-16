@@ -38,13 +38,12 @@ async function fileContents(fs, options, not = false, any = false) {
     if (b !== 'default') {
       // perform git checkout of the target branch
       const result = await gitCheckout(b)
-      // if (result) {
-      //   console.error(result)
-      //   process.exitCode = 1
-      //   return
-      // }
-      const someBranch = await simpleGit().raw(['branch', '--show-current'])
-      console.log(someBranch)
+      if (result) {
+        console.error(`Failed checking out branch: ${b}`)
+        console.error(result)
+        process.exitCode = 1
+        return
+      }
       switchedBranch = true
     }
 
@@ -61,8 +60,9 @@ async function fileContents(fs, options, not = false, any = false) {
 
         const regexp = new RegExp(options.content, options.flags)
         const passed = fileContents.search(regexp) >= 0
-        const message = `${passed ? 'Contains' : "Doesn't contain"
-          } ${getContent(options)}`
+        const message = `${
+          passed ? 'Contains' : "Doesn't contain"
+        } ${getContent(options)}`
 
         return {
           passed: not ? !passed : passed,
@@ -86,6 +86,7 @@ async function fileContents(fs, options, not = false, any = false) {
     // Make sure we are back using the default branch
     const result = await gitCheckout(defaultBranch)
     if (result) {
+      console.error(`Failed checking out the default branch: ${defaultBranch}`)
       console.error(result)
       process.exitCode = 1
       return
@@ -100,31 +101,6 @@ async function fileContents(fs, options, not = false, any = false) {
   return new Result('', filteredResults, passed)
 }
 
-// async function traverseFilesAndFindMatchingFileContents(
-//   fs,
-//   not,
-//   files,
-//   options
-// ) {
-//   return new Promise(resolve => {
-//     files.map(async file => {
-//       const fileContents = await fs.getFileContents(file)
-//       if (!fileContents) return null
-
-//       const regexp = new RegExp(options.content, options.flags)
-//       const passed = fileContents.search(regexp) >= 0
-//       const message = `${passed ? 'Contains' : "Doesn't contain"} ${getContent(
-//         options
-//       )}`
-
-//       resolve({
-//         passed: not ? !passed : passed,
-//         path: file,
-//         message
-//       })
-//     })
-//   })
-// }
 // Helper method to quickly checkout to a different branch
 async function gitCheckout(branch) {
   return await simpleGit({
