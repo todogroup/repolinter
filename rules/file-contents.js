@@ -26,7 +26,7 @@ async function fileContents(fs, options, not = false, any = false) {
   // support legacy configuration keys
   const fileList = (any ? options.globsAny : options.globsAll) || options.files
   const branches = options.branches || ['default']
-  const defaultBranch = await simpleGit().raw(['branch', '--show-current'])
+  const defaultBranch = (await simpleGit().branchLocal()).current
 
   let results = []
   let fileFoundResults = 0
@@ -38,11 +38,13 @@ async function fileContents(fs, options, not = false, any = false) {
     if (b !== 'default') {
       // perform git checkout of the target branch
       const result = await gitCheckout(b)
-      if (result) {
-        console.error(result)
-        process.exitCode = 1
-        return
-      }
+      // if (result) {
+      //   console.error(result)
+      //   process.exitCode = 1
+      //   return
+      // }
+      const someBranch = await simpleGit().raw(['branch', '--show-current'])
+      console.log(someBranch)
       switchedBranch = true
     }
 
