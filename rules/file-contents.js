@@ -33,6 +33,9 @@ async function fileContents(fs, options, not = false, any = false) {
   let switchedBranch = false
   for (let index = 0; index < branches.length; index++) {
     const branch = branches[index]
+    if (!doesBranchExist(branch)) {
+      continue
+    }
     // if branch name is 'default', ignore and do not checkout.
     // 'default' keyword is reserved for default branch when cloning
     if (branch !== 'default') {
@@ -101,6 +104,13 @@ async function fileContents(fs, options, not = false, any = false) {
   return new Result('', filteredRuleOutcomes, passed)
 }
 
+function doesBranchExist(branch) {
+  const branches = simpleGit().branch(['-r'])
+  if (branches.all.find(v => v === branch)) {
+    return true
+  }
+  return false
+}
 // Helper method to quickly checkout to a different branch
 async function gitCheckout(branch) {
   return await simpleGit({
