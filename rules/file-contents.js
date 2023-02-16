@@ -29,18 +29,18 @@ async function fileContents(fs, options, not = false, any = false) {
   const defaultBranch = (await simpleGit().branchLocal()).current
 
   let results = []
-  let fileFoundResults = 0
+  let noMatchingFileFoundCount = 0
   let switchedBranch = false
   for (let index = 0; index < branches.length; index++) {
-    const b = branches[index]
+    const branch = branches[index]
     // if branch name is 'default', ignore and do not checkout.
     // 'default' keyword is reserved for default branch when cloning
-    if (b !== 'default') {
+    if (branch !== 'default') {
       // perform git checkout of the target branch
-      const result = await gitCheckout(b)
-      if (result) {
-        console.error(`Failed checking out branch: ${b}`)
-        console.error(result)
+      const checkoutResult = await gitCheckout(branch)
+      if (checkoutResult) {
+        console.error(`Failed checking out branch: ${branch}`)
+        console.error(checkoutResult)
         process.exitCode = 1
         return
       }
@@ -49,11 +49,11 @@ async function fileContents(fs, options, not = false, any = false) {
 
     const files = await fs.findAllFiles(fileList, !!options.nocase)
     if (files.length === 0) {
-      fileFoundResults++
+      noMatchingFileFoundCount++
       continue
     }
 
-    const tempResults = await Promise.all(
+    const ruleOutcomeArray = await Promise.all(
       files.map(async file => {
         const fileContents = await fs.getFileContents(file)
         if (!fileContents) return null
@@ -71,9 +71,9 @@ async function fileContents(fs, options, not = false, any = false) {
         }
       })
     )
-    results = results.concat(tempResults)
+    results = results.concat(ruleOutcomeArray)
   }
-  if (fileFoundResults > 0) {
+  if (noMatchingFileFoundCount > 0) {
     return new Result(
       'Did not find file matching the specified patterns',
       fileList.map(f => {
@@ -84,21 +84,21 @@ async function fileContents(fs, options, not = false, any = false) {
   }
   if (switchedBranch) {
     // Make sure we are back using the default branch
-    const result = await gitCheckout(defaultBranch)
-    if (result) {
+    const checkoutResult = await gitCheckout(defaultBranch)
+    if (checkoutResult) {
       console.error(`Failed checking out the default branch: ${defaultBranch}`)
-      console.error(result)
+      console.error(checkoutResult)
       process.exitCode = 1
       return
     }
   }
 
-  const filteredResults = results.filter(r => r !== null)
+  const filteredRuleOutcomes = results.filter(r => r !== null)
   const passed = any
-    ? filteredResults.some(r => r.passed)
-    : !filteredResults.find(r => !r.passed)
+    ? filteredRuleOutcomes.some(r => r.passed)
+    : !filteredRuleOutcomes.find(r => !r.passed)
 
-  return new Result('', filteredResults, passed)
+  return new Result('', filteredRuleOutcomes, passed)
 }
 
 // Helper method to quickly checkout to a different branch
