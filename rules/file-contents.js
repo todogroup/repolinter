@@ -33,7 +33,8 @@ async function fileContents(fs, options, not = false, any = false) {
   let switchedBranch = false
   for (let index = 0; index < branches.length; index++) {
     const branch = branches[index]
-    if (!doesBranchExist(branch)) {
+    if (!(await doesBranchExist(branch))) {
+      noMatchingFileFoundCount++
       continue
     }
     // if branch name is 'default', ignore and do not checkout.
