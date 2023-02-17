@@ -104,9 +104,9 @@ async function fileContents(fs, options, not = false, any = false) {
   return new Result('', filteredRuleOutcomes, passed)
 }
 
-function doesBranchExist(branch) {
-  const branches = simpleGit().branch(['-r'])
-  if (branches.all.find(v => v === branch)) {
+async function doesBranchExist(branch) {
+  const branches = (await simpleGit().branch(['-r'])).all
+  if (branches.find(v => v === branch)) {
     return true
   }
   return false
