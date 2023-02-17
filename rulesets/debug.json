@@ -7,15 +7,15 @@
     "packagers": "packager"
   },
   "rules": {
-    "readme-references-new-git-branches-feature": {
-      "level": "error",
+    "philips-internal-com-migrationv2": {
+      "level": "warning",
       "rule": {
-        "type": "file-contents",
+        "type": "file-not-contents",
         "options": {
-          "globsAll": ["README*"],
-          "content": "Add ability to specify which Git branches",
-          "flags": "i",
-          "branches": ["default", "feature/specify-branches"]
+          "globsAll": ["CNAME"],
+          "content": "*philips-internal.com",
+          "fail-on-non-existent": false,
+          "branches": ["origin/gh-pages"]
         }
       }
     }
