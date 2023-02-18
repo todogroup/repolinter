@@ -77,15 +77,6 @@ async function fileContents(fs, options, not = false, any = false) {
     )
     results = results.concat(ruleOutcomeArray)
   }
-  if (noMatchingFileFoundCount > 0) {
-    return new Result(
-      'Did not find file matching the specified patterns',
-      fileList.map(f => {
-        return { passed: false, pattern: f }
-      }),
-      !options['fail-on-non-existent']
-    )
-  }
   if (switchedBranch) {
     // Make sure we are back using the default branch
     const checkoutResult = await gitCheckout(defaultBranch)
@@ -95,6 +86,16 @@ async function fileContents(fs, options, not = false, any = false) {
       process.exitCode = 1
       return
     }
+  }
+
+  if (noMatchingFileFoundCount === branches.length) {
+    return new Result(
+      'Did not find file matching the specified patterns',
+      fileList.map(f => {
+        return { passed: false, pattern: f }
+      }),
+      !options['fail-on-non-existent']
+    )
   }
 
   const filteredRuleOutcomes = results.filter(r => r !== null)
