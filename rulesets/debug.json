@@ -15,7 +15,7 @@
           "globsAll": ["CNAME"],
           "content": ".*\\.(philips-internal.com)",
           "fail-on-non-existent": false,
-          "branches": ["origin/dependabot/bundler/nokogiri-1.13.3", "non-existent-branch"]
+          "branches": ["default", "origin/gh-pages"]
         }
       }
     }
