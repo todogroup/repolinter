@@ -15,7 +15,7 @@
           "globsAll": ["CNAME"],
           "content": ".*\\.(philips-internal.com)",
           "fail-on-non-existent": false,
-          "branches": ["origin/gh-pages"]
+          "branches": ["origin/gh-pages", "non-existent-branch"]
         }
       }
     }
