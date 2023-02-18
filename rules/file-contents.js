@@ -25,29 +25,26 @@ function getContent(options) {
 async function fileContents(fs, options, not = false, any = false) {
   // support legacy configuration keys
   const fileList = (any ? options.globsAny : options.globsAll) || options.files
-  const branches = options.branches || ['default']
   const defaultBranch = (await simpleGit().branchLocal()).current
+  const branches = options.branches || [defaultBranch]
+  const defaultRemote = (await simpleGit().getRemotes())[0]
 
   let results = []
   let noMatchingFileFoundCount = 0
   let switchedBranch = false
   for (let index = 0; index < branches.length; index++) {
     const branch = branches[index]
-    if (!(await doesBranchExist(branch))) {
+    if (
+      !(await doesBranchExist(branch)) &&
+      !(await doesBranchExist(`${defaultRemote.name}/${branch}`))
+    ) {
       noMatchingFileFoundCount++
       continue
     }
-    // if branch name is 'default', ignore and do not checkout.
-    // 'default' keyword is reserved for default branch when cloning
-    if (branch !== 'default') {
+    // if branch name is the default branch from clone, ignore and do not checkout.
+    if (branch !== defaultBranch) {
       // perform git checkout of the target branch
-      const checkoutResult = await gitCheckout(branch)
-      if (checkoutResult) {
-        console.error(`Failed checking out branch: ${branch}`)
-        console.error(checkoutResult)
-        process.exitCode = 1
-        return
-      }
+      await gitCheckout(branch, defaultRemote)
       switchedBranch = true
     }
 
@@ -79,13 +76,7 @@ async function fileContents(fs, options, not = false, any = false) {
   }
   if (switchedBranch) {
     // Make sure we are back using the default branch
-    const checkoutResult = await gitCheckout(defaultBranch)
-    if (checkoutResult) {
-      console.error(`Failed checking out the default branch: ${defaultBranch}`)
-      console.error(checkoutResult)
-      process.exitCode = 1
-      return
-    }
+    await gitCheckout(defaultBranch, defaultRemote)
   }
 
   if (noMatchingFileFoundCount === branches.length) {
@@ -115,12 +106,27 @@ async function doesBranchExist(branch) {
   return false
 }
 // Helper method to quickly checkout to a different branch
-async function gitCheckout(branch) {
-  return await simpleGit({
+async function gitCheckout(branch, defaultRemote) {
+  const checkoutResult = await simpleGit({
     progress({ method, stage, progress }) {
       console.log(`git.${method} ${stage} stage ${progress}% complete`)
     }
   }).checkout(branch)
+
+  if (checkoutResult) {
+    const checkoutResultWithDefaultOrigin = await simpleGit({
+      progress({ method, stage, progress }) {
+        console.log(`git.${method} ${stage} stage ${progress}% complete`)
+      }
+    }).checkout(`${defaultRemote.name}/${branch}`)
+    if (checkoutResultWithDefaultOrigin) {
+      console.error(checkoutResult)
+      process.exitCode = 1
+      throw new Error(
+        `Failed checking out branch: ${defaultRemote.name}/${branch}`
+      )
+    }
+  }
 }
 
 module.exports = fileContents
