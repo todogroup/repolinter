@@ -13,7 +13,7 @@
         "type": "file-not-contents",
         "options": {
           "globsAll": ["CNAME"],
-          "content": "*philips-internal.com",
+          "content": ".*\\.(philips-internal.com)",
           "fail-on-non-existent": false,
           "branches": ["origin/gh-pages"]
         }
