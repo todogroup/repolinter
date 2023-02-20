@@ -20,21 +20,26 @@ function getContent(options) {
  * @param {object} options The rule configuration
  * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
  * @param {boolean} any Whether to check if the regular expression is contained by at least one of the files in the list
+ * @param {SimpleGit} git A simple-git object configured correct path
  * @returns {Promise<Result>} The lint rule result
  */
-async function fileContents(fs, options, not = false, any = false) {
+async function fileContents(fs, options, not = false, any = false, git) {
   // support legacy configuration keys
   const fileList = (any ? options.globsAny : options.globsAll) || options.files
-  const git = simpleGit({
-    progress({ method, stage, progress }) {
-      console.log(`git.${method} ${stage} stage ${progress}% complete`)
-    },
-    baseDir: fs.targetDir
-  })
+
+  if (git === undefined) {
+    git = simpleGit({
+      progress({ method, stage, progress }) {
+        console.log(`git.${method} ${stage} stage ${progress}% complete`)
+      },
+      baseDir: fs.targetDir
+    })
+  }
+
   const defaultBranch = (await git.branchLocal()).current
   const branches = options.branches || [defaultBranch]
   const defaultRemote = (await git.getRemotes())[0]
-  await fetchAllBranchesRemote(git, defaultRemote.name).catch(err => err)
+  await fetchAllBranchesRemote(git, defaultRemote.name)
 
   let results = []
   let noMatchingFileFoundCount = 0

@@ -8,6 +8,26 @@ const expect = chai.expect
 describe('rule', () => {
   describe('Best Practices Badge', () => {
     const BestpracticesBadgePresent = require('../../rules/best-practices-badge-present')
+    const mockGit = {
+      branchLocal() {
+        return { current: 'master' }
+      },
+      getRemotes() {
+        return [{ name: 'origin' }]
+      },
+      addConfig() {
+        return Promise.resolve
+      },
+      remote() {
+        return Promise.resolve
+      },
+      branch() {
+        return { all: ['master'] }
+      },
+      checkout() {
+        return Promise.resolve
+      }
+    }
 
     it('fails if readme is missing', async () => {
       const mockfs = {
@@ -16,7 +36,7 @@ describe('rule', () => {
         targetDir: '.'
       }
 
-      const actual = await BestpracticesBadgePresent(mockfs)
+      const actual = await BestpracticesBadgePresent(mockfs, undefined, mockGit)
       expect(actual.passed).to.equal(false)
       expect(actual.message).to.include('not find')
     })
@@ -28,7 +48,7 @@ describe('rule', () => {
         targetDir: '.'
       }
 
-      const actual = await BestpracticesBadgePresent(mockfs)
+      const actual = await BestpracticesBadgePresent(mockfs, undefined, mockGit)
       expect(actual.passed).to.equal(false)
       expect(actual.targets.length).to.equal(1)
       expect(actual.targets[0].message).to.equal(
@@ -44,7 +64,7 @@ describe('rule', () => {
         targetDir: '.'
       }
 
-      const actual = await BestpracticesBadgePresent(mockfs)
+      const actual = await BestpracticesBadgePresent(mockfs, undefined, mockGit)
       expect(actual.passed).to.equal(true)
     })
 
@@ -56,7 +76,7 @@ describe('rule', () => {
         targetDir: '.'
       }
 
-      const actual = await BestpracticesBadgePresent(mockfs)
+      const actual = await BestpracticesBadgePresent(mockfs, undefined, mockGit)
       expect(actual.passed).to.equal(true)
     })
 
@@ -68,7 +88,7 @@ describe('rule', () => {
         targetDir: '.'
       }
 
-      const actual = await BestpracticesBadgePresent(mockfs)
+      const actual = await BestpracticesBadgePresent(mockfs, undefined, mockGit)
       expect(actual.passed).to.equal(false)
     })
     describe('minPercentage', () => {
@@ -80,16 +100,24 @@ describe('rule', () => {
       }
 
       it('passes when minPercentage is not set', async () => {
-        const actual = await BestpracticesBadgePresent(mockfs, {
-          minPercentage: null
-        })
+        const actual = await BestpracticesBadgePresent(
+          mockfs,
+          {
+            minPercentage: null
+          },
+          mockGit
+        )
         expect(actual.passed).to.equal(true)
       })
 
       it('passes when minPercentage is set to 0', async () => {
-        const actual = await BestpracticesBadgePresent(mockfs, {
-          minPercentage: 0
-        })
+        const actual = await BestpracticesBadgePresent(
+          mockfs,
+          {
+            minPercentage: 0
+          },
+          mockGit
+        )
         expect(actual.passed).to.equal(true)
       })
 
@@ -98,9 +126,13 @@ describe('rule', () => {
           .get('/projects/100.json')
           .reply(200, { tiered_percentage: 99 })
 
-        const actual = await BestpracticesBadgePresent(mockfs, {
-          minPercentage: 100
-        })
+        const actual = await BestpracticesBadgePresent(
+          mockfs,
+          {
+            minPercentage: 100
+          },
+          mockGit
+        )
         expect(actual.passed).to.equal(false)
         scope.done()
       })
@@ -110,9 +142,13 @@ describe('rule', () => {
           .get('/projects/100.json')
           .reply(404)
 
-        const actual = await BestpracticesBadgePresent(mockfs, {
-          minPercentage: 100
-        })
+        const actual = await BestpracticesBadgePresent(
+          mockfs,
+          {
+            minPercentage: 100
+          },
+          mockGit
+        )
         expect(actual.passed).to.equal(false)
         scope.done()
       })
@@ -122,9 +158,13 @@ describe('rule', () => {
           .get('/projects/100.json')
           .reply(200, { tiered_percentage: 100 })
 
-        const actual = await BestpracticesBadgePresent(mockfs, {
-          minPercentage: 100
-        })
+        const actual = await BestpracticesBadgePresent(
+          mockfs,
+          {
+            minPercentage: 100
+          },
+          mockGit
+        )
         expect(actual.passed).to.equal(true)
         scope.done()
       })
