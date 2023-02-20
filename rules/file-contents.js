@@ -20,14 +20,26 @@ function getContent(options) {
  * @param {object} options The rule configuration
  * @param {boolean} not Whether or not to invert the result (not contents instead of contents)
  * @param {boolean} any Whether to check if the regular expression is contained by at least one of the files in the list
+ * @param {SimpleGit} git A simple-git object configured correct path
  * @returns {Promise<Result>} The lint rule result
  */
-async function fileContents(fs, options, not = false, any = false) {
+async function fileContents(fs, options, not = false, any = false, git) {
   // support legacy configuration keys
   const fileList = (any ? options.globsAny : options.globsAll) || options.files
-  const defaultBranch = (await simpleGit().branchLocal()).current
+
+  if (git === undefined) {
+    git = simpleGit({
+      progress({ method, stage, progress }) {
+        console.log(`git.${method} ${stage} stage ${progress}% complete`)
+      },
+      baseDir: fs.targetDir
+    })
+  }
+
+  const defaultBranch = (await git.branchLocal()).current
   const branches = options.branches || [defaultBranch]
-  const defaultRemote = (await simpleGit().getRemotes())[0]
+  const defaultRemote = (await git.getRemotes())[0]
+  await fetchAllBranchesRemote(git, defaultRemote.name)
 
   let results = []
   let noMatchingFileFoundCount = 0
@@ -35,8 +47,8 @@ async function fileContents(fs, options, not = false, any = false) {
   for (let index = 0; index < branches.length; index++) {
     const branch = branches[index]
     if (
-      !(await doesBranchExist(branch)) &&
-      !(await doesBranchExist(`${defaultRemote.name}/${branch}`))
+      !(await doesBranchExist(git, branch)) &&
+      !(await doesBranchExist(git, `${defaultRemote.name}/${branch}`))
     ) {
       noMatchingFileFoundCount++
       continue
@@ -44,10 +56,9 @@ async function fileContents(fs, options, not = false, any = false) {
     // if branch name is the default branch from clone, ignore and do not checkout.
     if (branch !== defaultBranch) {
       // perform git checkout of the target branch
-      await gitCheckout(branch, defaultRemote)
+      await gitCheckout(git, branch, defaultRemote.name)
       switchedBranch = true
     }
-
     const files = await fs.findAllFiles(fileList, !!options.nocase)
     if (files.length === 0) {
       noMatchingFileFoundCount++
@@ -76,7 +87,7 @@ async function fileContents(fs, options, not = false, any = false) {
   }
   if (switchedBranch) {
     // Make sure we are back using the default branch
-    await gitCheckout(defaultBranch, defaultRemote)
+    await gitCheckout(git, defaultBranch, defaultRemote.name)
   }
 
   if (noMatchingFileFoundCount === branches.length) {
@@ -97,34 +108,36 @@ async function fileContents(fs, options, not = false, any = false) {
   return new Result('', filteredRuleOutcomes, passed)
 }
 
+// Fetch all remote branches, fetches just the names on remote.
+// Needs to be done since we did a shallow checkout
+async function fetchAllBranchesRemote(git, defaultRemote) {
+  // Since we do a shallow clone, we need to first retrieve the branches
+  await git.addConfig(
+    `remote.${defaultRemote}.fetch`,
+    `+refs/heads/*:refs/remotes/${defaultRemote}/*`
+  )
+  await git.remote(['update'])
+}
+
 // Check if branch exists
-async function doesBranchExist(branch) {
-  const branches = (await simpleGit().branch(['-r'])).all
+async function doesBranchExist(git, branch) {
+  const branches = (await git.branch(['-r'])).all
   if (branches.find(v => v === branch)) {
     return true
   }
   return false
 }
 // Helper method to quickly checkout to a different branch
-async function gitCheckout(branch, defaultRemote) {
-  const checkoutResult = await simpleGit({
-    progress({ method, stage, progress }) {
-      console.log(`git.${method} ${stage} stage ${progress}% complete`)
-    }
-  }).checkout(branch)
-
+async function gitCheckout(git, branch, defaultRemote) {
+  const checkoutResult = await git.checkout(branch)
   if (checkoutResult) {
-    const checkoutResultWithDefaultOrigin = await simpleGit({
-      progress({ method, stage, progress }) {
-        console.log(`git.${method} ${stage} stage ${progress}% complete`)
-      }
-    }).checkout(`${defaultRemote.name}/${branch}`)
+    const checkoutResultWithDefaultOrigin = await git.checkout(
+      `${defaultRemote}/${branch}`
+    )
     if (checkoutResultWithDefaultOrigin) {
       console.error(checkoutResult)
       process.exitCode = 1
-      throw new Error(
-        `Failed checking out branch: ${defaultRemote.name}/${branch}`
-      )
+      throw new Error(`Failed checking out branch: ${defaultRemote}/${branch}`)
     }
   }
 }

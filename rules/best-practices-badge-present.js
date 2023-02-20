@@ -7,15 +7,21 @@ const fileContents = require('./file-contents')
 const bestPracticesRegExp =
   'https://bestpractices\\.coreinfrastructure\\.org(/\\w+)?/projects/\\d+'
 
-module.exports = async function (fileSystem, options = {}) {
-  const readmeContainsBadge = await fileContents(fileSystem, {
-    globsAll: ['README*'],
-    content: bestPracticesRegExp,
-    nocase: true,
-    flags: 'i',
-    'fail-on-non-existent': true,
-    'human-readable-content': 'Best Practices Badge'
-  })
+module.exports = async function (fileSystem, options = {}, git) {
+  const readmeContainsBadge = await fileContents(
+    fileSystem,
+    {
+      globsAll: ['README*'],
+      content: bestPracticesRegExp,
+      nocase: true,
+      flags: 'i',
+      'fail-on-non-existent': true,
+      'human-readable-content': 'Best Practices Badge'
+    },
+    undefined,
+    undefined,
+    git
+  )
   if (!readmeContainsBadge.passed || !options.minPercentage) {
     return readmeContainsBadge
   }

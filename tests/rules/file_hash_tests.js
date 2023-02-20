@@ -7,7 +7,26 @@ const expect = chai.expect
 describe('rule', () => {
   describe('files_hash', () => {
     const fileContents = require('../../rules/file-hash')
-
+    const mockGit = {
+      branchLocal() {
+        return { current: 'master' }
+      },
+      getRemotes() {
+        return [{ name: 'origin' }]
+      },
+      addConfig() {
+        return Promise.resolve
+      },
+      remote() {
+        return Promise.resolve
+      },
+      branch() {
+        return { all: ['master'] }
+      },
+      checkout() {
+        return Promise.resolve
+      }
+    }
     it('returns passes if requested file matches the hash', async () => {
       /** @type {any} */
       const mockfs = {
@@ -25,7 +44,13 @@ describe('rule', () => {
         hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -53,7 +78,13 @@ describe('rule', () => {
         nocase: true
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -81,7 +112,13 @@ describe('rule', () => {
           'f7fbba6e0636f890e56fbbf3283e524c6fa3204ae298382d624741d0dc6638326e282c41be5e4254d8820772c5518a2c5a8c0c7f7eda19594a7eb539453e1ed7'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -107,7 +144,13 @@ describe('rule', () => {
         hash: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -131,7 +174,13 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(false)
     })
 
@@ -151,7 +200,13 @@ describe('rule', () => {
         'succeed-on-non-existent': true
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
 
       expect(actual.passed).to.equal(true)
     })
@@ -173,7 +228,13 @@ describe('rule', () => {
         hash: '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({

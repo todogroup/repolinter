@@ -95,7 +95,6 @@ describe('formatters', () => {
 
     it('generates valid markdown when running against itself', async function () {
       this.timeout(30000)
-
       const lintres = await repolinter.lint(path.resolve('.'))
 
       const actual = formatter.formatOutput(lintres, false)

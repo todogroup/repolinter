@@ -8,7 +8,26 @@ const FileSystem = require('../../lib/file_system')
 describe('rule', () => {
   describe('files_contents', () => {
     const fileContents = require('../../rules/file-contents')
-
+    const mockGit = {
+      branchLocal() {
+        return { current: 'master' }
+      },
+      getRemotes() {
+        return [{ name: 'origin' }]
+      },
+      addConfig() {
+        return Promise.resolve
+      },
+      remote() {
+        return Promise.resolve
+      },
+      branch() {
+        return { all: ['master'] }
+      },
+      checkout() {
+        return Promise.resolve
+      }
+    }
     it('returns passes if requested file contents exists', async () => {
       /** @type {any} */
       const mockfs = {
@@ -26,7 +45,13 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -52,7 +77,13 @@ describe('rule', () => {
         'human-readable-content': 'actually foo'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -81,7 +112,13 @@ describe('rule', () => {
         content: 'bar'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
 
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
@@ -106,7 +143,13 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0].passed).to.equal(false)
@@ -128,7 +171,13 @@ describe('rule', () => {
         'fail-on-non-existent': true
       }
 
-      const actual = await fileContents(mockfs, ruleopts)
+      const actual = await fileContents(
+        mockfs,
+        ruleopts,
+        undefined,
+        undefined,
+        mockGit
+      )
 
       expect(actual.passed).to.equal(false)
     })
@@ -144,7 +193,7 @@ describe('rule', () => {
         lineCount: 1,
         patterns: ['something']
       }
-      const actual = await fileContents(fs, rule)
+      const actual = await fileContents(fs, rule, undefined, undefined, mockGit)
 
       expect(actual.passed).to.equal(true)
     })

@@ -8,7 +8,6 @@ const expect = chai.expect
 describe('rule', () => {
   describe('json_schema_passes', () => {
     const jsonSchemaPasses = require('../../rules/json-schema-passes')
-
     it('returns passes if requested file matches the schema', async () => {
       /** @type {any} */
       const mockfs = {

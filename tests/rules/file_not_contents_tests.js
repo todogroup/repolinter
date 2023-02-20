@@ -8,6 +8,26 @@ const FileSystem = require('../../lib/file_system')
 describe('rule', () => {
   describe('files_not_contents', () => {
     const fileNotContents = require('../../rules/file-not-contents')
+    const mockGit = {
+      branchLocal() {
+        return { current: 'master' }
+      },
+      getRemotes() {
+        return [{ name: 'origin' }]
+      },
+      addConfig() {
+        return Promise.resolve
+      },
+      remote() {
+        return Promise.resolve
+      },
+      branch() {
+        return { all: ['master'] }
+      },
+      checkout() {
+        return Promise.resolve
+      }
+    }
 
     it('returns passes if requested file contents do not exist', async () => {
       /** @type {any} */
@@ -26,7 +46,7 @@ describe('rule', () => {
         content: 'bar'
       }
 
-      const actual = await fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts, mockGit)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -53,7 +73,7 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = await fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts, mockGit)
       expect(actual.passed).to.equal(false)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0]).to.deep.include({
@@ -79,7 +99,7 @@ describe('rule', () => {
         'succeed-on-non-existent': true
       }
 
-      const actual = await fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts, mockGit)
 
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
@@ -101,7 +121,7 @@ describe('rule', () => {
         content: 'foo'
       }
 
-      const actual = await fileNotContents(mockfs, ruleopts)
+      const actual = await fileNotContents(mockfs, ruleopts, mockGit)
       expect(actual.passed).to.equal(true)
       expect(actual.targets).to.have.length(1)
       expect(actual.targets[0].pattern).to.equal(ruleopts.globsAll[0])
@@ -118,7 +138,7 @@ describe('rule', () => {
         lineCount: 1,
         patterns: ['something']
       }
-      const actual = await fileNotContents(fs, ruleopts)
+      const actual = await fileNotContents(fs, ruleopts, mockGit)
       expect(actual.passed).to.equal(true)
     })
   })
