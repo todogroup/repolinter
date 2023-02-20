@@ -1,0 +1,23 @@
+{
+  "$schema": "./schema.json",
+  "version": 2,
+  "axioms": {
+    "linguist": "language",
+    "licensee": "license",
+    "packagers": "packager"
+  },
+  "rules": {
+    "philips-internal-com-migrationv2": {
+      "level": "warning",
+      "rule": {
+        "type": "file-not-contents",
+        "options": {
+          "globsAll": ["CNAME"],
+          "content": ".*\\.(philips-internal.com)",
+          "fail-on-non-existent": false,
+          "branches": ["default", "origin/gh-pages"]
+        }
+      }
+    }
+  }
+}
