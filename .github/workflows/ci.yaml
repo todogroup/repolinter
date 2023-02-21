@@ -6,7 +6,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['14', '12', '10']
+        node-version: ['19', '18', '16', '14']
         os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
     runs-on: ${{ matrix.os }}
     name: Node ${{ matrix.node-version }} sample (${{ matrix.os }})
