@@ -89,7 +89,11 @@ async function createGithubIssue(fs, options, targets, dryRun = false) {
             true
           )
         } else {
-          if (issue.assignees.length === 0 && options.assignTopCommitter) {
+          if (
+            issue.body !== InternalHelpers.generateIssueBody(options) ||
+            issue.title !== options.issueTitle ||
+            (issue.assignees.length === 0 && options.assignTopCommitter)
+          ) {
             await updateIssueOnGithub(options, issue.number)
           }
           return new Result(
@@ -172,14 +176,11 @@ async function getTopCommittersOfRepository(targetOrg, targetRepository) {
  */
 async function createIssueOnGithub(options) {
   try {
-    const issueBodyWithId = options.issueBody.concat(
-      `\n Unique rule set ID: ${options.uniqueRuleId}`
-    )
     return await this.Octokit.request('POST /repos/{owner}/{repo}/issues', {
       owner: targetOrg,
       repo: targetRepository,
       title: options.issueTitle,
-      body: issueBodyWithId,
+      body: InternalHelpers.generateIssueBody(options),
       labels: options.issueLabels,
       assignees: issuesAssignees
     })
@@ -187,7 +188,6 @@ async function createIssueOnGithub(options) {
     console.error(e)
   }
 }
-
 /**
  * Update specific issue on Github.
  *
