@@ -143,10 +143,16 @@ async function findExistingRepolinterIssues(
   }
   return issues.data
 }
+function generateIssueBody(options) {
+  return options.issueBody.concat(
+    `\n Unique rule set ID: ${options.uniqueRuleId}`
+  )
+}
 
 module.exports = {
   hasBypassLabelBeenApplied,
   retrieveRuleIdentifier,
   ensureAddedGithubLabels,
-  findExistingRepolinterIssues
+  findExistingRepolinterIssues,
+  generateIssueBody
 }
