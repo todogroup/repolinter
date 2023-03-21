@@ -17,6 +17,11 @@
     "fail-on-non-existent": {
       "type": "boolean",
       "default": false
+    },
+    "display-result-context": {"type": "boolean", "default": false},
+    "context-char-length": {
+      "type": "number",
+      "default": 50
     }
   },
   "required": ["content"],

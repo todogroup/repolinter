@@ -66,7 +66,7 @@ class MarkdownFormatter {
    */
   static makeHeaderLink(name) {
     const slug = slugger.slug(name)
-    return `<a href="#user-content-${slug}" id="${slug}">#</a>`
+    return `<a href="#user-content-${slug}" id="user-content-${slug}">#</a>`
   }
 
   /**

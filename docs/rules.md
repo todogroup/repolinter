@@ -11,6 +11,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`file-contents`](#file-contents)
   - [`file-existence`](#file-existence)
   - [`file-hash`](#file-hash)
+  - [`file-hashes-not-exist`](#file-hashes-not-exist)
   - [`file-no-broken-links`](#file-no-broken-links)
   - [`file-not-contents`](#file-not-contents)
   - [`file-not-exists`](#file-not-exists)
@@ -21,6 +22,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`git-list-tree`](#git-list-tree)
   - [`git-working-tree`](#git-working-tree)
   - [`json-schema-passes`](#json-schema-passes)
+  - [`large-file`](#large-file)
   - [`license-detectable-by-licensee`](#license-detectable-by-licensee)
   - [`best-practices-badge-present`](#best-practices-badge-present)
 
@@ -44,7 +46,7 @@ Checks the existence of a given directory.
 | Input          | Required | Type       | Default | Description                                                                                        |
 | -------------- | -------- | ---------- | ------- | -------------------------------------------------------------------------------------------------- |
 | `globsAny`     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if at least one glob returns a directory.          |
-| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                               |
+| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform a case insensitive search.                                               |
 | `fail-message` | No       | `string`   | `""`    | The string to print if the directory does not exist, used to create human-readable error messages. |
 
 ### `file-contents`
@@ -67,7 +69,7 @@ Checks the existence of a given file.
 | Input          | Required | Type       | Default | Description                                                                                        |
 | -------------- | -------- | ---------- | ------- | -------------------------------------------------------------------------------------------------- |
 | `globsAny`     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if at least one glob returns a file.               |
-| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                               |
+| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform a case insensitive search.                                               |
 | `dirs`         | No       | `boolean`  | `false` | Set to `true` to include directories in the search (equivalent to `directory-exists`)              |
 | `fail-message` | No       | `string`   | `""`    | The string to print if the directory does not exist, used to create human-readable error messages. |
 
@@ -76,12 +78,23 @@ Checks the existence of a given file.
 Checks that a given file matches a provided hash.
 
 | Input                  | Required | Type       | Default  | Description                                                                                                                                                                  |
-| ---------------------- | -------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ---------------------- | -------- | ---------- | -------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `globsAny`             | **Yes**  | `string[]` |          | A list of globs to search for. This rule passes if at least one file found matches the provided hash, and fails if no files are found.                                       |
-| `hash`                 | **Yes**  | `string`   |          | The hash to check against. Unless a different `algorithm` is specified, this will be sha256.                                                                                 |
+| `hash`                 | **Yes**  | `string`   |          | The hash to check against. Unless a different `algorithm` is specified, this will be sha256 hash.                                                                            |
 | `algorithm`            | No       | `string`   | `sha256` | The hash algorithm to use. Repolinter supports any algorithm supported by [crypto.createHash](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options) |
-| `nocase`               | No       | `boolean`  | `false`  | Set to `true` to perform an case insensitive search.                                                                                                                         |
+| `nocase`               | No       | `boolean`  | `false`  | Set to `true` to perform a case insensitive search.                                                                                                                         |
 | `succeed-on-non-exist` | No       | `boolean`  | `false`  | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                       |
+
+### `file-hashes-not-exist`
+
+Check files' hashes not included in a list of certain cryptographic hashes.
+
+| Input                  | Required | Type       | Default  | Description                                                                                                                                                                  |
+|------------------------| -------- |------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `globsAll`             | **Yes**  | `string[]` |          | A list of globs to search for. This rule passes if all the files does not match any of the hashes, or no files are found.                                                    |
+| `hashes`               | **Yes**  | `string[]` |          | The hashes to check against. Unless a different `algorithm` is specified, this will be sha256 hash.                                                                          |
+| `algorithm`            | No       | `string`   | `sha256` | The hash algorithm to use. Repolinter supports any algorithm supported by [crypto.createHash](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options) |
+| `nocase`               | No       | `boolean`  | `false`  | Set to `true` to perform a case insensitive search.                                                                                                                         |
 
 ### `file-no-broken-links`
 
@@ -90,9 +103,9 @@ Scans a set of markup files for broken links. Links are tested by first renderin
 [github-markup](https://github.com/github/markup) and its dependencies must be installed and available in `PATH` to use this rule.
 
 | Input                          | Required | Type       | Default | Description                                                                                                                                                              |
-| ------------------------------ | -------- | ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ------------------------------ | -------- | ---------- | ------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `globsAll`                     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if all of the markup files found do not contain broken links.                                                            |
-| `nocase`                       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                                                                                                     |
+| `nocase`                       | No       | `boolean`  | `false` | Set to `true` to perform a case insensitive search.                                                                                                                      |
 | `succeed-on-non-exist`         | No       | `boolean`  | `false` | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                   |
 | `pass-external-relative-links` | No       | `boolean`  | `false` | Set to `true` to allow relative URLs outside of the target directory. As there is no good way to check these URLs, they will automatically pass if this setting is true. |
 
@@ -101,14 +114,17 @@ Scans a set of markup files for broken links. Links are tested by first renderin
 
 Checks none of a given list of files match a given regular expression.
 
-| Input                    | Required | Type       | Default                             | Description                                                                                                                                                                                                                      |
-| ------------------------ | -------- | ---------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `globsAll`               | **Yes**  | `string[]` |                                     | A list of globs to get files for. This rule passes if none of the files returned by the globs match the supplied string, or if no files are returned.                                                                            |
-| `content`                | **Yes**  | `string`   |                                     | The regular expression to check using `String#search`. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. `".+@.+\\..+"` for an email address). |
-| `nocase`                 | No       | `boolean`  | `false`                             | Set to `true` to make the globs case insensitive. This does not effect the case sensitivity of the regular expression.                                                                                                           |
-| `flags`                  | No       | `string`   | `""`                                | The flags to use for the regular expression in `content` (ex. `"i"` for case insensitivity).                                                                                                                                     |
-| `human-readable-content` | No       | `string`   | The regular expression in `content` | The string to print instead of the regular expression when generating human-readable output.                                                                                                                                     |
-| `fail-on-non-existent`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
+Note: provide either `content` or `contents`
+
+| Input                    | Required                           | Type       | Default                             | Description                                                                                                                                                                                                                      |
+|--------------------------|------------------------------------|------------| ----------------------------------- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `globsAll`               | **Yes**                            | `string[]` |                                     | A list of globs to get files for. This rule passes if none of the files returned by the globs match the supplied string, or if no files are returned.                                                                            |
+| `content`                | **Yes** if `contents` is undefined | `string`   |                                     | The regular expression to check using `String#search`. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. `".+@.+\\..+"` for an email address). |
+| `contents`               | **Yes** if `content` is undefined  | `string[]` |                                     | Regular expressions to check using `String#search`. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. `".+@.+\\..+"` for an email address).    |
+| `nocase`                 | No                                 | `boolean`  | `false`                             | Set to `true` to make the globs case insensitive. This does not effect the case sensitivity of the regular expression.                                                                                                           |
+| `flags`                  | No                                 | `string`   | `""`                                | The flags to use for the regular expression in `content` (ex. `"i"` for case insensitivity).                                                                                                                                     |
+| `human-readable-content` | No                                 | `string`   | The regular expression in `content` | The string to print instead of the regular expression when generating human-readable output.                                                                                                                                     |
+| `fail-on-non-existent`   | No                                 | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |
 
 ### `file-not-exists`
 
@@ -117,7 +133,7 @@ Checks that a file doesn't exist.
 | Input          | Required | Type       | Default | Description                                                                                   |
 | -------------- | -------- | ---------- | ------- | --------------------------------------------------------------------------------------------- |
 | `globsAll`     | **Yes**  | `string[]` |         | A list of globs to search for. This rule fails if at least one glob returns a file.           |
-| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                          |
+| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform a case insensitive search.                                          |
 | `dirs`         | No       | `boolean`  | `false` | Set to `true` to include directories in the search.                                           |
 | `pass-message` | No       | `string`   | `""`    | The string to print if the file does not exist, used to create human-readable error messages. |
 
@@ -131,7 +147,7 @@ Checks that the first lines of a file contain a set of regular expressions.
 | `lineCount`            | **Yes**  | `number`                                                         |         | The number of lines to scan into for each file.                                                                                                                                                                                     |
 | `patterns`             | **Yes**  | `string[]`                                                       |         | The regular expressions to check using `String#search`. These expressions should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. `".+@.+\\..+"` for an email address). |
 | `flags`                | No       | `string`                                                         | `""`    | The flags to use for the regular expressions in `patterns` (ex. `"i"` for case insensitivity).                                                                                                                                      |
-| `nocase`               | No       | `boolean`                                                        | `false` | Set to `true` to perform an case insensitive search on the files. This will not effect the case sensitivity of `patterns`.                                                                                                          |
+| `nocase`               | No       | `boolean`                                                        | `false` | Set to `true` to perform a case insensitive search on the files. This will not effect the case sensitivity of `patterns`.                                                                                                          |
 | `succeed-on-non-exist` | No       | `boolean`                                                        | `false` | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                                                                              |
 | `skip-binary-files`    | No       | `boolean`                                                        | `false` | Set to `true` to exclude binary files from `globsAll`.                                                                                                                                                                              |
 | `skip-paths-matching`  | No       | `{ extensions?: string[], patterns?: string[], flags?: string }` | `{}`    | Use this option to exclude paths from `globsAll`, either by file extension or by regular expression.                                                                                                                                |
@@ -181,15 +197,24 @@ Checks whether the directory is managed with Git.
 | ------------- | -------- | --------- | ------- | ------------------------------------------------------------- |
 | `allowSubDir` | No       | `boolean` |         | Whether or not to search subdirectories for a git repository. |
 
+### `large-file`
+
+Check if a list of files' size on the file system that is larger than provided size.
+
+| Input                    | Required | Type       | Default                | Description                                                                                                                                             |
+|--------------------------| -------- |------------| ---------------------- |---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `globsAll`               | **Yes**  | `string[]` |                        | A list of globs to get files for. This rule passes if all of the files returned by the globs match are smaller than *size* or if no files are returned. |
+| `size`                   | **Yes**  | `number`   |                        | files sizes larger than this number (bytes) will fail this rule.                                                                                        |
+
 ### `json-schema-passes`
 
 Checks if a given file matches a provided [JSON schema](https://json-schema.org/). This check is performed using [AJV](https://ajv.js.org/).
 
 | Input                    | Required | Type        | Default                | Description                                                                                          |
-| ------------------------ | -------- | ----------- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| ------------------------ | -------- | ----------- | ---------------------- |------------------------------------------------------------------------------------------------------|
 | `glob`                   | **Yes**  | `string`    |                        | The file to check a schema against. If more than one file is found, the first match will be checked. |
 | `schema`                 | **Yes**  | JSON Schema |                        | The JSON schema to validate against, as a JSON object.                                               |
-| `nocase`                 | No       | `boolean`   | `false`                | Set to `true` to perform an case insensitive search.                                                 |
+| `nocase`                 | No       | `boolean`   | `false`                | Set to `true` to perform a case insensitive search.                                                  |
 | `human-readable-message` | No       | `string`    | The schema in `schema` | The string to print instead of the schema when generating human-readable output.                     |
 | `succeed-on-non-exist`   | No       | `boolean`   | `false`                | Set to `true` to enable passing if no files are found from `glob`.                                   |
 

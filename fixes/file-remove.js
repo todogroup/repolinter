@@ -13,6 +13,7 @@ const FileSystem = require('../lib/file_system')
  * @param {string[]} targets The files to modify (will be overridden by options if present)
  * @param {boolean} dryRun If true, repolinter will report suggested fixes, but will make no disk modifications.
  * @returns {Promise<Result>} The fix result
+ * @ignore
  */
 async function fileRemove(fs, options, targets, dryRun = false) {
   // overwrite the targets with the files specified by options

@@ -26,6 +26,7 @@ function listCommitsWithLines(fileSystem, options) {
 
 /**
  * @param targetDir
+ * @ignore
  */
 function gitAllCommits(targetDir) {
   const args = ['-C', targetDir, 'rev-list', '--all']
@@ -37,6 +38,7 @@ function gitAllCommits(targetDir) {
  * @param pattern
  * @param ignoreCase
  * @param commit
+ * @ignore
  */
 function gitGrep(targetDir, pattern, ignoreCase, commit) {
   const args = [
@@ -59,6 +61,7 @@ function gitGrep(targetDir, pattern, ignoreCase, commit) {
  * @param pattern
  * @param ignoreCase
  * @param commit
+ * @ignore
  */
 function gitLinesAtCommit(targetDir, pattern, ignoreCase, commit) {
   const lines = gitGrep(targetDir, pattern, ignoreCase, commit).map(entry => {
@@ -72,6 +75,7 @@ function gitLinesAtCommit(targetDir, pattern, ignoreCase, commit) {
 /**
  * @param fileSystem
  * @param options
+ * @ignore
  */
 function listFiles(fileSystem, options) {
   const files = []
@@ -111,6 +115,7 @@ function listFiles(fileSystem, options) {
  * @param {FileSystem} fs A filesystem object configured with filter paths and target directories
  * @param {object} options The rule configuration
  * @returns {Result} The lint rule result
+ * @ignore
  */
 function gitGrepCommits(fs, options) {
   // backwards compatibility with blacklist
