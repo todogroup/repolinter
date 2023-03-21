@@ -122,7 +122,7 @@ async function lint(
   let rulesetPath = null
   let isEncoded = false
   if (ruleset !== undefined && ruleset !== null) {
-    isEncoded = isBase64(ruleset)
+    isEncoded = config.isBase64(ruleset)
   }
 
   if (isEncoded) {
@@ -403,12 +403,6 @@ async function determineTargets(axiomconfig, fs) {
     a[k] = v
     return a
   }, {})
-}
-
-// isBase64 returns a boolean when the string is a valid base64 string
-function isBase64(str) {
-  var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
-  return base64regex.test(str)
 }
 
 module.exports.runRuleset = runRuleset

@@ -288,7 +288,22 @@ describe('cli', function () {
     expect(actual.out.trim()).to.contain('Error: ENAMETOOLONG: name too long')
     expect(actual2.out.trim()).to.contain('Error: ENAMETOOLONG: name too long')
   })
-
+  it('should handle encoded rulesets with encoded extends', async () => {
+    const encodedRuleset =
+      'JHNjaGVtYTogIi4uLy4uL3J1bGVzZXRzL3NjaGVtYS5qc29uIgpleHRlbmRzOiAiZXdvZ0lDSWtjMk5vWlcxaElqb2dJaTR1THk0dUwzSjFiR1Z6WlhSekwzTmphR1Z0WVM1cWMyOXVJaXdLSUNBaWRtVnljMmx2YmlJNklESXNDaUFnSW1GNGFXOXRjeUk2SUh0OUxBb2dJQ0p5ZFd4bGN5STZJSHNLSUNBZ0lDSjBaWE4wTFdacGJHVXRaWGhwYzNSeklqb2dld29nSUNBZ0lDQWliR1YyWld3aU9pQWlaWEp5YjNJaUxBb2dJQ0FnSUNBaWNuVnNaU0k2SUhzS0lDQWdJQ0FnSUNBaWRIbHdaU0k2SUNKbWFXeGxMV1Y0YVhOMFpXNWpaU0lzQ2lBZ0lDQWdJQ0FnSW05d2RHbHZibk1pT2lCN0NpQWdJQ0FnSUNBZ0lDQWlaMnh2WW5OQmJua2lPaUJiSW5SbGVIUmZabWxzWlY5bWIzSmZkR1Z6ZEM1MGVIUWlYUW9nSUNBZ0lDQWdJSDBLSUNBZ0lDQWdmUW9nSUNBZ2ZRb2dJSDBLZlFvPSIKdmVyc2lvbjogMgpydWxlczoKICB0ZXN0LWZpbGUtZXhpc3RzOgogICAgbGV2ZWw6IG9mZgo='
+    const [actual, actual2] = await Promise.all([
+      execAsync(`${repolinterPath} lint -c ${encodedRuleset}`),
+      execAsync(`${repolinterPath} lint --rulesetEncoded ${encodedRuleset}`)
+    ])
+    expect(actual.code).to.equal(0)
+    expect(actual2.code).to.equal(0)
+    expect(actual.out.trim()).to.contain(
+      `test-file-exists: ignored because level is "off"`
+    )
+    expect(actual2.out.trim()).to.contain(
+      `test-file-exists: ignored because level is "off"`
+    )
+  })
   afterEach(async () => {
     return fs.promises
       .unlink(path.resolve('tests/cli/fixed.txt'))
