@@ -10,7 +10,7 @@
 #
 #   docker run -t repolinter --git https://github.com/username/repo.git
 #
-FROM node:buster
+FROM node:bullseye
 
 ARG RUNTIME_DEPS="git libicu-dev perl python3 ruby-full locales patch ruby-dev"
 ARG BUILD_DEPS="make autoconf automake python3-pip curl liblzma-dev build-essential cmake pkg-config zlib1g-dev libcurl4-openssl-dev libssl-dev libldap2-dev libidn11-dev"
