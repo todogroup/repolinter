@@ -5,11 +5,7 @@ const spawnSync = require('child_process').spawnSync
 const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
-
-function gitAllCommits(targetDir) {
-  const args = ['-C', targetDir, 'rev-list', '--all']
-  return spawnSync('git', args).stdout.toString().split('\n')
-}
+const GitHelper = require('../lib/git_helper')
 
 /**
  * @param targetDir
@@ -33,7 +29,7 @@ function listFiles(fileSystem, options) {
     '(' + options.denylist.join('|') + ')',
     options.ignoreCase ? 'i' : ''
   )
-  const commits = gitAllCommits(fileSystem.targetDir)
+  const commits = GitHelper.gitAllCommits(fileSystem.targetDir)
   commits.forEach(commit => {
     const includedFiles = gitFilesAtCommit(fileSystem.targetDir, commit)
       .filter(file => file.match(pattern))
