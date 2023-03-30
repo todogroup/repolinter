@@ -285,6 +285,8 @@ describe('cli', function () {
 
     expect(actual.code).to.equal(1)
     expect(actual2.code).to.equal(1)
+    console.log(actual.out);
+    console.log(actual2.out)
     expect(actual.out.trim()).to.contain('Error: ENAMETOOLONG: name too long')
     expect(actual2.out.trim()).to.contain('Error: ENAMETOOLONG: name too long')
   })
