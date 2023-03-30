@@ -6,9 +6,12 @@ const Result = require('../lib/result')
 // eslint-disable-next-line no-unused-vars
 const FileSystem = require('../lib/file_system')
 
+const GitHelper = require('../lib/git_helper')
+
 function listCommitsWithLines(fileSystem, options) {
   const pattern = '(' + options.denylist.join('|') + ')'
-  const commits = gitAllCommits(fileSystem.targetDir)
+
+  const commits = GitHelper.gitAllCommits(fileSystem.targetDir)
   return commits
     .map(commit => {
       return {
@@ -22,15 +25,6 @@ function listCommitsWithLines(fileSystem, options) {
       }
     })
     .filter(commit => commit.lines.length > 0)
-}
-
-/**
- * @param targetDir
- * @ignore
- */
-function gitAllCommits(targetDir) {
-  const args = ['-C', targetDir, 'rev-list', '--all']
-  return spawnSync('git', args).stdout.toString().trim().split('\n')
 }
 
 /**
