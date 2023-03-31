@@ -11,6 +11,11 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "branches": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
     "content": { "type": "string" },
     "flags": { "type": "string" },
     "human-readable-content": { "type": "string" },
