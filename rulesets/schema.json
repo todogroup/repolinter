@@ -42,6 +42,10 @@
           "additionalProperties": false,
           "properties": {
             "level": { "enum": ["off", "warning", "error"] },
+            "sequentialOnly": {
+              "type": "boolean",
+              "default": false
+            },
             "where": {
               "type": "array",
               "items": { "type": "string" }

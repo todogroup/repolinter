@@ -344,9 +344,6 @@ describe('rule', () => {
         })
       })
     })
-    describe('with correctly configured branches option', () => {
-      it('it should set checkBranches boolean to true', async () => {})
-    })
     describe('when checking only default branch', () => {
       it('returned content should not find content from different branches', async () => {
         const actual = await execAsync(

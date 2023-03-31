@@ -364,7 +364,6 @@ async function fileContentsWithBranchOption(
               passed ? 'Contains' : "Doesn't contain"
             } ${getContent(options)}`
 
-            // TODO: Might need to increase noMatchingFileFoundCount here instead of returning if it did not find a file
             return {
               passed: not ? !passed : passed,
               path: file,
