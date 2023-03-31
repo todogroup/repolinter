@@ -318,7 +318,10 @@ async function fileContentsWithBranchOption(
   }
 
   const defaultBranch = (await git.branchLocal()).current
-  const branches = options.branches || [defaultBranch]
+  const branches = options.branches
+  if (!options.skipDefaultBranch) {
+    branches.unshift(defaultBranch)
+  }
   const defaultRemote = (await git.getRemotes())[0]
   await fetchAllBranchesRemote(git, defaultRemote.name)
 
