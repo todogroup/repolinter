@@ -63,7 +63,7 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: '3.2.2'
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Run Test
