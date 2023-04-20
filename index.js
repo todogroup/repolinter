@@ -120,34 +120,43 @@ async function lint(
   }
 
   let rulesetPath = null
-  if (typeof ruleset === 'string') {
-    if (config.isAbsoluteURL(ruleset)) {
-      rulesetPath = ruleset
-    } else {
-      rulesetPath = path.resolve(targetDir, ruleset)
-    }
-  } else if (!ruleset) {
-    rulesetPath = config.findConfig(targetDir)
+  let isEncoded = false
+  if (ruleset !== undefined && ruleset !== null) {
+    isEncoded = config.isBase64(ruleset)
   }
 
-  if (rulesetPath !== null) {
-    try {
-      ruleset = await config.loadConfig(rulesetPath)
-    } catch (e) {
-      return {
-        params: {
-          targetDir,
-          filterPaths,
-          rulesetPath,
-          ruleset
-        },
-        passed: false,
-        errored: true,
-        /** @ignore */
-        errMsg: e && e.toString(),
-        results: [],
-        targets: {},
-        formatOptions: ruleset && ruleset.formatOptions
+  if (isEncoded) {
+    ruleset = await config.decodeConfig(ruleset)
+  } else {
+    if (typeof ruleset === 'string') {
+      if (config.isAbsoluteURL(ruleset)) {
+        rulesetPath = ruleset
+      } else {
+        rulesetPath = path.resolve(targetDir, ruleset)
+      }
+    } else if (!ruleset) {
+      rulesetPath = config.findConfig(targetDir)
+    }
+
+    if (rulesetPath !== null) {
+      try {
+        ruleset = await config.loadConfig(rulesetPath)
+      } catch (e) {
+        return {
+          params: {
+            targetDir,
+            filterPaths,
+            rulesetPath,
+            ruleset
+          },
+          passed: false,
+          errored: true,
+          /** @ignore */
+          errMsg: e && e.toString(),
+          results: [],
+          targets: {},
+          formatOptions: ruleset && ruleset.formatOptions
+        }
       }
     }
   }
