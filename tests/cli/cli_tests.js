@@ -97,28 +97,44 @@ describe('cli', function () {
   })
 
   it('runs repolinter from the CLI using a config file', async () => {
-    const expected = stripAnsi(
+    const expectedPath = stripAnsi(
       repolinter.defaultFormatter.formatOutput(
         await repolinter.lint(selfPath, undefined, 'repolinter-other.json'),
         false
       )
     )
-    const [actual, actual2, actual3] = await Promise.all([
+    const selfBinPath = path.resolve(selfPath, 'bin')
+    const expectedBinPath = stripAnsi(
+      repolinter.defaultFormatter.formatOutput(
+        await repolinter.lint(
+          `${selfBinPath}`,
+          undefined,
+          'tests/cli/repolinter-other.json'
+        ),
+        false
+      )
+    )
+    const [paramTest1, paramTest2, paramTest3, pathTest1] = await Promise.all([
       execAsync(`${repolinterPath} lint ${selfPath} -r repolinter-other.json`),
       execAsync(
         `${repolinterPath} lint ${selfPath} --rulesetFile repolinter-other.json`
       ),
       execAsync(
         `${repolinterPath} lint ${selfPath} --ruleset-file repolinter-other.json`
+      ),
+      execAsync(
+        `${repolinterPath} lint ${selfBinPath} -r tests/cli/repolinter-other.json`
       )
     ])
 
-    expect(actual.code).to.equal(0)
-    expect(actual2.code).to.equal(0)
-    expect(actual3.code).to.equal(0)
-    expect(actual.out.trim()).to.equals(expected.trim())
-    expect(actual2.out.trim()).to.equals(expected.trim())
-    expect(actual3.out.trim()).to.equals(expected.trim())
+    expect(paramTest1.code).to.equal(0)
+    expect(paramTest2.code).to.equal(0)
+    expect(paramTest3.code).to.equal(0)
+    expect(pathTest1.code).to.equal(0)
+    expect(paramTest1.out.trim()).to.equals(expectedPath.trim())
+    expect(paramTest2.out.trim()).to.equals(expectedPath.trim())
+    expect(paramTest3.out.trim()).to.equals(expectedPath.trim())
+    expect(pathTest1.out.trim()).to.equals(expectedBinPath.trim())
   })
 
   it('runs repolinter from the CLI using a YAML config file', async () => {
