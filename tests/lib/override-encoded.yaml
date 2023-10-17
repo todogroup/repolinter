@@ -1,0 +1,6 @@
+$schema: "../../rulesets/schema.json"
+extends: "ewogICIkc2NoZW1hIjogIi4uLy4uL3J1bGVzZXRzL3NjaGVtYS5qc29uIiwKICAidmVyc2lvbiI6IDIsCiAgImF4aW9tcyI6IHt9LAogICJydWxlcyI6IHsKICAgICJ0ZXN0LWZpbGUtZXhpc3RzIjogewogICAgICAibGV2ZWwiOiAiZXJyb3IiLAogICAgICAicnVsZSI6IHsKICAgICAgICAidHlwZSI6ICJmaWxlLWV4aXN0ZW5jZSIsCiAgICAgICAgIm9wdGlvbnMiOiB7CiAgICAgICAgICAiZ2xvYnNBbnkiOiBbInRleHRfZmlsZV9mb3JfdGVzdC50eHQiXQogICAgICAgIH0KICAgICAgfQogICAgfQogIH0KfQo="
+version: 2
+rules:
+  test-file-exists:
+    level: off

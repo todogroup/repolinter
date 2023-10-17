@@ -7,7 +7,6 @@ const expect = chai.expect
 const path = require('path')
 const fs = require('fs')
 const ServerMock = require('mock-http-server')
-
 chai.use(chaiAsPromised)
 
 describe('lib', () => {
@@ -99,6 +98,15 @@ describe('lib', () => {
         server.on(serveDirectory(__dirname))
         const actual = await Config.loadConfig(
           path.join(__dirname, 'absolute-override.yaml')
+        )
+        expect(actual.rules).to.have.property('test-file-exists')
+        expect(actual.rules['test-file-exists'].level).to.equals('off')
+      })
+
+      it('should handle encoded rulesets extends', async () => {
+        server.on(serveDirectory(__dirname))
+        const actual = await Config.loadConfig(
+          path.join(__dirname, 'override-encoded.yaml')
         )
         expect(actual.rules).to.have.property('test-file-exists')
         expect(actual.rules['test-file-exists'].level).to.equals('off')
