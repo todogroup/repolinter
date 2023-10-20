@@ -135,9 +135,10 @@ async function lint(
       } else {
         if (fs.existsSync(path.resolve(targetDir, ruleset))) {
           rulesetPath = path.resolve(targetDir, ruleset)
-        }
-        if (fs.existsSync(path.resolve(__dirname, ruleset))) {
+        } else if (fs.existsSync(path.resolve(__dirname, ruleset))) {
           rulesetPath = path.resolve(__dirname, ruleset)
+        } else {
+          rulesetPath = null
         }
       }
     } else if (!ruleset) {
