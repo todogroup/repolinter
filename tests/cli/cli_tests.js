@@ -304,6 +304,20 @@ describe('cli', function () {
     expect(actual2.out.trim()).to.contain('configuration should be object')
   })
 
+  it('runs repolinter with ruleset file path too long', async () => {
+    // 4096 is the max length of a path on ext3/ext4
+    const encodedRuleset = new Array('a'.repeat(4097)).join('');
+    const [actual, actual2] = await Promise.all([
+      execAsync(`${repolinterPath} lint -c ${encodedRuleset}`),
+      execAsync(`${repolinterPath} lint --rulesetEncoded ${encodedRuleset}`)
+    ])
+
+    expect(actual.code).to.equal(1)
+    expect(actual2.code).to.equal(1)
+    expect(actual.out.trim()).to.contain('configuration should be object')
+    expect(actual2.out.trim()).to.contain('configuration should be object')
+  })
+
   it('should handle encoded rulesets with encoded extends', async () => {
     const encodedRuleset =
       'JHNjaGVtYTogIi4uLy4uL3J1bGVzZXRzL3NjaGVtYS5qc29uIgpleHRlbmRzOiAiZXdvZ0lDSWtjMk5vWlcxaElqb2dJaTR1THk0dUwzSjFiR1Z6WlhSekwzTmphR1Z0WVM1cWMyOXVJaXdLSUNBaWRtVnljMmx2YmlJNklESXNDaUFnSW1GNGFXOXRjeUk2SUh0OUxBb2dJQ0p5ZFd4bGN5STZJSHNLSUNBZ0lDSjBaWE4wTFdacGJHVXRaWGhwYzNSeklqb2dld29nSUNBZ0lDQWliR1YyWld3aU9pQWlaWEp5YjNJaUxBb2dJQ0FnSUNBaWNuVnNaU0k2SUhzS0lDQWdJQ0FnSUNBaWRIbHdaU0k2SUNKbWFXeGxMV1Y0YVhOMFpXNWpaU0lzQ2lBZ0lDQWdJQ0FnSW05d2RHbHZibk1pT2lCN0NpQWdJQ0FnSUNBZ0lDQWlaMnh2WW5OQmJua2lPaUJiSW5SbGVIUmZabWxzWlY5bWIzSmZkR1Z6ZEM1MGVIUWlYUW9nSUNBZ0lDQWdJSDBLSUNBZ0lDQWdmUW9nSUNBZ2ZRb2dJSDBLZlFvPSIKdmVyc2lvbjogMgpydWxlczoKICB0ZXN0LWZpbGUtZXhpc3RzOgogICAgbGV2ZWw6IG9mZgo='
