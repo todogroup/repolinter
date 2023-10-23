@@ -306,7 +306,7 @@ describe('cli', function () {
 
   it('runs repolinter with ruleset file path too long', async () => {
     // 4096 is the max length of a path on ext3/ext4
-    const encodedRuleset = new Array('a'.repeat(4097)).join('');
+    const encodedRuleset = new Array('a'.repeat(4097)).join('')
     const [actual, actual2] = await Promise.all([
       execAsync(`${repolinterPath} lint -c ${encodedRuleset}`),
       execAsync(`${repolinterPath} lint --rulesetEncoded ${encodedRuleset}`)
