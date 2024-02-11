@@ -38,19 +38,19 @@ require('yargs')
         .option('rulesetFile', {
           alias: 'r',
           describe:
-            'Specify an alternate location for the repolinter configuration to use (This will default to repolinter.json/repolinter.yaml at the root of the project, or the internal default ruleset if none is found).',
+            'Specify an alternate file location for repolinter configuration to use. This option is mutually exclusive from all other "ruleset*" options. If no "ruleset*" option provided, repolinter will use default repolinter.json/repolinter.yaml at the root of the project.',
           type: 'string'
         })
         .option('rulesetUrl', {
           alias: 'u',
           describe:
-            'Specify an alternate URL repolinter configuration to use (This will default to repolinter.json/repolinter.yaml at the root of the project, or the internal default ruleset if none is found).',
+            'Specify an alternate URL location for repolinter configuration to use. This option is mutually exclusive from all other "ruleset*" options. If no "ruleset*" option provided, repolinter will use default repolinter.json/repolinter.yaml at the root of the project.',
           type: 'string'
         })
         .option('rulesetEncoded', {
           alias: 'c',
           describe:
-            'Specify a base64 encoded ruleset that repolinter will decode and use instead.',
+            'Specify a base64 encoded ruleset that repolinter will decode and use instead. This option is mutually exclusive from all other "ruleset*" options. If no "ruleset*" option provided, repolinter will use default repolinter.json/repolinter.yaml at the root of the project',
           type: 'string'
         })
         .option('git', {
@@ -67,6 +67,8 @@ require('yargs')
           default: 'console',
           type: 'string'
         })
+        .conflicts('rulesetFile', ['rulesetUrl', 'rulesetEncoded'])
+        .conflicts('rulesetEncoded', 'rulesetUrl')
     },
     async (/** @type {any} */ argv) => {
       let tmpDir = null
