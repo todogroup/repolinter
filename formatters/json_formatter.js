@@ -14,7 +14,7 @@ class JsonFormatter {
    * @returns {string} The formatted output
    */
   static formatOutput(output, dryRun) {
-    return JSON.stringify(output)
+    return JSON.stringify(output).replace(/\\/g, '\\\\')
   }
 }
 

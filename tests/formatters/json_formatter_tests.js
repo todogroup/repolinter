@@ -44,5 +44,32 @@ describe('formatters', () => {
       const successResult = jsonFormatter.formatOutput(result, false)
       expect(successResult).to.equal(expected)
     })
+    it('escapes backslashes to produce valid JSON', () => {
+      const jsonFormatter = require('../../formatters/json_formatter')
+
+      /** @type {import('../..').LintResult} */
+      const result = {
+        passed: true,
+        errored: false,
+        results: [
+          FormatResult.CreateLintOnly(
+            new RuleInfo('myrule', 'error', [], 'file-existence', {}),
+            new Result('Escaped: \\', [], true)
+          )
+        ],
+        targets: {
+          language: new Result('No language?', [], false)
+        },
+        params: {
+          targetDir: '.',
+          filterPaths: [],
+          ruleset: {}
+        }
+      }
+      const expected =
+        '{"passed":true,"errored":false,"results":[{"ruleInfo":{"name":"myrule","level":"error","where":[],"ruleType":"file-existence","ruleConfig":{}},"status":"PASSED","lintResult":{"message":"Escaped: \\\\\\\\","targets":[],"passed":true}}],"targets":{"language":{"message":"No language?","targets":[],"passed":false}},"params":{"targetDir":".","filterPaths":[],"ruleset":{}}}'
+      const successResult = jsonFormatter.formatOutput(result, false)
+      expect(successResult).to.equal(expected)
+    })
   })
 })
