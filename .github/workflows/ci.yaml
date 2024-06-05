@@ -7,17 +7,21 @@ jobs:
       fail-fast: false
       matrix:
         node-version: ['19', '18', '16', '14']
-        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+        os: ['windows-latest', 'ubuntu-latest', 'macos-13', 'macos-latest']
+        exclude:
+          # exclude node14 test on arm due to nodejs 14 release is not available for darwin-arm
+          - node-version: '14'
+            os: 'macos-latest'
     runs-on: ${{ matrix.os }}
     name: Node ${{ matrix.node-version }} sample (${{ matrix.os }})
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -27,7 +31,7 @@ jobs:
           echo "::set-output name=dir::$(npm config get cache)"
 
       - name: Cache NPM
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -39,7 +43,7 @@ jobs:
 
       - name: Setup Python for Github-Markup
         if: ${{ runner.os != 'Windows' }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -59,19 +63,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential libicu-dev libcurl4-openssl-dev libldap2-dev libidn11-dev
 
-      - name: Setup Ruby
-        if: ${{ runner.os != 'Windows' }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1.4'
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-
-      - name: Run Test
-        if: ${{ runner.os != 'Windows' }}
-        run: bundle exec npm test
-
       - name: Run Test (Windows)
-        if: ${{ runner.os == 'Windows' }}
         run: npm test
 
   test-docker:
@@ -79,10 +71,10 @@ jobs:
     name: Docker sample
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
