@@ -4,6 +4,7 @@
 /** @module repolinter */
 
 const path = require('path')
+const fs = require('fs')
 const config = require('./lib/config')
 const Result = require('./lib/result')
 const RuleInfo = require('./lib/ruleinfo')
@@ -132,7 +133,13 @@ async function lint(
       if (config.isAbsoluteURL(ruleset)) {
         rulesetPath = ruleset
       } else {
-        rulesetPath = path.resolve(targetDir, ruleset)
+        if (fs.existsSync(path.resolve(targetDir, ruleset))) {
+          rulesetPath = path.resolve(targetDir, ruleset)
+        } else if (fs.existsSync(path.resolve(__dirname, ruleset))) {
+          rulesetPath = path.resolve(__dirname, ruleset)
+        } else {
+          rulesetPath = null
+        }
       }
     } else if (!ruleset) {
       rulesetPath = config.findConfig(targetDir)
