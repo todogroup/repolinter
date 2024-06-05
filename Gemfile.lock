@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    RedCloth (4.3.2)
+    RedCloth (4.3.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     asciidoctor (2.0.12)
@@ -44,7 +44,7 @@ GEM
       rubypants (~> 0.2)
     public_suffix (4.0.6)
     racc (1.6.2)
-    rdoc (6.3.1)
+    rdoc (6.3.4.1)
     reverse_markdown (1.4.0)
       nokogiri
     ruby2_keywords (0.0.4)
@@ -79,7 +79,7 @@ DEPENDENCIES
   github-markup (~> 4.0)
   licensee (>= 9.9.0)
   org-ruby (~> 0.9.12)
-  rdoc (= 6.3.1)
+  rdoc (= 6.3.4.1)
   wikicloth (~> 0.8.3)
 
 BUNDLED WITH
