@@ -32,9 +32,9 @@ function getContext(matchedLine, regexMatch, contextLength) {
  * @returns {Promise<Result>} The lint rule result
  * @ignore
  */
-async function fileContents(fs, options, not = false) {
+async function fileContents(fs, options, not = false, any = false) {
   // support legacy configuration keys
-  const fileList = options.globsAll || options.files
+  const fileList = (any ? options.globsAny : options.globsAll) || options.files
   const files = await fs.findAllFiles(fileList, !!options.nocase)
   const regexFlags = options.flags || ''
 
@@ -272,7 +272,9 @@ async function fileContents(fs, options, not = false) {
   }
 
   const filteredResults = results.filter(r => r !== null)
-  const passed = !filteredResults.find(r => !r.passed)
+  const passed = any
+    ? filteredResults.some(r => r.passed)
+    : !filteredResults.find(r => !r.passed)
   return new Result('', filteredResults, passed)
 }
 
