@@ -83,7 +83,7 @@ Checks that a given file matches a provided hash.
 | `hash`                 | **Yes**  | `string`   |          | The hash to check against. Unless a different `algorithm` is specified, this will be sha256 hash.                                                                            |
 | `algorithm`            | No       | `string`   | `sha256` | The hash algorithm to use. Repolinter supports any algorithm supported by [crypto.createHash](https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options) |
 | `nocase`               | No       | `boolean`  | `false`  | Set to `true` to perform a case insensitive search.                                                                                                                         |
-| `succeed-on-non-exist` | No       | `boolean`  | `false`  | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                       |
+| `succeed-on-non-existent` | No       | `boolean`  | `false`  | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                       |
 
 ### `file-hashes-not-exist`
 
@@ -106,7 +106,7 @@ Scans a set of markup files for broken links. Links are tested by first renderin
 | ------------------------------ | -------- | ---------- | ------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `globsAll`                     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if all of the markup files found do not contain broken links.                                                            |
 | `nocase`                       | No       | `boolean`  | `false` | Set to `true` to perform a case insensitive search.                                                                                                                      |
-| `succeed-on-non-exist`         | No       | `boolean`  | `false` | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                   |
+| `succeed-on-non-existent`         | No       | `boolean`  | `false` | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                   |
 | `pass-external-relative-links` | No       | `boolean`  | `false` | Set to `true` to allow relative URLs outside of the target directory. As there is no good way to check these URLs, they will automatically pass if this setting is true. |
 
 
@@ -148,7 +148,7 @@ Checks that the first lines of a file contain a set of regular expressions.
 | `patterns`             | **Yes**  | `string[]`                                                       |         | The regular expressions to check using `String#search`. These expressions should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. `".+@.+\\..+"` for an email address). |
 | `flags`                | No       | `string`                                                         | `""`    | The flags to use for the regular expressions in `patterns` (ex. `"i"` for case insensitivity).                                                                                                                                      |
 | `nocase`               | No       | `boolean`                                                        | `false` | Set to `true` to perform a case insensitive search on the files. This will not effect the case sensitivity of `patterns`.                                                                                                          |
-| `succeed-on-non-exist` | No       | `boolean`                                                        | `false` | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                                                                              |
+| `succeed-on-non-existent` | No       | `boolean`                                                        | `false` | Set to `true` to enable passing if no files are found from `globsAll`.                                                                                                                                                              |
 | `skip-binary-files`    | No       | `boolean`                                                        | `false` | Set to `true` to exclude binary files from `globsAll`.                                                                                                                                                                              |
 | `skip-paths-matching`  | No       | `{ extensions?: string[], patterns?: string[], flags?: string }` | `{}`    | Use this option to exclude paths from `globsAll`, either by file extension or by regular expression.                                                                                                                                |
 
@@ -216,7 +216,7 @@ Checks if a given file matches a provided [JSON schema](https://json-schema.org/
 | `schema`                 | **Yes**  | JSON Schema |                        | The JSON schema to validate against, as a JSON object.                                               |
 | `nocase`                 | No       | `boolean`   | `false`                | Set to `true` to perform a case insensitive search.                                                  |
 | `human-readable-message` | No       | `string`    | The schema in `schema` | The string to print instead of the schema when generating human-readable output.                     |
-| `succeed-on-non-exist`   | No       | `boolean`   | `false`                | Set to `true` to enable passing if no files are found from `glob`.                                   |
+| `succeed-on-non-existent`   | No       | `boolean`   | `false`                | Set to `true` to enable passing if no files are found from `glob`.                                   |
 
 ### `license-detectable-by-licensee`
 
