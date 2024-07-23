@@ -179,7 +179,11 @@
           "dirs": true,
           "globsAny": [
             "PULL_REQUEST_TEMPLATE*",
-            ".github/PULL_REQUEST_TEMPLATE*"
+            ".github/PULL_REQUEST_TEMPLATE*",
+            ".github/pull_request_template.md",
+            "docs/pull_request_template.md",
+            "docs/PULL_REQUEST_TEMPLATE*",
+            "pull_request_template.md"
           ]
         }
       }
