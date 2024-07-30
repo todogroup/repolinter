@@ -7,7 +7,11 @@ jobs:
       fail-fast: false
       matrix:
         node-version: ['22', '21', '20', '18', '16', '14']
-        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+        os: ['windows-latest', 'windows-2019', 'ubuntu-24.04', 'ubuntu-latest', 'ubuntu-20.4', 'macos-latest', 'macos-13', 'macos-12']
+        exclude:
+          # exclude node14 test on arm due to nodejs 14 release is not available for darwin-arm
+          - node-version: '14'
+            os: 'macos-latest'
     runs-on: ${{ matrix.os }}
     name: Node ${{ matrix.node-version }} sample (${{ matrix.os }})
     steps:
