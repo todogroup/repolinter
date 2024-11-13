@@ -20,6 +20,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`git-grep-commits`](#git-grep-commits)
   - [`git-grep-log`](#git-grep-log)
   - [`git-list-tree`](#git-list-tree)
+  - [`git-regex-tag-names`](#git-regex-tag-names)
   - [`git-working-tree`](#git-working-tree)
   - [`json-schema-passes`](#json-schema-passes)
   - [`large-file`](#large-file)
@@ -188,6 +189,19 @@ Check for blacklisted filepaths in Git.
 | ------------ | -------- | ---------- | ------- | ------------------------------------------------------------------ |
 | `denylist`   | **Yes**  | `string[]` |         | A list of patterns to search against all paths in the git history. |
 | `ignoreCase` | No       | `boolean`  | `false` | Set to true to make `denylist` case insensitive.                   |
+
+
+### `git-regex-tag-names`
+
+Check for permitted or denied Git tag names using JavaScript regular expressions.
+
+| Input        | Required | Type       | Default | Description                                                      |
+|--------------|----------|------------|---------|------------------------------------------------------------------|
+| `allowlist`  | **Yes*** | `string[]` |         | A list of permitted patterns to search against all git tag names |
+| `denylist`   | **Yes*** | `string[]` |         | A list of denied patterns to search against all git tag names    |
+| `ignoreCase` | No       | `boolean`  | `false` | Set to true to make `denylist` case insensitive.                 |
+
+*`allowlist` and `denylist` cannot be both used within the same rule.
 
 ### `git-working-tree`
 

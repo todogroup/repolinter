@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/todogroup/repolinter/master/rules/git-regex-tag-names-config.json",
+  "type": "object",
+  "oneOf": [
+    {
+      "properties": {
+        "allowlist": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ignoreCase": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["allowlist"]
+    },
+    {
+      "properties": {
+        "denylist": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ignoreCase": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["denylist"]
+    }
+  ]
+}
