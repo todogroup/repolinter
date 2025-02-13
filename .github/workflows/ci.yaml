@@ -97,7 +97,7 @@ jobs:
 
   publish-release:
     name: Publish a Release
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     needs: [test, test-docker]
     runs-on: ubuntu-latest
     steps:
