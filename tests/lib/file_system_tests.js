@@ -192,14 +192,14 @@ describe('lib', () => {
       })
     })
 
-    // describe('setFileContents', async () => {
-    //   const fs = new FileSystem(__dirname)
-    //   const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
-    //   const contents = await realFs.promises.readFile(filePath)
+    describe('setFileContents', async () => {
+      const fs = new FileSystem(__dirname)
+      const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
+      const contents = await realFs.promises.readFile(filePath)
 
-    //   it('should throw an error if the file does not exist', async () => {
-    //     expect(() => fs.getFileContents('notAFile')).to.throw()
-    //   })
+      it('should throw an error if the file does not exist', async () => {
+        expect(() => fs.getFileContents('notAFile')).to.throw()
+      })
 
     //   it('should change the contents of a file', async () => {
     //     const expected = 'somefilecontents\nmorecontents\n'
@@ -209,11 +209,11 @@ describe('lib', () => {
     //     expect(realFileContents).to.equal(expected)
     //   })
 
-    //   after(async () => {
-    //     // reset the file contents
-    //     await realFs.promises.writeFile(filePath, contents)
-    //   })
-    // })
+      after(async () => {
+        // reset the file contents
+        await realFs.promises.writeFile(filePath, contents)
+      })
+    })
 
     describe('getFileLines', () => {})
   })
