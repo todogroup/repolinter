@@ -174,48 +174,45 @@ describe('lib', () => {
       })
     })
 
-    // describe('getFileContents', () => {
-    //   const fs = new FileSystem(__dirname)
-
-    //   it('should return undefined if the file does not exist', async () => {
-    //     const actual = await fs.getFileContents('notAFile')
-    //     expect(actual).to.equal(undefined)
-    //   })
-
-    //   it('should return the contents of a file', async () => {
-    //     const raw = await fs.getFileContents('text_file_for_test.txt')
-    //     // replace newlines to prevent compatibility issues
-    //     const actual = raw.replace(/\r/g, '')
-    //     expect(actual).to.equal(
-    //       'The contents of this file\nwill be monitored for quality assurance purposes\n'
-    //     )
-    //   })
-    // })
-
-    describe('setFileContents', async () => {
+    describe('getFileContents', () => {
       const fs = new FileSystem(__dirname)
-      const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
-      const contents = await realFs.promises.readFile(filePath)
 
       it('should return undefined if the file does not exist', async () => {
         const actual = await fs.getFileContents('notAFile')
         expect(actual).to.equal(undefined)
       })
 
-      // it('should throw an error if the file does not exist', async () => {
-      //   expect(() => fs.getFileContents('notAFile')).to.throw()
-      // })
-      it('should change the contents of a file', async () => {
-        const expected = 'somefilecontents\nmorecontents\n'
-        await fs.setFileContents('text_file_for_test.txt', expected)
-        const fileContents = await realFs.promises.readFile(filePath, 'utf8')
-        const realFileContents = fileContents.replace(/\r/g, '')
-        expect(realFileContents).to.equal(expected)
+      it('should return the contents of a file', async () => {
+        const raw = await fs.getFileContents('text_file_for_test.txt')
+        // replace newlines to prevent compatibility issues
+        const actual = raw.replace(/\r/g, '')
+        expect(actual).to.equal(
+          'The contents of this file\nwill be monitored for quality assurance purposes\n'
+        )
       })
 
-      after(async () => {
-        // reset the file contents
-        await realFs.promises.writeFile(filePath, contents)
+      describe('setFileContents', async () => {
+        const fs = new FileSystem(__dirname)
+        const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
+        const contents = await realFs.promises.readFile(filePath)
+  
+        it('should return undefined if the file does not exist', async () => {
+          const actual = await fs.getFileContents('notAFile')
+          expect(actual).to.equal(undefined)
+        })
+
+        it('should change the contents of a file', async () => {
+          const expected = 'somefilecontents\nmorecontents\n'
+          await fs.setFileContents('text_file_for_test.txt', expected)
+          const fileContents = await realFs.promises.readFile(filePath, 'utf8')
+          const realFileContents = fileContents.replace(/\r/g, '')
+          expect(realFileContents).to.equal(expected)
+        })
+
+        after(async () => {
+          // reset the file contents
+          await realFs.promises.writeFile(filePath, contents)
+        })
       })
     })
 
