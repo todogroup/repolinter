@@ -195,7 +195,11 @@ describe('lib', () => {
     describe('setFileContents', async () => {
       const fs = new FileSystem(__dirname)
       const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
-      const contents = await realFs.promises.readFile(filePath)
+      let contents;
+      
+      before(async () => {
+        contents = await realFs.promises.readFile(filePath, 'utf8')
+      })
 
       it('should return undefined if the file does not exist', async () => {
         const actual = await fs.getFileContents('notAFile')
