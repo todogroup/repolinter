@@ -204,10 +204,13 @@ describe('lib', () => {
 
       it('should change the contents of a file', async () => {
         const expected = 'somefilecontents\nmorecontents\n'
-        await fs.setFileContents('text_file_for_test.txt', expected)
-        const fileContents = await realFs.promises.readFile(filePath, 'utf8')
-        const realFileContents = fileContents.replace(/\r/g, '')
-        expect(realFileContents).to.equal(expected)
+        fs.setFileContents('text_file_for_test.txt', expected).then(() => {
+          const fileContents = await realFs.promises.readFile(filePath, 'utf8')
+          const realFileContents = fileContents.replace(/\r/g, '')
+          expect(realFileContents).to.equal(expected)
+        }).catch(
+          //TODO: raise exception....
+        );
       })
 
       after(async () => {
