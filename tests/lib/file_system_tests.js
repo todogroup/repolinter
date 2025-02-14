@@ -195,8 +195,8 @@ describe('lib', () => {
     describe('setFileContents', async () => {
       const fs = new FileSystem(__dirname)
       const filePath = path.resolve(__dirname, 'text_file_for_test.txt')
-      let contents;
-      
+      let contents
+
       before(async () => {
         contents = await realFs.promises.readFile(filePath, 'utf8')
       })
