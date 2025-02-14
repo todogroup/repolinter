@@ -201,11 +201,10 @@ describe('lib', () => {
         const actual = await fs.getFileContents('notAFile')
         expect(actual).to.equal(undefined)
       })
-      
+
       // it('should throw an error if the file does not exist', async () => {
       //   expect(() => fs.getFileContents('notAFile')).to.throw()
       // })
-
       // it('should change the contents of a file', async () => {
       //   const expected = 'somefilecontents\nmorecontents\n'
       //   await fs.setFileContents('text_file_for_test.txt', expected)
