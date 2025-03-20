@@ -25,6 +25,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`large-file`](#large-file)
   - [`license-detectable-by-licensee`](#license-detectable-by-licensee)
   - [`best-practices-badge-present`](#best-practices-badge-present)
+  - [`file-or-directory-existence`](#file-or-directory-existence)
 
 ## Reference
 
@@ -229,3 +230,13 @@ Check Best Practices Badge is present in README. Optionally check a certain badg
 | Input        | Required | Type       | Default | Description                                                        |
 | ------------ | -------- | ---------- | ------- | ------------------------------------------------------------------ |
 | `minPercentage` | No       | `integer`  | `null` | Minimum [Tiered Percentage](https://github.com/coreinfrastructure/best-practices-badge/blob/main/doc/api.md#tiered-percentage-in-openssf-best-practices-badge) accomplished by project. `passing=100`, `silver=200`, `gold=300`, set to `0` or `null` to disable check. |
+
+### `file-or-directory-existence`
+
+Checks the existence of a given file OR directory.
+
+| Input          | Required | Type       | Default | Description                                                                                        |
+| -------------- | -------- | ---------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `globsAny`     | **Yes**  | `string[]` |         | A list of globs to search for. This rule passes if at least one glob returns a file or directory.  |
+| `nocase`       | No       | `boolean`  | `false` | Set to `true` to perform an case insensitive search.                                               |
+| `fail-message` | No       | `string`   | `""`    | The string to print if file or directory does not exist, used to create human-readable error messages. |
