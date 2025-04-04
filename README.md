@@ -97,7 +97,7 @@ Repolinter will pull its configuration from the following sources in order of pr
 
 1. A ruleset specified with `--rulesetFile` or `--rulesetUrl`
 2. A `repolint.json`, `repolinter.json`, `repolint.yaml`, or `repolinter.yaml` file at the root of the project being linted
-3. The [default ruleset](./rulesets/default.json)
+3. The [default ruleset](https://github.com/todogroup/repolinter/blob/main/rulesets/default.json) ([raw](https://raw.githubusercontent.com/todogroup/repolinter/refs/heads/main/rulesets/default.json))
 
 ### Creating a Ruleset
 
