@@ -7,7 +7,7 @@ GEM
     asciidoctor (2.0.23)
     base64 (0.2.0)
     builder (3.2.4)
-    cgi (0.4.1)
+    cgi (0.4.2)
     charlock_holmes (0.7.7)
     commonmarker (0.23.10)
     creole (0.5.0)
