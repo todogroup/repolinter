@@ -1,6 +1,6 @@
 {
   "name": "repolinter",
-  "version": "0.11.2",
+  "version": "0.12.0",
   "description": "Lint open source repositories",
   "main": "index.js",
   "types": "index.d.ts",

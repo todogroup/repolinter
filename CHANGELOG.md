@@ -1,3 +1,27 @@
+# [0.12.0](https://github.com/todogroup/repolinter/compare/v0.11.2...v0.12.0) (2025-05-09)
+
+
+### Bug Fixes
+
+* add docs directory ([0ccdcd8](https://github.com/todogroup/repolinter/commit/0ccdcd87f28ae9ea66cad1ce4d7d1aa308be84f2))
+* broken test case. ([4816a53](https://github.com/todogroup/repolinter/commit/4816a53a9958fe929623f1e5f779b362438ae4b9))
+* schema $id mixup. ([6bc0828](https://github.com/todogroup/repolinter/commit/6bc08284d3ba10d3e29b77a54ab0bf7cf0d5645c))
+* semantic release update to main ([f01a516](https://github.com/todogroup/repolinter/commit/f01a516696dd019c251f8ab8622289308114c6bd))
+* update axioms, fixes and rules for documentation ([7432dfe](https://github.com/todogroup/repolinter/commit/7432dfef156cc81aa90472726da95cb1e5079ad7))
+* update test case for 'fail-on-non-existent' scenario, the 'passed' of non-exist file should depend on the parameter. ([e31bfb3](https://github.com/todogroup/repolinter/commit/e31bfb32cd333a577c1d3ff6657ee55fb0ebe2c6))
+
+
+### Features
+
+* add 'files-not-contents' rule to make string detection rulesets easier to maintain. ([093afc3](https://github.com/todogroup/repolinter/commit/093afc30f78bf53fc0fb5c15a103df17b045e542))
+* add better regex context support for file-contents ([2ff65d1](https://github.com/todogroup/repolinter/commit/2ff65d1b88d2ca7d2d087157f9a91df83f6a9470))
+* add files-not-hash rule for files detections. ([d2f262a](https://github.com/todogroup/repolinter/commit/d2f262ab729f9f8117b7296be0478b9d4be63ab6))
+* add large file rules ([2e48a85](https://github.com/todogroup/repolinter/commit/2e48a857771402db1c33daee73bf5a47d9c280be))
+* add lines of regex match in the file-contents and file-not-contents rule output, default turned off. ([9831684](https://github.com/todogroup/repolinter/commit/983168407c7d8b9bae76107aacb55513b4dc3a49))
+* add policyUrl and policyInfo in the default output. ([fb81866](https://github.com/todogroup/repolinter/commit/fb81866ad095dadf8258d150de3e875deff90e93))
+* add relative path resolving to rulesetPath ([561e895](https://github.com/todogroup/repolinter/commit/561e895fa56947c36d585faf960f051e6df0a4e1))
+* update github pull request template locations ([c2d0f40](https://github.com/todogroup/repolinter/commit/c2d0f40299d94d60e7eb0bf3bcc740945bbd24c0))
+
 ## [0.11.2](https://github.com/todogroup/repolinter/compare/v0.11.1...v0.11.2) (2021-09-27)
 
 
