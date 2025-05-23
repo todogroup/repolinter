@@ -17,6 +17,7 @@ module.exports = {
   'git-grep-commits': require('./git-grep-commits'),
   'git-grep-log': require('./git-grep-log'),
   'git-list-tree': require('./git-list-tree'),
+  'git-regex-tag-names': require('./git-regex-tag-names'),
   'git-working-tree': require('./git-working-tree'),
   'large-file': require('./large-file'),
   'license-detectable-by-licensee': require('./license-detectable-by-licensee'),

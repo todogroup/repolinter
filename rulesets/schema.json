@@ -216,6 +216,18 @@
                 },
                 {
                   "if": {
+                    "properties": { "type": { "const": "git-regex-tag-names" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": {
+                        "$ref": "../rules/git-regex-tag-names-config.json"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
                     "properties": { "type": { "const": "git-working-tree" } }
                   },
                   "then": {
