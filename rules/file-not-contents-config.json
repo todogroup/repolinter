@@ -18,6 +18,12 @@
         "type": "string"
       }
     },
+    "branches": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "skipDefaultBranch": { "type": "boolean", "default": false },
     "flags": { "type": "string" },
     "human-readable-content": { "type": "string" },
     "fail-on-non-existent": {
