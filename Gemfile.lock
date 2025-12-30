@@ -71,7 +71,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.9.1)
-    uri (0.13.2)
+    uri (0.13.3)
     wikicloth (0.8.3)
       builder
       expression_parser
