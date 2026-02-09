@@ -25,6 +25,7 @@ Below is a complete list of rules that Repolinter can run, along with their conf
   - [`large-file`](#large-file)
   - [`license-detectable-by-licensee`](#license-detectable-by-licensee)
   - [`best-practices-badge-present`](#best-practices-badge-present)
+  - [`any-file-contents`](#any-file-contents)
 
 ## Reference
 
@@ -229,3 +230,15 @@ Check Best Practices Badge is present in README. Optionally check a certain badg
 | Input        | Required | Type       | Default | Description                                                        |
 | ------------ | -------- | ---------- | ------- | ------------------------------------------------------------------ |
 | `minPercentage` | No       | `integer`  | `null` | Minimum [Tiered Percentage](https://github.com/coreinfrastructure/best-practices-badge/blob/main/doc/api.md#tiered-percentage-in-openssf-best-practices-badge) accomplished by project. `passing=100`, `silver=200`, `gold=300`, set to `0` or `null` to disable check. |
+
+### `any-file-contents`
+Checks if the contents of at least one file in a given list match a given regular expression.
+
+| Input                    | Required | Type       | Default                             | Description                                                                                                                                                                                                                      |
+| ------------------------ | -------- | ---------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `globsAny`               | **Yes**  | `string[]` |                                     | A list of globs to get files for. This rule passes if at least one of the files returned by the globs match the supplied string, or if no files are returned.                                                                             |
+| `content`                | **Yes**  | `string`   |                                     | The regular expression to check using `String#search`. This expression should not include the enclosing slashes and may need to be escaped to properly integrate with the JSON config (ex. `".+@.+\\..+"` for an email address). |
+| `nocase`                 | No       | `boolean`  | `false`                             | Set to `true` to make the globs case insensitive. This does not effect the case sensitivity of the regular expression.                                                                                                           |
+| `flags`                  | No       | `string`   | `""`                                | The flags to use for the regular expression in `content` (ex. `"i"` for case insensitivity).                                                                                                                                     |
+| `human-readable-content` | No       | `string`   | The regular expression in `content` | The string to print instead of the regular expression when generating human-readable output.                                                                                                                                     |
+| `fail-on-non-existent`      | No       | `boolean`  | `false`                             | Set to `true` to disable passing if no files are found from `globsAll`.                                                                                                                                                          |

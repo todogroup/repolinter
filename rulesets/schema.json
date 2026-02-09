@@ -253,6 +253,18 @@
                       }
                     }
                   }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "any-file-contents" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "options": {
+                        "$ref": "../rules/any-file-contents-config.json"
+                      }
+                    }
+                  }
                 }
               ]
             },

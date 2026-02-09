@@ -20,5 +20,6 @@ module.exports = {
   'git-working-tree': require('./git-working-tree'),
   'large-file': require('./large-file'),
   'license-detectable-by-licensee': require('./license-detectable-by-licensee'),
-  'json-schema-passes': require('./json-schema-passes')
+  'json-schema-passes': require('./json-schema-passes'),
+  'any-file-contents': require('./any-file-contents')
 }
