@@ -11,6 +11,12 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "branches": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "skipDefaultBranch": { "type": "boolean", "default": false },
     "content": { "type": "string" },
     "flags": { "type": "string" },
     "human-readable-content": { "type": "string" },
